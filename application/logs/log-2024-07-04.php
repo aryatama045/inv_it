@@ -1,0 +1,31 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2024-07-04 08:18:34 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:18:34 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:18:36 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:18:36 --> Language file contains no data: language/indonesian/form_validation_lang.php
+ERROR - 2024-07-04 08:18:36 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:18:36 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:22:57 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:22:57 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:23:00 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:23:00 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:24:46 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:24:47 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:25:07 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:25:07 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:12 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:13 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:13 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:13 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:16 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:17 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:17 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:18 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:19 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:32 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:42 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:59 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:59 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:59 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2024-07-04 08:51:59 --> Language file contains no data: language/indonesian/config_lang.php

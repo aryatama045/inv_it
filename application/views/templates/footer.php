@@ -67,7 +67,7 @@
 	</div>
 	<!-- Search Modal End -->
 
-	<?php $this->load->view('templates/scripts'); ?>
+	<?= $this->load->view('templates/scripts'); ?>
 
 
 </body>

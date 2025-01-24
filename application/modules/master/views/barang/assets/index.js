@@ -1,14 +1,17 @@
 var tables;
-var search_name;
 
+var search_name,kategori,merk ,type;
 $(document).ready(function() {
+
+    $('.select2-single').select2({});
+
 
     //# initialize the datatable
     tables = $('#'+tableData).DataTable({
         'processing': true,
         'serverSide': true,
-        'serverMethod': 'post',
-        'scrollX': true,
+        // 'serverMethod': 'post',
+        // 'scrollX': true,
         'paging' : true,
         'autoWidth': false,
         'destroy': true,
@@ -17,7 +20,10 @@ $(document).ready(function() {
             'url': linkstore,
             'type': 'POST',
             'data': function(data) {
-                data.search_name = $('#search_name').val();
+                data.search_name    = $('#search_name').val();
+                data.kategori       = $("#kategori").val();
+                data.merk           = $("#merk").val();
+                data.type           = $("#type").val();
             },
         },
         'order': [0, 'ASC'],
@@ -33,52 +39,17 @@ $(document).ready(function() {
     $('#search_name').on('keyup', function(event) { // for text boxes
         tables.ajax.reload(); //just reload table
     });
+
+    $("#kategori").on("change", function () { //button filter event click
+        tables.ajax.reload(); //just reload table
+    });
+
+    $("#merk").on("change", function () { //button filter event click
+        tables.ajax.reload(); //just reload table
+    });
+
+    $("#type").on("change", function () { //button filter event click
+        tables.ajax.reload(); //just reload table
+    });
 });
 
-function remove(id)
-{
-    $("#btn-delete").removeAttr('class');
-    $("#btn-delete").text('Remove');
-    $("#btn-delete").addClass('btn btn-danger');
-    $("#removeModal h5").text('Remove Mata Kuliah');
-    $("#messages_modal_remove").html('');
-    $("#id span").html('Remove '+' <strong> '+id+'</strong>');
-    if(id){
-        $("#removeForm").on('submit', function() {
-            var form = $(this);
-            // remove the text-danger
-            $(".text-danger").remove();
-
-            if(id !== null){
-                $.ajax({
-                    url: form.attr('action'),
-                    type: form.attr('method'),
-                    data: { id:id },
-                    dataType: 'json',
-                    success:function(response) {
-
-                        tables.ajax.reload(null, false);
-
-                        if(response.success === true) {
-                            $("#messages").html('<div class="alert alert-success alert-dismissible fade show" role="alert">'+
-                                '<strong>'+response.messages+ '</strong>' +
-                                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
-
-                            // hide the modal
-                            $("#removeModal").modal('hide');
-
-                        } else {
-
-                            $("#messages_modal_remove").html('<div class="alert alert-warning alert-dismissible fade show" role="alert">'+
-                                '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span>  '+response.messages+ '</strong>' +
-                                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>' +
-                            '</div>');
-                        }
-                    }
-                });
-            }
-            id = null;
-            return false;
-        });
-    }
-}

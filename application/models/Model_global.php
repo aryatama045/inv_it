@@ -9,13 +9,13 @@ class Model_global extends CI_Model {
         $this->load->library('auth');
     }
 
-    function getKategoriBarang($id = NULL)
+    function getBarang($id = NULL)
     {
         $this->db->select('*');
-		$this->db->from('mst_kategori');
-        $this->db->order_by('nama_kategory', 'ASC');
+		$this->db->from('mst_barang');
+        $this->db->order_by('nama_barang', 'ASC');
         if($id){
-            $this->db->where('kode_kategory', $id);
+            $this->db->where('kode_barang', $id);
             $query=$this->db->get();
             return $query->row_array();
         }else{
@@ -24,7 +24,36 @@ class Model_global extends CI_Model {
         }
     }
 
-    function getMerkBarang($id = NULL)
+    function getHistoryBarang($id = NULL)
+    {
+        $this->db->select('d.*, h.kode_dokumen, h.tanggal, st.nama status_new, sto.nama status_old
+            ,h.pengirim, h.penerima, h.tujuan');
+        $this->db->from('tanda_terima_d d');
+        $this->db->join('tanda_terima_h h', 'd.nomor_transaksi = h.nomor_transaksi', 'left');
+        $this->db->join('mst_status_barang st', 'd.status_barang = st.status_barang', 'left');
+        $this->db->join('mst_status_barang sto', 'd.status_barang_old = sto.status_barang', 'left');
+        $this->db->where('d.kode_barang',$id);
+        $this->db->order_by('h.nomor_transaksi, h.tanggal', 'DESC');
+        $query	= $this->db->get();
+        return $query->result_array();
+    }
+
+    function getKategori($id = NULL)
+    {
+        $this->db->select('*');
+		$this->db->from('mst_kategori');
+        $this->db->order_by('nama', 'ASC');
+        if($id){
+            $this->db->where('kode_kategori', $id);
+            $query=$this->db->get();
+            return $query->row_array();
+        }else{
+            $query=$this->db->get();
+            return $query->result_array();
+        }
+    }
+
+    function getMerk($id = NULL)
     {
         $this->db->select('*');
 		$this->db->from('mst_merk');
@@ -39,7 +68,7 @@ class Model_global extends CI_Model {
         }
     }
 
-    function getTypeBarang($id = NULL)
+    function getType($id = NULL)
     {
         $this->db->select('*');
 		$this->db->from('mst_type');
@@ -56,9 +85,9 @@ class Model_global extends CI_Model {
 
     function getStatusBarang($id = NULL)
     {
-        $this->db->select('*');
+        $this->db->select('mst_status_barang.*, CONCAT(status_barang,'.', nama) AS full_name', FALSE);
 		$this->db->from('mst_status_barang');
-        $this->db->order_by('nama', 'ASC');
+        $this->db->order_by('status_barang', 'ASC');
         if($id){
             $this->db->where('status_barang', $id);
             $query=$this->db->get();
@@ -67,6 +96,45 @@ class Model_global extends CI_Model {
             $query=$this->db->get();
             return $query->result_array();
         }
+    }
+
+    function getStockBarang($id = NULL)
+    {
+        $this->db->select('*');
+		$this->db->from('stock');
+        $this->db->order_by('kode_barang', 'ASC');
+        if($id){
+            $this->db->where('kode_barang', $id);
+            $query=$this->db->get();
+            return $query->row_array();
+        }else{
+            $query=$this->db->get();
+            return $query->result_array();
+        }
+    }
+
+    function getPersonil($id = NULL)
+    {
+        $this->db->select('*');
+		$this->db->from('mst_personil');
+        // $this->db->where('aktif', 1);
+        $this->db->order_by('nama', 'ASC');
+        if($id){
+            if($id !== '0'){
+                $this->db->where('nip', $id);
+                $this->db->or_where('kd_store', $id);
+                $query=$this->db->get();
+                return $query->row_array();
+            }else{
+                $this->db->where('kd_store', $id);
+                $query=$this->db->get();
+                return $query->row_array();
+            }
+        }else{
+            $query=$this->db->get();
+            return $query->result_array();
+        }
+
     }
 
     function getMenuSetting()
@@ -79,316 +147,17 @@ class Model_global extends CI_Model {
         // die(nl2br($this->db->last_query()));
         return $query->result_array();
     }
-
-    function getTahunAjaranAktif() {
-        $this->db->select('*');
-        $this->db->from('mst_ta');
-        $this->db->where('aktif', '1');
-        $this->db->order_by('kd_ta', 'ASC');
-        $query = $this->db->get();
-        // die(nl2br($this->db->last_query()));
-        return $query->row_array();
-    }
-
-    function getTahunAjaran($kd_ta = NULL)
-    {
-        $this->db->select("*,
-            CASE WHEN (smt)= '1' THEN '<b>GASAL</b>'
-			WHEN (smt)='2' THEN '<b>GENAP</b>'
-			ELSE 'Belum Ada Status' END smt_gage
-        ");
-		$this->db->from('mst_ta');
-        $this->db->order_by('ta DESC, smt ASC');
-
-        if($kd_ta){
-            $this->db->where('kd_ta', $kd_ta);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
-    function getSemesterMahasiswaAktif($nim="",$ta="")
-    {
-        #--- Search
-        $where_ta = '';
-        if($ta){
-            $where_ta = ',(SELECT kd_ta FROM mst_ta WHERE kd_ta = "'.$ta.'")ta_aktif
-                        ,(SELECT smt FROM mst_ta WHERE kd_ta = "'.$ta.'")smt_aktif';
-        }else{
-            $where_ta = ",(SELECT kd_ta FROM mst_ta WHERE aktif = 1)ta_aktif
-                        ,(SELECT smt FROM mst_ta WHERE aktif = 1)smt_aktif";
-        }
-
-        $where_nim = '';
-        if($nim){
-            $where_nim = 'WHERE a.nim = "'.$nim.'" ';
-        }
-        #--- End Search
+    // END DATA GET
 
 
-        $sql = "SELECT *, (ta_aktif-kd_ta)+1 zem
-                    FROM(
-                        SELECT nim, nama_mhs,a.kd_prog,a.kd_ta, b.ta
-                        $where_ta
-                        FROM mst_mhs a
-                        LEFT JOIN mst_ta b ON a.kd_ta=b.kd_ta
-                    )a
-                $where_nim
-        ";
-        $query = $this->db->query($sql);
-        // die(nl2br($this->db->last_query()));
-
-        if($nim){
-            return $query->row_array();
-        }else{
-            return $query->result_array();
-        }
-
-    }
-
-    function getCekKrs($kd_ta="",$nim="",$kode_matkul="")
-    {
-        $this->db->select('*');
-		$this->db->from('trn_krs_paket');
-        $this->db->where('kd_ta', $kd_ta);
-        $this->db->where('nim', $nim);
-        $this->db->where('kode_matkul', $kode_matkul);
-        $query=$this->db->get();
-
-        if($kd_ta != "" || $nim != "" || $kode_matkul != ""){
-            return $query->row_array();
-        }else{
-            return $query->result_array();
-        }
-    }
-
-    function getMhsNik($nik)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_mhs');
-        $this->db->where('nik', $nik);
-		$query=$this->db->get();
-		return $query->row_array();
-    }
-
-    function getMhsNim($nim)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_mhs');
-        $this->db->where('nim', $nim);
-		$query=$this->db->get();
-		return $query->row_array();
-    }
-
-    function getDataUsername($username)
+    public function showRecentTandaTerima()
 	{
-		$this->db->select('*');
-		$this->db->from('users');
-        $this->db->where('username', $username);
-		$query=$this->db->get();
-		return $query->row_array();
+        $this->db->from('tanda_terima_h');
+        $this->db->order_by('tanggal, nomor_transaksi', 'DESC');
+        $this->db->limit('10');
+        $query	= $this->db->get();
+        return $query->result_array();
 	}
 
-    function getDosen($id = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_dosen');
-        if($id){
-            $this->db->where('nip', $id);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
-    function getProdi($kode_prog = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_prodi');
-
-        if($kode_prog){
-            $this->db->where('kd_prog', $kode_prog);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
-    function getMataKuliah($kode_matkul = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_matkul');
-        $this->db->join('mst_prodi', 'mst_matkul.kd_prog = mst_prodi.kd_prog', 'left');
-        $this->db->order_by('smt, nama_matkul ', 'ASC');
-        if($kode_matkul){
-            $this->db->where('kode_matkul', $kode_matkul);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
-    function getMatkulPersmt($smt = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_matkul');
-        $this->db->join('mst_prodi', 'mst_matkul.kd_prog = mst_prodi.kd_prog', 'left');
-        $this->db->order_by('smt, nama_matkul ', 'ASC');
-        if($smt){
-            $this->db->where('smt', $smt);
-        }else{
-            $this->db->group_by('smt', 'ASC');
-        }
-
-        $query=$this->db->get();
-        return $query->result_array();
-    }
-
-    function getJenma($kd_jenma = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_jenma');
-
-        if($kd_jenma){
-            $this->db->where('kd_jenma', $kd_jenma);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
-    function getBiaya($kd_biaya = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_biaya');
-        $this->db->join('mst_jenma', 'mst_biaya.kd_jenma = mst_jenma.kd_jenma', 'left');
-		$this->db->join('mst_ta', 'mst_biaya.kd_ta = mst_ta.kd_ta', 'left');
-
-        if($kd_biaya){
-            $this->db->where('kd_biaya', $kd_biaya);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
-    function getJenisBiaya($kd_jenis = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_jenis_biaya');
-
-        if($kd_jenis){
-            $this->db->where('kd_jenis', $kd_jenis);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
-    function getPeriodeDaftar($kode = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_gel_daftar');
-        $this->db->join('mst_ta', 'mst_gel_daftar.kd_ta = mst_ta.kd_ta', 'left');
-
-        if($kode){
-            $this->db->where('kode', $kode);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
-    function getJabatan($id = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_jabatan');
-        $this->db->order_by('nama', 'ASC');
-
-        if($id){
-            $this->db->where('id', $id);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
-    function getAgama($id = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_agama');
-        $this->db->order_by('nama', 'ASC');
-        if($id){
-            $this->db->where('id', $id);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
-    function getKota($id = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('mst_kota');
-        $this->db->order_by('nm_kota', 'ASC');
-
-        if($id){
-            $this->db->where('id', $id);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
-    function cek_gel_daftar()
-    {
-        $dates = date('Y-m-d');
-        $sql = "SELECT * FROM ( SELECT *
-                            FROM mst_gel_daftar
-                            WHERE '$dates' >= DATE(tgl_awal) AND '$dates' <= DATE(tgl_akhir)
-                            ORDER BY tgl_akhir ASC
-                        )a
-                WHERE (tgl_awal <='$dates' AND tgl_akhir >='$dates') ORDER BY tgl_awal ASC";
-        $query=$this->db->query($sql);
-        return $query->row_array();
-
-    }
-
-    function krs_khs($nim, $kd_ta)
-    {
-        $sql = "SELECT * FROM trn_krs_paket a
-                    LEFT JOIN mst_matkul b ON a.kode_matkul = b.kode_matkul
-                    LEFT JOIN trn_tugas_ajar c ON a.id_ajar=c.id
-                    LEFT JOIN mst_dosen d ON c.nip = d.nip
-                    WHERE nim=$nim AND a.kd_ta=$kd_ta
-                ";
-        $query= $this->db->query($sql);
-
-        // die(nl2br($this->db->last_query()));
-        return $query->result_array();
-    }
 
 }

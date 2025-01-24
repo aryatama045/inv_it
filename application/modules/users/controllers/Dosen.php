@@ -19,9 +19,9 @@ class Dosen extends Admin_Controller  {
 
 	public function starter()
 	{
-		$this->data['agama'] = $this->Model_global->getAgama();
-		$this->data['jabatan'] = $this->Model_global->getJabatan();
-		$this->data['kota'] = $this->Model_global->getKota();
+		// $this->data['agama'] = $this->Model_global->getAgama();
+		// $this->data['jabatan'] = $this->Model_global->getJabatan();
+		// $this->data['kota'] = $this->Model_global->getKota();
 	}
 
 

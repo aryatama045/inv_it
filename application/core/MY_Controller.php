@@ -18,6 +18,7 @@ class Admin_Controller extends MY_Controller
 		$group_data = array();
 		$this->load->model('Model_menu');
 		$this->load->model('Model_global');
+		$this->load->model('transaksi/Model_tanda_terima');
 
 	}
 

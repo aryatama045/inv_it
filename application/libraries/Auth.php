@@ -97,8 +97,13 @@ class Auth
      */
     protected function validate($request)
     {
-        $this->CI->form_validation->set_rules('username', 'User Name', 'required');
-        $this->CI->form_validation->set_rules('password', 'Password', 'required');
+
+        $this->CI->form_validation->set_rules('username','User Login','required',
+				array(	'required' 	=> 'User Login Tidak Boleh Kosong !!',
+				));
+		$this->CI->form_validation->set_rules('password','Password','required',
+				array(	'required' 	=> 'Password Tidak Boleh Kosong !!',
+				));
 
         if ($this->CI->form_validation->run() == TRUE) {
             /*$this->userName = $request["username"];
@@ -247,6 +252,8 @@ class Auth
     {
 
         $this->data['error'] = 'Username or Password Incorrect.';
+
+        $this->CI->session->set_flashdata('error', 'Username or Password Incorrect.');
 
         return $this->data;
     }

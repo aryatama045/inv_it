@@ -30,8 +30,7 @@ class Barang extends Admin_Controller  {
 
 	public function store()
 	{
-		$cn 	= $this->router->fetch_class(); // Controller
-
+		$cn 			= $this->router->fetch_class(); // Controller
 		$draw           = $_REQUEST['draw'];
 		$length         = $_REQUEST['length'];
 		$start          = $_REQUEST['start'];
@@ -39,47 +38,51 @@ class Barang extends Admin_Controller  {
 		$order 			= $_REQUEST['order'][0]['dir'];
 
         $output['data']	= array();
-		$search_name   = $this->input->post('search_name');
+		$search_kode_barang = '';
+		$search_name   	= $this->input->post('search_name');
+		$kategori   	= $this->input->post('kategori');
+		$merk   		= $this->input->post('merk');
+		$type   		= $this->input->post('type');
+		$stok			= '';
 
-		$data           = $this->Model_barang->getDataStore('result',$search_name,$length,$start,$column,$order);
-		$data_jum       = $this->Model_barang->getDataStore('numrows',$search_name);
+		$data           = $this->Model_barang->getDataStore('result',$search_kode_barang,$search_name,$kategori,$merk,$type,$stok,$length,$start,$column,$order);
+		$data_jum       = $this->Model_barang->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stok);
 
 		$output=array();
 		$output['draw'] = $draw;
 		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
 
 		if($search_name !=""  ){
-			$data_jum = $this->Model_barang->getDataStore('numrows',$search_name);
+			$data_jum = $this->Model_barang->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stok);
 			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
 		}
 
 		if($data){
-			$no=1;
-			foreach ($data as $key => $value) {
+			foreach ($data as $key => $value)  {
+
 				$id		= $value['kode_barang'];
 
 				$btn 	= '';
-				$btn 	.= '
-						<a href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-success mb-1">
-							<i class="fa fa-eye"></i> </a>
-						</a>
-						<a href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-warning mb-1">
-							<i class="fa fa-edit"></i> </a>
-						</a>';
-
-						$btn .= ' <a class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
-						$btn .= "remove('".$id."')";
-						$btn .= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
-								<i class="fa fa-trash"></i></a>
-
-						</div>';
+				$btn 	.= '<a href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon  btn-success mb-1">
+								<i class="fa fa-eye"></i> Show</a>
+							</a>
+							<a href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon  btn-warning mb-1">
+								<i class="fa fa-edit"></i> Edit</a>
+							</a>';
+				// $btn 	.= ' <a class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
+				// $btn 	.= "remove('".$id."')";
+				// $btn 	.= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
+				// 		<i class="fa fa-trash"></i></a>';
 
 
 				$output['data'][$key] = array(
-					$no++,
+					$key+$start+1,
 					$value['kode_barang'].'-'.$value['nama_barang'],
 					$btn,
 				);
+
+				$key++;
+
 			}
 
 		}else{
@@ -93,7 +96,7 @@ class Barang extends Admin_Controller  {
 	{
 
 		$this->starter();
-		$this->data['barang'] = $this->Model_barang->getBarang($id);
+		$this->data['barang'] = $this->Model_global->getBarang($id,'header');
 
 		if($this->data['barang']['kode_barang']){
 			$this->render_template('barang/show',$this->data);

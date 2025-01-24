@@ -92,9 +92,8 @@
                             </p> -->
                         </div>
 
-                        <div class="mb-5">
-                            <?= $this->load->view('templates/notif'); ?>
-                        </div>
+                        <div class="mt-1 mb-3">
+                        <?php $this->load->view('templates/notif') ?>
 
                         <div>
                             <form action="<?php echo base_url('login/index') ?>" method="post" novalidate>
@@ -198,7 +197,7 @@
     <script src="<?= base_url('assets/') ?>js/base/helpers.js"></script>
     <script src="<?= base_url('assets/') ?>js/base/globals.js"></script>
     <script src="<?= base_url('assets/') ?>js/base/nav.js"></script>
-    <script src="<?= base_url('assets/') ?>js/base/search.js"></script>
+    <!-- <script src="<?= base_url('assets/') ?>js/base/search.js"></script> -->
     <script src="<?= base_url('assets/') ?>js/base/settings.js"></script>
     <!-- Template Base Scripts End -->
 

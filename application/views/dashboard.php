@@ -89,32 +89,36 @@
                     <section class="scroll-section">
                         <div class="card">
                             <div class="card-body scroll-out mb-n2">
-                            <h3>Recent Order</h3><hr>
+                            <h3>Recent Tanda Terima</h3><hr>
 
                             <div class="scroll sh-50">
-                                <?php for ($i=0; $i < 12 ; $i++) { ?>
+                                <?php //for ($i=0; $i < 2 ; $i++) { ?>
+                                <?php // } ?>
 
+                                <?php $recentTandaTerima = $this->Model_global->showRecentTandaTerima();
+                                    foreach ($recentTandaTerima as $key => $val) { ?>
                                     <div class="card mb-2 sh-15 sh-md-6">
                                         <div class="card-body pt-0 pb-0 h-100">
                                             <div class="row g-0 h-100 align-content-center">
                                                 <div class="col-10 col-md-4 d-flex align-items-center mb-3 mb-md-0 h-md-100">
-                                                <a href="Orders.Detail.html" class="body-link stretched-link">Order #54129</a>
+                                                    <a href="<?= base_url('transaksi/tanda_terima/show/'.$val['nomor_transaksi']) ?>" class="body-link stretched-link">#<b><?= $val['nomor_transaksi'] ?></b></a>
                                                 </div>
-                                                <div class="col-2 col-md-3 d-flex align-items-center text-muted mb-1 mb-md-0 justify-content-end justify-content-md-start">
-                                                <span class="badge bg-outline-primary me-1">PENDING</span>
+                                                <div class="col-2 col-md-3 d-flex align-items-center text-black mb-1 mb-md-0 justify-content-end justify-content-md-start">
+                                                    <span class="badge bg-primary me-1"><?= $val['kode_dokumen'] ?></span>
                                                 </div>
-                                                <div class="col-12 col-md-2 d-flex align-items-center mb-1 mb-md-0 text-alternate">
-                                                <span>
-                                                    <span class="text-small">$</span>
-                                                    17.35
-                                                </span>
+                                                <div class="col-12 col-md-2 d-flex align-items-center mb-1 mb-md-0">
+                                                    <span>
+                                                        <b><?= $val['jumlah_detail'] ?></b> Item
+                                                    </span>
                                                 </div>
-                                                <div class="col-12 col-md-3 d-flex align-items-center justify-content-md-end mb-1 mb-md-0 text-alternate">Today - 13:20</div>
+                                                <div class="col-12 col-md-3 d-flex align-items-center justify-content-md-end mb-1 mb-md-0">
+                                                    <b><?= tanggal($val['tanggal']) ?></b>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
                                 <?php } ?>
+
                             </div>
 
                             </div>
@@ -126,30 +130,55 @@
             </div>
 
             <div class="col-md-4">
-                <div class="card w-100 sh-50 mb-5">
+                <div class="card w-100 sh-60 mb-5">
                     <img src="<?= base_url('assets/'); ?>img/banner/cta-square-4.webp" class="card-img h-100" alt="card image" />
                     <div class="card-img-overlay d-flex flex-column justify-content-between bg-transparent">
                         <h3 class="text-title mb-2"> Data Master</h3>
                         <div class="d-flex flex-column h-100 justify-content-between align-items-start">
                             <div>
                                 <a href="#">
-                                    <div class="cta-1 text-primary mb-0">124</div>
-                                    <div class="lh-1-25 mb-0">Data Barang</div>
+                                    <div class="cta-1 text-primary mb-0">
+                                        <?php $cBarang = $this->Model_global->getBarang();
+                                        echo count($cBarang);?>
+                                    </div>
+                                    <div class="lh-1-25 mb-0 text-black">Data Barang</div>
                                 </a>
                             </div>
                             <div>
                                 <a href="#">
-                                    <div class="cta-1 text-primary mb-0">64</div>
-                                    <div class="lh-1-25 mb-0">Data Kategori</div>
+                                    <div class="cta-1 text-primary mb-0">
+                                        <?php $cKategori = $this->Model_global->getKategori();
+                                        echo count($cKategori);?>
+                                    </div>
+                                    <div class="lh-1-25 mb-0 text-black">Data Kategori</div>
                                 </a>
                             </div>
                             <div>
-                                <div class="cta-1 text-primary mb-0">34</div>
-                                <div class="lh-1-25 mb-0">Data Merk</div>
+                                <a href="#">
+                                    <div class="cta-1 text-primary mb-0">
+                                        <?php $cMerk = $this->Model_global->getMerk();
+                                        echo count($cMerk);?>
+                                    </div>
+                                    <div class="lh-1-25 mb-0 text-black">Data Merk</div>
+                                </a>
                             </div>
                             <div>
-                                <div class="cta-1 text-primary mb-0">23</div>
-                                <div class="lh-1-25 mb-0">Data Type</div>
+                                <a href="#">
+                                    <div class="cta-1 text-primary mb-0">
+                                        <?php $cType = $this->Model_global->getType();
+                                        echo count($cType);?>
+                                    </div>
+                                    <div class="lh-1-25 mb-0 text-black">Data Status Barang</div>
+                                </a>
+                            </div>
+                            <div>
+                                <a href="#">
+                                    <div class="cta-1 text-primary mb-0">
+                                        <?php $cType = $this->Model_global->getType();
+                                        echo count($cType);?>
+                                    </div>
+                                    <div class="lh-1-25 mb-0 text-black">Data Type</div>
+                                </a>
                             </div>
                         </div>
                     </div>

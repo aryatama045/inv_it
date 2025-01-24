@@ -33,200 +33,255 @@
 		</div>
 		<!-- Title and Top Buttons End -->
 
-        <?= $this->load->view('templates/notif') ?>
+        <?php $this->load->view('templates/notif') ?>
     </div>
 </div>
 
 <!-- Content -->
-<div class="row">
-    <!-- Left Content -->
-    <div class="col-xl-8 ">
-        <!-- Info Start -->
-        <div class="mb-5">
-            <div class="card">
-                <div class="card-body mb-n3">
-                    <h4 class="text-black pb-1 border-bottom border-separator-light mb-1">Info</h4>
-                    <table class="table table-borderless">
-                        <tbody>
-                            <tr>
-                                <td width="40%">Nama Barang</td>
-                                <td class="font-weight-bold"> : <?= capital(lowercase($barang['nama_barang'])) ?></td>
-                            </tr>
-                            <tr>
-                                <td>Serial Number</td>
-                                <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['serial_number'])) ?></td>
-                            </tr>
-                            <tr>
-                                <td>Kode Barang</td>
-                                <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['kode_barang'])) ?></td>
-                            </tr>
-                            <tr>
-                                <td>Kategori</td>
-                                <?php $kode_kategory = $this->Model_global->getKategoriBarang($barang['kode_kategori']); ?>
-                                <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['kode_kategori'])) ?> - <?= $kode_kategory['nama_kategory'] ?></td>
-                            </tr>
-                            <tr>
-                                <td>Merk</td>
-                                <?php $kode_merk = $this->Model_global->getMerkBarang($barang['kode_merk']); ?>
-                                <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['kode_merk'])) ?> - <?= $kode_merk['nama'] ?></td>
-                            </tr>
-                            <tr>
-                                <td>Type</td>
-                                <?php $kode_type = $this->Model_global->getTypeBarang($barang['kode_type']); ?>
-                                <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['kode_type'])) ?> - <?= $kode_type['nama'] ?></td>
-                            </tr>
-                            <tr>
-                                <td>Status</td>
-                                <?php $status_barang = $this->Model_global->getStatusBarang($barang['status_barang']); ?>
-                                <td class="font-weight-bold"> : <?= $barang['status_barang'] ?> - <?= $status_barang['nama'] ?> </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td class="font-weight-bold">
-                                    <div class="form-check form-switch mb-0">
-                                        <input disabled type="checkbox" class="form-check-input" <?= ($barang['barang_stock']=='False')?'checked':'' ?> />
-                                        <label class=" font-weight-bold">Barang stock</label>
+<div class="row gx-4 gy-2">
+    <ul class="nav nav-tabs separator-tabs ml-0 mb-5" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="first-tab" data-bs-toggle="tab" href="#first" role="tab"
+                aria-controls="first" aria-selected="true">DETAIL</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" id="second-tab" data-bs-toggle="tab" href="#second" role="tab"
+                aria-controls="second" aria-selected="false">HISTORY</a>
+        </li>
+
+    </ul>
+
+    <div class="tab-content">
+
+        <div class="tab-pane show active" id="first" role="tabpanel" aria-labelledby="first-tab">
+            <div class="row">
+
+                <!-- Content Barang -->
+                <div class="col-xl-10">
+                    <!-- Info Start -->
+                    <div class="mb-5">
+                        <div class="card">
+                            <div class="card-body mb-n3">
+                                <h4 class="text-black pb-1 border-bottom border-separator-light mb-1">Info</h4>
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td width="40%">Nama Barang</td>
+                                            <td class="font-weight-bold"> : <?= capital(lowercase($barang['nama_barang'])) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Serial Number</td>
+                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['serial_number'])) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kode Barang</td>
+                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['kode_barang'])) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kategori</td>
+                                            <?php $kode_kategory = $this->Model_global->getKategori($barang['kode_kategori']); ?>
+                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['kode_kategori'])) ?> - <?= $kode_kategory['nama'] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Merk</td>
+                                            <?php $kode_merk = $this->Model_global->getMerk($barang['kode_merk']); ?>
+                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['kode_merk'])) ?> - <?= $kode_merk['nama'] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Type</td>
+                                            <?php $kode_type = $this->Model_global->getType($barang['kode_type']); ?>
+                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['kode_type'])) ?> - <?= $kode_type['nama'] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Status</td>
+                                            <?php $status_barang = $this->Model_global->getStatusBarang($barang['status_barang']); ?>
+                                            <td class="font-weight-bold"> : <?= $barang['status_barang'] ?> - <?= $status_barang['nama'] ?> </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td class="font-weight-bold">
+                                                <div class="form-check form-switch mb-0">
+                                                    <input disabled type="checkbox" class="form-check-input" <?= ($barang['barang_stock']=='True')?'checked':'' ?> />
+                                                    <?php
+                                                        $getStock = $this->Model_global->getStockBarang($barang['kode_barang']);
+                                                        $jumlahStock = $getStock['saldo_awal'] + $getStock['in'] - $getStock['out'];
+                                                    ?>
+                                                    <label class=" font-weight-bold">Barang stock <?= ($barang['barang_stock']=='True')?'('.$jumlahStock.')':'' ?></label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <h4 class="text-black pb-1 border-bottom border-separator-light mt-2 mb-1">Pembelian</h4>
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td width="40%">Harga Asuransi</td>
+                                            <td class="font-weight-bold"> : <?= currency($barang['harga_asuransi']) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Harga Beli</td>
+                                            <td class="font-weight-bold"> : <?= currency($barang['harga_beli']) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tanggal Beli</td>
+                                            <td class="font-weight-bold"> : <?= tanggal($barang['tanggal_pembelian']) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Keterangan</td>
+                                            <td class="font-weight-bold"> : <?= $barang['keterangan_acct'] ?></td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                                <h4 class="text-black pb-1 border-bottom border-separator-light mt-2 mb-1">Lokasi Akhir</h4>
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td width="40%">Lokasi</td>
+                                            <td class="font-weight-bold"> : <?= $barang['lokasi_terakhir'] ?> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tanggal Akhir</td>
+                                            <td class="font-weight-bold"> : <?= $barang['tanggal_lokasi_akhir'] ?> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tanggal Opname</td>
+                                            <td class="font-weight-bold"> : <?= tanggal($barang['opname']) ?> </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                                <h4 class="text-black pb-1 border-bottom border-separator-light mt-2 mb-1">User Input</h4>
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td width="40%">Created By</td>
+                                            <td class="font-weight-bold"> : <?= capital(lowercase($barang['user_input'])) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Created Date</td>
+                                            <td class="font-weight-bold"> : <?= tanggal($barang['tanggal_input']) ?></td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Info End -->
+                </div>
+                <!-- Content Barang End -->
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="second" role="tabpanel" aria-labelledby="second-tab">
+            <div class="row">
+                <div class="col-12 col-md-12">
+
+                    <!-- History Start -->
+                    <div class="card d-flex flex-row mb-4">
+                        <div class="card-body">
+                            <h4 class="text-black pb-1 border-bottom border-separator-light mb-2">Log History</h4>
+
+                            <?php
+                                $history = $this->Model_global->getHistoryBarang($barang['kode_barang']);
+                                if($history) {
+                                foreach ($history as $key => $val) { ?>
+
+                            <div class="row g-0">
+                                <div class="col-auto sw-1 d-flex flex-column justify-content-center align-items-center position-relative me-4">
+                                    <div class="w-100 d-flex sh-1"></div>
+                                    <div class="rounded-xl shadow d-flex flex-shrink-0 justify-content-center align-items-center">
+                                        <div class="bg-gradient-light sw-1 sh-1 rounded-xl position-relative"></div>
                                     </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <div class="w-100 d-flex h-100 justify-content-center position-relative">
+                                        <div class="line-w-1 bg-separator h-100 position-absolute"></div>
+                                    </div>
+                                </div>
+                                <div class="col mb-4">
+                                    <div class="h-100">
+                                        <div class="d-flex flex-column justify-content-start">
+                                            <div class="d-flex flex-column">
+                                                <?php
+                                                    $getPengirim    = $this->Model_global->getPersonil($val['pengirim']);
+                                                    $pengirim       = $getPengirim['nip'].'-'.$getPengirim['nama'];
+                                                    $getPenerima    = $this->Model_global->getPersonil($val['penerima']);
+                                                    $penerima       = $getPenerima['nip'].'-'.$getPenerima['nama'];
+                                                    $getTujuan    = $this->Model_global->getPersonil($val['tujuan']);
+                                                    $tujuan       = ($getTujuan['nip'])?$getTujuan['nip'].'-'.$getTujuan['nama']:$getTujuan['kd_store'].'-'.$getTujuan['nama'];
 
-                    <h4 class="text-black pb-1 border-bottom border-separator-light mt-2 mb-1">Pembelian</h4>
-                    <table class="table table-borderless">
-                        <tbody>
-                            <tr>
-                                <td width="40%">Harga Asuransi</td>
-                                <td class="font-weight-bold"> : <?= currency($barang['harga_asuransi']) ?></td>
-                            </tr>
-                            <tr>
-                                <td>Harga Beli</td>
-                                <td class="font-weight-bold"> : <?= currency($barang['harga_beli']) ?></td>
-                            </tr>
-                            <tr>
-                                <td>Tanggal Beli</td>
-                                <td class="font-weight-bold"> : <?= tanggal($barang['tanggal_pembelian']) ?></td>
-                            </tr>
-                            <tr>
-                                <td>Keterangan</td>
-                                <td class="font-weight-bold"> : <?= $barang['keterangan_acct'] ?></td>
-                            </tr>
+                                                ?>
+                                                <h4 class="text-black border-bottom border-separator-light mb-1"><b><?= $val['kode_dokumen'] ?> - <?= $val['nomor_transaksi'] ?> </b></h4>
+                                                <table class="table table-borderless">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td width="16%">Tanggal</td>
+                                                            <td class="font-weight-bold"> : <?= tanggal($val['tanggal']) ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td >Pengirim</td>
+                                                            <td class="font-weight-bold"> : <?= $pengirim ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Penerima</td>
+                                                            <td class="font-weight-bold"> : <?= $penerima ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tujuan</td>
+                                                            <td class="font-weight-bold"> : <?= $tujuan ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Status</td>
+                                                            <td class="font-weight-bold"> : <?= $val['status_barang_old'] ?>-<?= $val['status_old'] ?> => <?= $val['status_barang'] ?>-<?= $val['status_new'] ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Keterangan</td>
+                                                            <td class="font-weight-bold"> : <?= $val['keterangan_barang'] ?></td>
+                                                        </tr>
 
-                        </tbody>
-                    </table>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                    <h4 class="text-black pb-1 border-bottom border-separator-light mt-2 mb-1">Lokasi Akhir</h4>
-                    <table class="table table-borderless">
-                        <tbody>
-                            <tr>
-                                <td width="40%">Lokasi</td>
-                                <td class="font-weight-bold"> : <?= $barang['lokasi_terakhir'] ?> </td>
-                            </tr>
-                            <tr>
-                                <td>Tanggal Akhir</td>
-                                <td class="font-weight-bold"> : <?= $barang['tanggal_lokasi_akhir'] ?> </td>
-                            </tr>
-                            <tr>
-                                <td>Tanggal Opname</td>
-                                <td class="font-weight-bold"> : <?= tanggal($barang['opname']) ?> </td>
-                            </tr>
+                                </div>
+                            </div>
 
-                        </tbody>
-                    </table>
+                            <?php } } else {?>
 
-                    <h4 class="text-black pb-1 border-bottom border-separator-light mt-2 mb-1">User Input</h4>
-                    <table class="table table-borderless">
-                        <tbody>
-                            <tr>
-                                <td width="40%">Created By</td>
-                                <td class="font-weight-bold"> : <?= capital(lowercase($barang['user_input'])) ?></td>
-                            </tr>
-                            <tr>
-                                <td>Created Date</td>
-                                <td class="font-weight-bold"> : <?= tanggal($barang['tanggal_input']) ?></td>
-                            </tr>
+                            <div class="row g-0">
+                                <div class="col-auto sw-1 d-flex flex-column justify-content-center align-items-center position-relative me-4"></div>
+                                <div class="col mb-4">
+                                    <div class="h-100">
+                                        <div class="d-flex flex-column justify-content-start">
+                                            <div class="d-flex flex-column">
+                                                <div class="heading stretched-link">Tidak Ada History</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php }  ?>
 
-                        </tbody>
-                    </table>
-
-
-                    <!-- <div class="mb-3">
-                        <div class="text-small text-muted">CREATED BY</div>
-                        <div>Lisa Jackson</div>
+                        </div>
                     </div>
+                    <!-- History End -->
 
-                    <div class="mb-3">
-                        <div class="text-small text-muted">URL</div>
-                        <div>/products/wholewheat/cornbread</div>
-                    </div> -->
+
                 </div>
             </div>
         </div>
-        <!-- Info End -->
-    </div>
-    <!-- Left Content End -->
-
-    <!-- Right Content -->
-    <div class="col-xl-4 mb-n5">
-
-        <!-- History Start -->
-        <div class="card mb-5">
-            <div class="card-body">
-                <h4 class="text-black pb-1 border-bottom border-separator-light mb-2">Log History</h4>
-                <div class="row g-0">
-                    <div class="col-auto sw-1 d-flex flex-column justify-content-center align-items-center position-relative me-4">
-                        <div class="w-100 d-flex sh-1"></div>
-                        <div class="rounded-xl shadow d-flex flex-shrink-0 justify-content-center align-items-center">
-                            <div class="bg-gradient-light sw-1 sh-1 rounded-xl position-relative"></div>
-                        </div>
-                        <div class="w-100 d-flex h-100 justify-content-center position-relative">
-                            <div class="line-w-1 bg-separator h-100 position-absolute"></div>
-                        </div>
-                    </div>
-                    <div class="col mb-4">
-                        <div class="h-100">
-                            <div class="d-flex flex-column justify-content-start">
-                                <div class="d-flex flex-column">
-                                    <a href="#" class="heading stretched-link">Order Received</a>
-                                    <div class="text-alternate">21.11.2020</div>
-                                    <div class="text-muted mt-1">Biscuit donut powder sugar plum pastry. Chupa chups topping pastry halvah.</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row g-0">
-                    <div class="col-auto sw-1 d-flex flex-column justify-content-center align-items-center position-relative me-4">
-                        <div class="w-100 d-flex sh-1 position-relative justify-content-center">
-                            <div class="line-w-1 bg-separator h-100 position-absolute"></div>
-                        </div>
-                        <div class="rounded-xl shadow d-flex flex-shrink-0 justify-content-center align-items-center">
-                            <div class="bg-gradient-light sw-1 sh-1 rounded-xl position-relative"></div>
-                        </div>
-                        <div class="w-100 d-flex h-100 justify-content-center position-relative">
-                            <div class="line-w-1 bg-separator h-100 position-absolute"></div>
-                        </div>
-                    </div>
-                    <div class="col mb-4">
-                        <div class="h-100">
-                            <div class="d-flex flex-column justify-content-start">
-                                <div class="d-flex flex-column">
-                                    <a href="#" class="heading stretched-link">Shipped</a>
-                                    <div class="text-alternate">03.12.2020</div>
-                                    <div class="text-muted mt-1">Apple pie cotton candy tiramisu biscuit cake muffin tootsie roll bear claw cake.</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <!-- History End -->
 
 
     </div>
-    <!-- Right Content End -->
+
 
 </div>
 <!-- Content End -->

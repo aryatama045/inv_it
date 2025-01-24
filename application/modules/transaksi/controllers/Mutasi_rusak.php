@@ -1,0 +1,356 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Mutasi_rusak extends Admin_Controller  {
+
+	public function __construct()
+	{
+		parent::__construct();
+		$this->auth->route_access();
+		$this->data['modul'] = 'transaksi';
+		$cn 	= $this->router->fetch_class(); // Controller
+		$f 		= $this->router->fetch_method(); // Function
+		$this->data['pagetitle'] = capital($cn);
+		$this->data['function'] = capital($f);
+
+		$this->load->model('Model_mutasi_rusak');
+		$this->load->model('master/Model_barang');
+
+	}
+
+	public function starter()
+	{
+
+	}
+
+	public function index()
+	{
+		$this->starter();
+		$this->render_template('mutasi_rusak/index',$this->data);
+	}
+
+
+	public function store()
+	{
+		$cn 	= $this->router->fetch_class(); // Controller
+
+		$draw           = $_REQUEST['draw'];
+		$length         = $_REQUEST['length'];
+		$start          = $_REQUEST['start'];
+		$column 		= $_REQUEST['order'][0]['column'];
+		$order 			= $_REQUEST['order'][0]['dir'];
+
+        $output['data']	= array();
+		$search_name   = $this->input->post('search_name');
+
+		$data           = $this->Model_mutasi_rusak->getDataStore('result',$search_name,$length,$start,$column,$order);
+		$data_jum       = $this->Model_mutasi_rusak->getDataStore('numrows',$search_name);
+
+		$output=array();
+		$output['draw'] = $draw;
+		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
+
+		if($search_name !=""  ){
+			$data_jum = $this->Model_mutasi_rusak->getDataStore('numrows',$search_name);
+			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
+		}
+
+		if($data){
+			$no=1;
+			foreach ($data as $key => $value) {
+				$id		= $value['nomor_transaksi'];
+
+				$btn 	= '';
+				$btn 	.= '
+						<a href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-success mb-1">
+							<i class="fa fa-eye"></i> </a>
+						</a>
+						<a href="'.base_url('master/'.$cn.'/print/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-info mb-1">
+							<i class="fa fa-print"></i> </a>
+						</a>
+						<a href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-warning mb-1">
+							<i class="fa fa-edit"></i> </a>
+						</a>';
+
+						// $btn .= ' <a class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
+						// $btn .= "remove('".$id."')";
+						// $btn .= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
+						// 		<i class="fa fa-trash"></i></a>
+
+						// </div>';
+
+
+				$output['data'][$key] = array(
+					$value['nomor_transaksi'],
+					$value['kode_dokumen'],
+					$value['tujuan'],
+					$btn,
+				);
+			}
+
+		}else{
+			$output['data'] = [];
+		}
+		echo json_encode($output);
+	}
+
+
+	public function show($id)
+	{
+
+		$this->starter();
+		$this->data['barang'] = $this->Model_mutasi_rusak->getBarang($id);
+
+		if($this->data['barang']['kode_barang']){
+			$this->render_template('mutasi_rusak/show',$this->data);
+		}else{
+			$this->session->set_flashdata('error', 'Silahkan Cek kembali data !!');
+			redirect('master/barang', 'refresh');
+		}
+
+	}
+
+	public function tambah()
+	{
+
+		// $this->form_validation->set_rules('kd_brg[]' ,'Kode Barang' , 'required');
+		$this->form_validation->set_rules('kd_brg[]', 'Kode Barang','required',
+				array(	'required' 	=> 'Kode Barang Tidak Boleh Kosong !!',
+		));
+
+        if ($this->form_validation->run() == TRUE) {
+
+			$create_form = $this->Model_mutasi_rusak->saveTambah();
+
+			// $create_form = TRUE;
+
+			if($create_form) {
+				$this->session->set_flashdata('success', 'Berhasil Disimpan !!');
+				redirect('transaksi/mutasi_rusak', 'refresh');
+			} else {
+				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
+				redirect('transaksi/mutasi_rusak/tambah', 'refresh');
+			}
+
+		}else{
+			$this->starter();
+			$this->render_template('mutasi_rusak/tambah',$this->data);
+		}
+
+	}
+
+	public function edit($id)
+	{
+		$this->form_validation->set_rules('nama' ,'Nama' , 'required');
+
+        if ($this->form_validation->run() == TRUE) {
+
+			$edit_form = $this->Model_mutasi_rusak->saveEdit($id);
+
+			if($edit_form) {
+				$this->session->set_flashdata('success', 'Nama : "'.$_POST['nama'].'" <br> Berhasil Di Update !!');
+				redirect('master/barang', 'refresh');
+			} else {
+				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
+				redirect('master/mutasi_rusak/edit/'.$id, 'refresh');
+			}
+
+		}else{
+			$this->starter();
+			$this->data['barang'] = $this->Model_mutasi_rusak->getBarang($id);
+
+			if($this->data['barang']['kode_barang']){
+				$this->render_template('mutasi_rusak/edit',$this->data);
+			}else{
+				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
+				redirect('master/mutasi_rusak/edit/'.$id, 'refresh');
+			}
+		}
+	}
+
+
+	public function delete()
+	{
+		$id = $_POST['id'];
+
+		$response = array();
+		if($id) {
+			$delete = $this->Model_mutasi_rusak->saveDelete($id);
+
+			if($delete == true) {
+				$response['success'] 	= true;
+				$response['messages'] 	= " <strong>Kode '".$id."'</strong> Berhasil Di Remove";
+			} else {
+				$response['success'] 	= false;
+				$response['messages'] 	= " <strong>Kode '".$id."'</strong> Gagal Di Remove";
+			}
+		}
+		else {
+			$response['success'] 	= false;
+			$response['messages'] 	= "Refersh the page again!!";
+		}
+
+		echo json_encode($response);
+	}
+
+
+	// Get Data Ajax
+	public function getBarangAjax()
+	{
+		$draw           = $_REQUEST['draw'];
+		$length         = $_REQUEST['length'];
+		$start          = $_REQUEST['start'];
+		$column 		= $_REQUEST['order'][0]['column'];
+		$order 			= $_REQUEST['order'][0]['dir'];
+
+        $output['data']	= array();
+		// $search_name   	= $this->input->post('search_name');
+		$kategori   	= $this->input->post('kategori');
+		$merk   		= $this->input->post('merk');
+		$type   		= $this->input->post('type');
+
+		$search_kd_barang 	= $_REQUEST['columns'][0]['search']["value"];
+		$search_name 		= $_REQUEST['columns'][1]['search']["value"];
+		$stok				= $_REQUEST['columns'][2]['search']["value"];
+
+		$data           = $this->Model_barang->getDataStore('result',$search_kd_barang,$search_name,$kategori,$merk,$type,$stok,$length,$start,$column,$order);
+		$data_jum       = $this->Model_barang->getDataStore('numrows',$search_kd_barang,$search_name,$kategori,$merk,$type,$stok);
+
+		$output			= array();
+		$output['draw'] = $draw;
+		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
+
+		if($search_name !="" || $stok != "" ){
+			$data_jum = $this->Model_barang->getDataStore('numrows',$search_kd_barang,$search_name,$kategori,$merk,$type,$stok);
+			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
+		}
+
+		if($data){
+			foreach ($data as $key => $value)  {
+
+				if($value['barang_stock'] == 'True'){
+					$getstock = $this->Model_global->getStockBarang($value['kode_barang']);
+					if($getstock != NULL){
+
+						$stock = $getstock['saldo_awal'] + $getstock['in'] - $getstock['out'];
+					}else{
+						$stock = '0';
+					}
+				}else{
+					$stock = '1';
+				}
+
+				$output['data'][$key] = array(
+					$value['kode_barang'],
+					$value['nama_barang'],
+					$value['barang_stock'],
+					$stock,
+				);
+
+				$key++;
+
+			}
+
+		}else{
+			$output['data'] = [];
+		}
+		echo json_encode($output);
+	}
+
+	// Import Excel
+	public function import_excel(){
+		$this->load->library(array('excel'));
+		if (isset($_FILES["fileExcel"]["name"])) {
+			$path = $_FILES["fileExcel"]["tmp_name"];
+			$object = PHPExcel_IOFactory::load($path);
+
+			foreach($object->getWorksheetIterator() as $worksheet)
+			{
+				$highestRow = $worksheet->getHighestRow();
+				$highestColumn = $worksheet->getHighestColumn();
+				for($row=2; $row<=$highestRow; $row++)
+				{
+					$kode_dokumen 		= $worksheet->getCellByColumnAndRow(0, $row)->getValue();
+					$nomor_transaksi 	= $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+					$nomor_transaksi_um = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+					$tanggal 			= $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+					$tujuan 			= $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+					$pengirim 			= $worksheet->getCellByColumnAndRow(5, $row)->getValue();
+					$tanggal_pengiriman	= $worksheet->getCellByColumnAndRow(6, $row)->getValue();
+					$penerima 			= $worksheet->getCellByColumnAndRow(7, $row)->getValue();
+					$tanggal_input 		= $worksheet->getCellByColumnAndRow(8, $row)->getValue();
+					$user_input 		= $worksheet->getCellByColumnAndRow(9, $row)->getValue();
+					$jumlah_detail		= $worksheet->getCellByColumnAndRow(10, $row)->getValue();
+					$manual 			= $worksheet->getCellByColumnAndRow(11, $row)->getValue();
+					$tanggal_batal		= $worksheet->getCellByColumnAndRow(12, $row)->getValue();
+					$keterangan_batal	= $worksheet->getCellByColumnAndRow(13, $row)->getValue();
+					$tgl_terima_it		= $worksheet->getCellByColumnAndRow(14, $row)->getValue();
+
+					if(strtotime($tanggal_batal) > 0){
+						$tgl_batal = date('Y-m-d H:i:s', strtotime($tanggal_batal));
+					}else{
+						$tgl_batal = '0000-00-00 00:00:00';
+					}
+
+					if(strtotime($tgl_terima_it) > 0){
+						$tgl_terimaIT = date('Y-m-d', strtotime($tgl_terima_it));
+					}else{
+						$tgl_terimaIT = '0000-00-00';
+					}
+
+					if(strtotime($tanggal_input) > 0){
+						$tgl_input = date('Y-m-d', strtotime($tanggal_input));
+					}else{
+						$tgl_input = '0000-00-00';
+					}
+
+					if(strtotime($tanggal_pengiriman) > 0){
+						$tgl_pengiriman = date('Y-m-d', strtotime($tanggal_pengiriman));
+					}else{
+						$tgl_pengiriman = '0000-00-00';
+					}
+
+					if(strtotime($tanggal) > 0){
+						$tgl = date('Y-m-d', strtotime($tanggal));
+					}else{
+						$tgl = '0000-00-00';
+					}
+
+					$temp_data[] = array(
+						'kode_dokumen'			=> $kode_dokumen,
+						'nomor_transaksi'		=> $nomor_transaksi,
+						'nomor_transaksi_um'	=> trim($nomor_transaksi_um),
+						'tanggal'				=> $tgl,
+						'tujuan'				=> $tujuan,
+						'pengirim'				=> $pengirim,
+						'tanggal_pengiriman'	=> $tgl_pengiriman,
+						'penerima'				=> $penerima,
+						'tanggal_input'			=> $tgl_input,
+						'user_input'			=> $user_input,
+						'jumlah_detail'			=> $jumlah_detail,
+						'manual'				=> $manual,
+						'tanggal_batal'			=> $tgl_batal,
+						'keterangan_batal'		=> $keterangan_batal,
+						'tgl_terima_it'			=> $tgl_terimaIT,
+					);
+				}
+			}
+
+			tesx($temp_data);
+			$this->load->model('ImportModel');
+			$insert = $this->ImportModel->insert($temp_data);
+			if($insert){
+				$this->session->set_flashdata('status', '<span class="glyphicon glyphicon-ok"></span> Data Berhasil di Import ke Database');
+				redirect($_SERVER['HTTP_REFERER']);
+			}else{
+				$this->session->set_flashdata('status', '<span class="glyphicon glyphicon-remove"></span> Terjadi Kesalahan');
+				redirect($_SERVER['HTTP_REFERER']);
+			}
+		}else{
+			echo "Tidak ada file yang masuk";
+		}
+	}
+
+
+}
+
+?>

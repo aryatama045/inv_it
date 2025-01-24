@@ -9,8 +9,8 @@ class Model_barang extends CI_Model
 		$this->table = 'mst_barang';
 	}
 
-	// ---- Get Data Start
-	public function getDataStore($result, $search_name = "", $length = "", $start = "", $column = "", $order = "")
+	// ---- Datatables Start
+	public function getDataStore($result,$search_kd_barang="", $search_name = "", $kategori = "", $merk = "", $type ="", $stok ="", $length = "", $start = "", $column = "", $order = "")
 	{
 
 		$this->db->select('*');
@@ -20,9 +20,33 @@ class Model_barang extends CI_Model
         if($search_name !="")
 		{
 			$this->db->group_start();
-                $this->db->like('kode_barang', $search_name);
-                $this->db->or_like('nama_barang', $search_name);
+                $this->db->like('nama_barang', $search_name);
 			$this->db->group_end();
+		}
+
+		if($search_kd_barang !="")
+		{
+			$this->db->like('kode_barang', $search_kd_barang);
+		}
+
+		if($kategori !="")
+		{
+			$this->db->where('kode_kategori', $kategori);
+		}
+
+		if($merk !="")
+		{
+			$this->db->where('kode_merk', $merk);
+		}
+
+		if($type !="")
+		{
+			$this->db->where('kode_type', $type);
+		}
+
+		if($stok !="")
+		{
+			$this->db->where('barang_stock', $stok);
 		}
 
 		if($result == 'result'){
@@ -36,22 +60,7 @@ class Model_barang extends CI_Model
 		}
 
 	}
-
-	function getBarang($id = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from($this->table);
-        $this->db->order_by('nama_barang', 'ASC');
-        if($id){
-            $this->db->where('kode_barang', $id);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-	// ---- Get Data END
+	// ---- Datatables END
 
 	// ---- Action Start
 	function saveTambah()

@@ -105,6 +105,9 @@
             }
         }
 
+        span.select2-selection.select2-selection--single {
+            height: 100% !important;
+        }
     </style>
 </head>
 

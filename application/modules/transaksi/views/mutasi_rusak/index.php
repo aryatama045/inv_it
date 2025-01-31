@@ -19,12 +19,12 @@
 				<!-- Top Buttons Start -->
 				<div class="col-12 col-md-5 d-flex align-items-start justify-content-end">
 
-					<a class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1"
+					<!-- <a class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1"
 						data-bs-effect="effect-super-scaled"
                         data-bs-toggle="modal" href="#modal_import">
 						<i class="fa fa-download"></i>
 						<span>Import</span>
-					</a>
+					</a> -->
 
 					<!-- Add New Button Start -->
 					<a href="<?= base_url($mod.'/'.$func.'/tambah') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
@@ -70,8 +70,8 @@
 					<thead class="mt-4">
 						<tr>
 							<th class="text-bold text-uppercase">Nomor Transaksi</th>
-							<th class="text-bold text-uppercase">Jenis</th>
-							<th class="text-bold text-uppercase">Tujuan</th>
+							<th class="text-bold text-uppercase">User Input</th>
+							<th class="text-bold text-uppercase">Tanggal</th>
 							<th class="text-bold text-uppercase">Action</th>
 						</tr>
 					</thead>
@@ -148,11 +148,19 @@
 	</div>
 </div>
 
+
+<!-- Direct to page with POST Paramaeter -->
+<div id='containerFormRedirect'>
+	<form action="<?= base_url($mod.'/'.$func.'/print_action') ?>" method="post" id='formPrintsRedirect'>
+	</form>
+</div>
+
+
 <script type="text/javascript">
 	window.base_url = '<?php echo base_url() ?>';
 	window.linkstore = '<?php echo $func.'/store' ?>';
     window.tableData = '<?= $table_data ?>'
 </script>
-<script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="<?= base_url('assets/js/jquery-2.2.0.min.js') ?>"></script>
 
-<?php // echo $this->load->assets(to_strip(lowercase($pagetitle)), 'index', 'js');  ?>
+<?php echo $this->load->assets(to_strip(lowercase($pagetitle)), 'index', 'js');  ?>

@@ -28,96 +28,19 @@ class Barang extends Admin_Controller  {
 	}
 
 
-	public function store()
-	{
-		$cn 			= $this->router->fetch_class(); // Controller
-		$draw           = $_REQUEST['draw'];
-		$length         = $_REQUEST['length'];
-		$start          = $_REQUEST['start'];
-		$column 		= $_REQUEST['order'][0]['column'];
-		$order 			= $_REQUEST['order'][0]['dir'];
-
-        $output['data']	= array();
-		$search_kode_barang = '';
-		$search_name   	= $this->input->post('search_name');
-		$kategori   	= $this->input->post('kategori');
-		$merk   		= $this->input->post('merk');
-		$type   		= $this->input->post('type');
-		$stok			= '';
-
-		$data           = $this->Model_barang->getDataStore('result',$search_kode_barang,$search_name,$kategori,$merk,$type,$stok,$length,$start,$column,$order);
-		$data_jum       = $this->Model_barang->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stok);
-
-		$output=array();
-		$output['draw'] = $draw;
-		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
-
-		if($search_name !=""  ){
-			$data_jum = $this->Model_barang->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stok);
-			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
-		}
-
-		if($data){
-			foreach ($data as $key => $value)  {
-
-				$id		= $value['kode_barang'];
-
-				$btn 	= '';
-				$btn 	.= '<a href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon  btn-success mb-1">
-								<i class="fa fa-eye"></i> Show</a>
-							</a>
-							<a href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon  btn-warning mb-1">
-								<i class="fa fa-edit"></i> Edit</a>
-							</a>';
-				// $btn 	.= ' <a class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
-				// $btn 	.= "remove('".$id."')";
-				// $btn 	.= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
-				// 		<i class="fa fa-trash"></i></a>';
-
-
-				$output['data'][$key] = array(
-					$key+$start+1,
-					$value['kode_barang'].'-'.$value['nama_barang'],
-					$btn,
-				);
-
-				$key++;
-
-			}
-
-		}else{
-			$output['data'] = [];
-		}
-		echo json_encode($output);
-	}
-
-
-	public function show($id)
-	{
-
-		$this->starter();
-		$this->data['barang'] = $this->Model_global->getBarang($id,'header');
-
-		if($this->data['barang']['kode_barang']){
-			$this->render_template('barang/show',$this->data);
-		}else{
-			$this->session->set_flashdata('error', 'Silahkan Cek kembali data !!');
-			redirect('master/barang', 'refresh');
-		}
-
-	}
-
 	public function tambah()
 	{
 
-		$this->form_validation->set_rules('nama' ,'Nama' , 'required');
+		$this->form_validation->set_rules('nama_barang', 'Nama Barang','required',
+				array(	'required' 	=> 'Nama Barang Tidak Boleh Kosong !!',
+		));
 
         if ($this->form_validation->run() == TRUE) {
 
 			$create_form = $this->Model_barang->saveTambah();
 
 			if($create_form) {
-				$this->session->set_flashdata('success', 'Mata Kuliah Berhasil Disimpan !!');
+				$this->session->set_flashdata('success', 'Barang Berhasil Disimpan !!');
 				redirect('master/barang', 'refresh');
 			} else {
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
@@ -184,6 +107,108 @@ class Barang extends Admin_Controller  {
 
 		echo json_encode($response);
 	}
+
+
+	public function show($id)
+	{
+
+		$this->starter();
+		$this->data['barang'] = $this->Model_global->getBarang($id,'header');
+
+		if($this->data['barang']['kode_barang']){
+			$this->render_template('barang/show',$this->data);
+		}else{
+			$this->session->set_flashdata('error', 'Silahkan Cek kembali data !!');
+			redirect('master/barang', 'refresh');
+		}
+
+	}
+
+	public function store()
+	{
+		$cn 			= $this->router->fetch_class(); // Controller
+		$draw           = $_REQUEST['draw'];
+		$length         = $_REQUEST['length'];
+		$start          = $_REQUEST['start'];
+		$column 		= $_REQUEST['order'][0]['column'];
+		$order 			= $_REQUEST['order'][0]['dir'];
+
+        $output['data']	= array();
+		$search_kode_barang = '';
+		$search_name   	= $this->input->post('search_name');
+		$kategori   	= $this->input->post('kategori');
+		$merk   		= $this->input->post('merk');
+		$type   		= $this->input->post('type');
+		$stock			= $this->input->post('stock');
+
+		$data           = $this->Model_barang->getDataStore('result',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock,$length,$start,$column,$order);
+		$data_jum       = $this->Model_barang->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock);
+
+		$output=array();
+		$output['draw'] = $draw;
+		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
+
+		if($search_name !=""  ){
+			$data_jum = $this->Model_barang->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock);
+			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
+		}
+
+		if($data){
+			foreach ($data as $key => $value)  {
+
+				$id		= $value['kode_barang'];
+
+				$btn 	= '';
+				$btn 	.= '<a href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon  btn-success mb-1">
+								<i class="fa fa-eye"></i> Show</a>
+							</a>
+							<a href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon  btn-warning mb-1">
+								<i class="fa fa-edit"></i> Edit</a>
+							</a>';
+				// $btn 	.= ' <a class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
+				// $btn 	.= "remove('".$id."')";
+				// $btn 	.= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
+				// 		<i class="fa fa-trash"></i></a>';
+
+				$StatusBarang = $this->Model_global->getStatusBarang($value['status_barang']);
+
+				$output['data'][$key] = array(
+					$key+$start+1,
+					$value['kode_barang'],
+					$value['nama_barang'],
+					$StatusBarang['full_name'],
+					$btn,
+				);
+
+				$key++;
+
+			}
+
+		}else{
+			$output['data'] = [];
+		}
+		echo json_encode($output);
+	}
+
+	public function getKodeBarang()
+	{
+
+		$id = $_POST['id'];
+
+		if($id == '0'){
+			$getKodeBarang = '';
+		}else{
+			$getKodeBarang = $this->Model_barang->getKodeBarang($id);
+		}
+
+		$output['kode'] = $getKodeBarang;
+
+		//"<input type='text' readonly value='". $getKodeBarang ."' name='kode_barang' class='form-control'>";
+
+		echo json_encode($output);
+	}
+
+
 
 }
 

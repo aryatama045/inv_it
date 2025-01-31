@@ -88,3 +88,15 @@ function remove(id)
         });
     }
 }
+
+
+function _prints(nomor_transaksi) {
+    var html ='';
+    html += '<input type="hidden" name="nomor_transaksi_print[]" id="nomor_transaksi_print" value="'+nomor_transaksi+'">';
+    html += '<input type="hidden" name="pilih_print[]"           id="pilih_print" value="1">';
+    html += '<input type="hidden" name="printer"                 id="printer_print" value=""></input>';
+    var form = $("#formPrintsRedirect");
+    form.html(html);
+    form.attr('target', 'new');
+    form.get(0).submit();
+}

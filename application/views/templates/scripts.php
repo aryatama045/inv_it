@@ -43,6 +43,28 @@
 	</div>
 </div>
 
+
+<!-- modal alert item list -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modalAlert">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="title-notif">Info</h3>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <div id="messages"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-warning" data-bs-dismiss="modal" id='btn-info'>Close</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal alert item list -->
+
+
 <!-- Vendor Scripts Start -->
 <script src="<?= base_url('assets/') ?>js/vendor/jquery-3.5.1.min.js"></script>
 <script src="<?= base_url('assets/') ?>js/vendor/bootstrap.bundle.min.js"></script>
@@ -101,6 +123,9 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+
+        $('.select2-single').select2();
+
         $(function() {
             $('#selectTanggal').datepicker({
                 format: 'dd-mm-yyyy',
@@ -217,17 +242,19 @@ function remove(id)
 
 function dialog_warning(title,messages)
 {
-    $("#btn-delete").removeAttr('class');
-    $("#btn-delete").text('Warning');
-    $("#btn-delete").addClass('btn btn-danger');
-    $("#warningModal h5").text('Warning ');
-    $("#messages_modal_warning").html('');
-    $("#id span").html('<strong>'+title+'</strong>');
-    $("#messages").html('<div class="alert alert-success alert-dismissible fade show" role="alert">'+
-    '<strong>'+messages+ '</strong>' +
-    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
-
+    $('#title-notif').html('<strong>'+title+'</strong>');
+    $("#messages").html( '<strong><h5>'+messages+ '</h5></strong>');
+    $('#modalAlert').modal("show");
 }
+
+function dialog_success(title,messages)
+{
+    $('.modal-title').html('<strong>'+title+'</strong>');
+    $("#messages").html( '<strong><h3>'+messages+ '</h3></strong>');
+    $('#modalAlert').modal("show");
+}
+
+
 </script>
 
 

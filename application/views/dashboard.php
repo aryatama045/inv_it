@@ -136,7 +136,7 @@
                         <h3 class="text-title mb-2"> Data Master</h3>
                         <div class="d-flex flex-column h-100 justify-content-between align-items-start">
                             <div>
-                                <a href="#">
+                                <a href="<?= base_url('master/barang') ?>">
                                     <div class="cta-1 text-primary mb-0">
                                         <?php $cBarang = $this->Model_global->getBarang();
                                         echo count($cBarang);?>
@@ -145,7 +145,7 @@
                                 </a>
                             </div>
                             <div>
-                                <a href="#">
+                                <a href="<?= base_url('master/kategori') ?>">
                                     <div class="cta-1 text-primary mb-0">
                                         <?php $cKategori = $this->Model_global->getKategori();
                                         echo count($cKategori);?>
@@ -154,7 +154,7 @@
                                 </a>
                             </div>
                             <div>
-                                <a href="#">
+                                <a href="<?= base_url('master/merk') ?>">
                                     <div class="cta-1 text-primary mb-0">
                                         <?php $cMerk = $this->Model_global->getMerk();
                                         echo count($cMerk);?>
@@ -163,16 +163,16 @@
                                 </a>
                             </div>
                             <div>
-                                <a href="#">
+                                <a href="<?= base_url('master/status_barang') ?>">
                                     <div class="cta-1 text-primary mb-0">
-                                        <?php $cType = $this->Model_global->getType();
+                                        <?php $cType = $this->Model_global->getStatusBarang();
                                         echo count($cType);?>
                                     </div>
                                     <div class="lh-1-25 mb-0 text-black">Data Status Barang</div>
                                 </a>
                             </div>
                             <div>
-                                <a href="#">
+                                <a href="<?= base_url('master/type') ?>">
                                     <div class="cta-1 text-primary mb-0">
                                         <?php $cType = $this->Model_global->getType();
                                         echo count($cType);?>

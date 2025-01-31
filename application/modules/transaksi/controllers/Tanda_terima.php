@@ -64,14 +64,15 @@ class Tanda_terima extends Admin_Controller  {
 				$btn 	= '';
 				$btn 	.= '
 						<a href="'.base_url('transaksi/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-success mb-1">
-							<i class="fa fa-eye"></i> </a>
+							<i class="fa fa-eye"></i>
 						</a>
-						<a href="'.base_url('transaksi/'.$cn.'/print/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-info mb-1">
-							<i class="fa fa-print"></i> </a>
-						</a>';
-				// $btn 	.= '<a href="'.base_url('transaksi/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-warning mb-1">
-				// 			<i class="fa fa-edit"></i> </a>
-				// 		</a>';
+						<button type="button" onclick=\'_prints("'.$value['nomor_transaksi'].'")\'  class="btn btn-sm btn-icon btn-icon-only btn-info mb-1">
+							<i class="fa fa-print"></i>
+						</button>';
+
+						// $btn 	.= '<a href="'.base_url('transaksi/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-warning mb-1">
+						// 			<i class="fa fa-edit"></i> </a>
+						// 		</a>';
 
 						// $btn .= ' <a class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
 						// $btn .= "remove('".$id."')";
@@ -86,7 +87,7 @@ class Tanda_terima extends Admin_Controller  {
 					$value['nomor_transaksi'],
 					tanggal($value['tanggal']),
 					$value['pengirim'],
-					$value['tujuan'],
+					($value['tujuan'])?$value['tujuan']:$value['penerima'],
 					$btn,
 				);
 			}
@@ -109,7 +110,7 @@ class Tanda_terima extends Admin_Controller  {
 			$this->render_template('tanda_terima/detail',$this->data);
 		}else{
 			$this->session->set_flashdata('error', 'Silahkan Cek kembali data !!');
-			redirect('transaksi/tanda_terima/detail', 'refresh');
+			redirect('transaksi/tanda_terima', 'refresh');
 		}
 
 	}
@@ -248,6 +249,7 @@ class Tanda_terima extends Admin_Controller  {
 					$value['barang_stock'],
 					$stock,
 					$value['lokasi_terakhir'],
+					$value['status_barang']
 				);
 
 				$key++;
@@ -259,6 +261,77 @@ class Tanda_terima extends Admin_Controller  {
 		}
 		echo json_encode($output);
 	}
+
+
+	public function print_action()
+	{
+		$dataPost 			= $_POST;
+        $nomor_transaksi   	=  	$dataPost['nomor_transaksi_print'];
+        $pilih    			=	$dataPost['pilih_print'];
+
+        $i=0;
+        if($pilih){
+            foreach ($pilih as $key => $value) {
+                if($value){
+					$data =  $this->Model_tanda_terima->getData($nomor_transaksi[$key],'detail');
+
+                    if ($data) {
+
+						$pengirim 	= $this->Model_global->getPersonil($data[0]['pengirim']);
+						$header['pengirim']    			= $pengirim['nip'].'-'.$pengirim['nama'];
+
+						$penerima 	= $this->Model_global->getPersonil($data[0]['penerima']);
+						$header['penerima']    			= ($data[0]['penerima'])?$penerima['nip'].'-'.$penerima['nama']:'';
+
+						$header['tujuan'] 				= $data[0]['tujuan'];
+
+                        $header['nomor_transaksi']    	= $data[0]['nomor_transaksi'];
+                        $header['kode_dokumen']    		= $data[0]['kode_dokumen'];
+                        $header['user_input'] 			= $data[0]['user_input'];
+                        $header['keterangan']    		= $data[0]['keterangan'];
+                        $header['tanggal']				= date('d-m-Y', strtotime($data[0]['tanggal']));
+						$header['tanggal_pengiriman']	= date('d-m-Y', strtotime($data[0]['tanggal_pengiriman']));
+                        $header['total'] 				= 0;
+
+                        foreach ($data as $key => $value) {
+                            $detail[$key]= array(
+                                'no_urut'        		=> $value['no_urut'],
+                                'kode_barang'    		=> $value['kode_barang'],
+                                'nama_barang'    		=> $value['nama_barang'],
+                                'status_barang'        	=> $value['status_barang'].'-'.$value['nama_status'],
+								'qty'        			=> $value['qty'],
+								'keterangan_barang'     => $value['keterangan_barang'],
+                            );
+                            $header['total']+=$value['qty'];
+                        }
+
+                        $output[$i] = array(
+                            'header'    => $header,
+                            'detail'     => $detail,
+                        );
+
+                    }else{
+                        $output[$i] = array(
+                            'header'    => array(),
+                            'detail'     => array(),
+                        );
+                    }
+                    $i++;
+                }
+            }
+        }
+
+        if(isset($output)){
+            $send_data['data']         	 = $output;
+            $send_data['printer']        = 'laser jet';
+            $send_data['page_title']     = 'Print BKB';
+            $this->load->view('tanda_terima/print', $send_data);
+        }else{
+            $this->session->set_flashdata('warning', 'Jika Muncul Popup Untuk Membuka Tab Baru dari browses pilih, "Allow/Izinkan"<br> Silakan Cetak Ulang');
+            redirect('transaksi/tanda_terima', 'refresh');
+        }
+	}
+
 
 	// Import Excel
 	public function import_excel(){

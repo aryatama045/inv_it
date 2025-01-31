@@ -12,7 +12,9 @@
 				<!-- Title Start -->
 				<div class="col-12 col-md-7">
 					<h1 class="mb-0 pb-0 display-4" id="title"><?= $pagetitle ?></h1>
+
 					<?php $this->load->view('templates/breadcrumb'); ?>
+
 				</div>
 				<!-- Title End -->
 
@@ -30,42 +32,39 @@
 		</div>
 		<!-- Title and Top Buttons End -->
 
-		<?= $this->load->view('templates/notif') ?>
+		<?php $this->load->view('templates/notif') ?>
 
-        <div class="card ">
+		<!-- Controls Start -->
+		<div class="row">
+			<!-- Search Start -->
+			<div class="col-sm-12 col-md-5 col-lg-9 col-xxl-9 mb-1">
+			</div>
+			<!-- Search End -->
 
+			<div class="col-sm-12 col-md-5 col-lg-3 col-xxl-3 text-end mb-1">
+				<div class="d-inline-block me-0 me-sm-3 float-start float-md-none search-input-container w-100 shadow bg-foreground">
+					<input class="form-control" placeholder="Search" type="text" name="search_name" id="search_name" />
+					<span class="search-magnifier-icon">
+						<i data-acorn-icon="search"></i>
+					</span>
+					<span class="search-delete-icon d-none">
+						<i data-acorn-icon="close"></i>
+					</span>
+				</div>
+			</div>
+		</div>
+		<!-- Controls End -->
 
+		<!-- Table Start -->
+		<div class="card">
 			<div class="card-body">
-
-                <!-- Controls Start -->
-                <div class="row">
-					<!-- Filter -->
-                    <div class="col-sm-12 col-md-5 col-lg-9 col-xxl-9 mb-1">
-                        <div class="d-inline-block float-md-start me-1 mb-1 w-100">
-                        </div>
-                    </div>
-
-					<!-- Search -->
-                    <div class="col-sm-12 col-md-5 col-lg-3 col-xxl-3 text-end mb-1">
-                        <div class="d-inline-block me-0 me-sm-3 float-start float-md-none search-input-container w-100 shadow bg-foreground">
-                            <input class="form-control" placeholder="Search" type="text" name="search_name" id="search_name" />
-                            <span class="search-magnifier-icon">
-                                <i data-acorn-icon="search"></i>
-                            </span>
-                            <span class="search-delete-icon d-none">
-                                <i data-acorn-icon="close"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Controls End -->
-
-
-				<table id="<?= $table_data ?>" class="table table-bordered data-table responsive stripe w-100">
-					<thead class="mt-4">
-						<tr>
-							<th class="text-bold text-uppercase">Kode</th>
+				<table id="<?= $table_data ?>" class="table table-striped" >
+					<thead>
+						<tr >
+							<th class="text-bold text-uppercase">Nip</th>
 							<th class="text-bold text-uppercase">Nama</th>
+							<th class="text-bold text-uppercase">Roles</th>
+							<th class="text-bold text-uppercase">Status</th>
 							<th class="text-bold text-uppercase">Action</th>
 						</tr>
 					</thead>
@@ -75,7 +74,6 @@
 
 	</div>
 </div>
-
 
 
 <!-- remove modal -->

@@ -83,7 +83,7 @@
                 <div class="row">
 					<!-- Filter -->
                     <div class="col-sm-12 col-md-5 col-lg-9 col-xxl-9 mb-1">
-                        <div class="d-inline-block float-md-start me-1 mb-1 w-100">
+                        <div class="d-inline-block float-md-start me-1  w-100">
 							<div class="row g-2">
 								<div hidden class="col-3 text-center">
 									<div class="input-group" >
@@ -135,6 +135,17 @@
 									</div>
 								</div>
 
+								<div class="col-3 text-center">
+									<div class="form-group ">
+										<select class="form-select select2-single" name="stock" id="stock">
+											<option value="">-- Stock--</option>
+											<option value="">All</option>
+											<option value="True">With Stock</option>
+											<option value="False">Without Stock</option>
+										</select>
+									</div>
+								</div>
+
 							</div>
                         </div>
                     </div>
@@ -168,7 +179,9 @@
 					<thead class="mt-4">
 						<tr>
 							<th class="text-bold text-uppercase">#</th>
-							<th class="text-bold text-uppercase">Nama</th>
+							<th class="text-bold text-uppercase">Kode Barang</th>
+							<th class="text-bold text-uppercase">Nama Barang</th>
+							<th class="text-bold text-uppercase">Status Barang</th>
 							<th class="text-bold text-uppercase">Action</th>
 						</tr>
 					</thead>

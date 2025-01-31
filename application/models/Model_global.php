@@ -42,7 +42,7 @@ class Model_global extends CI_Model {
     {
         $this->db->select('*');
 		$this->db->from('mst_kategori');
-        $this->db->order_by('nama', 'ASC');
+        $this->db->order_by('kode_kategori, nama', 'ASC');
         if($id){
             $this->db->where('kode_kategori', $id);
             $query=$this->db->get();
@@ -57,7 +57,7 @@ class Model_global extends CI_Model {
     {
         $this->db->select('*');
 		$this->db->from('mst_merk');
-        $this->db->order_by('nama', 'ASC');
+        $this->db->order_by('kode_merk,nama', 'ASC');
         if($id){
             $this->db->where('kode_merk', $id);
             $query=$this->db->get();
@@ -72,7 +72,7 @@ class Model_global extends CI_Model {
     {
         $this->db->select('*');
 		$this->db->from('mst_type');
-        $this->db->order_by('nama', 'ASC');
+        $this->db->order_by('kode_type,nama', 'ASC');
         if($id){
             $this->db->where('kode_type', $id);
             $query=$this->db->get();
@@ -85,9 +85,9 @@ class Model_global extends CI_Model {
 
     function getStatusBarang($id = NULL)
     {
-        $this->db->select('mst_status_barang.*, CONCAT(status_barang,'.', nama) AS full_name', FALSE);
+        $this->db->select('mst_status_barang.*, CONCAT(status_barang,"-", nama) AS full_name', FALSE);
 		$this->db->from('mst_status_barang');
-        $this->db->order_by('status_barang', 'ASC');
+        $this->db->order_by('status_barang, nama', 'ASC');
         if($id){
             $this->db->where('status_barang', $id);
             $query=$this->db->get();
@@ -120,16 +120,45 @@ class Model_global extends CI_Model {
         // $this->db->where('aktif', 1);
         $this->db->order_by('nama', 'ASC');
         if($id){
-            if($id !== '0'){
-                $this->db->where('nip', $id);
-                $this->db->or_where('kd_store', $id);
-                $query=$this->db->get();
-                return $query->row_array();
-            }else{
-                $this->db->where('kd_store', $id);
-                $query=$this->db->get();
-                return $query->row_array();
-            }
+            $this->db->where('nip', $id);
+            $this->db->or_where('kd_store', $id);
+            $query=$this->db->get();
+            return $query->row_array();
+
+        }else{
+            $query=$this->db->get();
+            return $query->result_array();
+        }
+
+    }
+
+    function getRoles($id = NULL)
+    {
+        $this->db->select('roles.*');
+		$this->db->from('roles');
+        $this->db->order_by('id,name', 'ASC');
+        if($id){
+            $this->db->where('id', $id);
+            $query=$this->db->get();
+            return $query->row_array();
+        }else{
+            $query=$this->db->get();
+            return $query->result_array();
+        }
+    }
+
+    function getStore($id = NULL)
+    {
+        $this->db->select('*');
+		$this->db->from('mst_personil');
+        // $this->db->where('aktif', 1);
+        $this->db->order_by('nama', 'ASC');
+        if($id){
+
+            $this->db->where('kd_store', $id);
+            $query=$this->db->get();
+            return $query->row_array();
+
         }else{
             $query=$this->db->get();
             return $query->result_array();

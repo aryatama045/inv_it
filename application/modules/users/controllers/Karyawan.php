@@ -29,8 +29,10 @@ class Karyawan extends Admin_Controller  {
 		$draw           = $_REQUEST['draw'];
 		$length         = $_REQUEST['length'];
 		$start          = $_REQUEST['start'];
-		$column 		= $_REQUEST['order'][0]['column'];
-		$order 			= $_REQUEST['order'][0]['dir'];
+		// $column 		= $_REQUEST['order'][0]['column'];
+		// $order 			= $_REQUEST['order'][0]['dir'];
+		$column 		= '';
+		$order 			= '';
 
         $output['data']	= array();
         $search_name    = $this->input->post('search_name');
@@ -50,7 +52,12 @@ class Karyawan extends Admin_Controller  {
 		if($data){
 			foreach ($data as $key => $value) {
 
-				$id		= $value['nip'];
+				if($value['nip'] == 0){
+					$id		= $value['kd_store'];
+				}else{
+					$id		= $value['nip'];
+				}
+
 				$btn 	= '';
 				$btn 	.= '<div class="btn-group">
 								<button type="button" class="btn btn-sm btn btn-light dropdown-toggle mb-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -78,9 +85,9 @@ class Karyawan extends Admin_Controller  {
 				}
 
 				$output['data'][$key] = array(
-					$value['nip'],
-					capital(strtolower($value['nama'])),
-					capital(uppercase($value['dept'])),
+					uppercase(strtolower($id)),
+					uppercase(strtolower($value['nama'])),
+					to_strip(capital(uppercase($value['kd_store']))),
                     $aktif,
 					$btn,
 				);

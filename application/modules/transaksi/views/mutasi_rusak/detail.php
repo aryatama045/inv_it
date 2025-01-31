@@ -21,6 +21,7 @@
 
         <!-- Top Buttons Start -->
         <div  class="col-12 col-md-5 d-flex align-items-end justify-content-end">
+
             <button type="button" onclick="_prints('<?= $header['nomor_transaksi'] ?>')" class="btn btn-outline-primary btn-icon btn-icon-start m-1 ms-0 ms-sm-1 w-100 w-md-auto">
                 <i data-acorn-icon="save"></i>
                 <span>Print</span>
@@ -60,72 +61,37 @@
             <div class="card-body">
                 <h4>Header</h4> <hr class="mb-2">
                 <div class="row g-3">
-                    <div class="col-md-4 col-12">
+                    <div class="col-md-6">
                         <label class="mb-3 top-label">
                             <p class="form-control"><b><?= $header['nomor_transaksi'] ?></b></p>
                             <span class="text-black text-medium"><b>NOMOR TRANSAKSI</b></span>
                         </label>
                     </div>
 
-                    <div class="col-md-4 col-12">
+                    <div class="col-md-6">
                         <label class="mb-3 top-label">
-                            <p class="form-control"><b><?= $header['kode_dokumen'] ?></b></p>
-                            <span class="text-black text-medium"><b>JENIS </b></span>
+                            <?php
+                                $getUser    = $this->Model_global->getPersonil($header['user_input']);
+                                $user       = $getUser['nip'].'-'.$getUser['nama'];
+                            ?>
+                            <p class="form-control"><b><?= uppercase(strtolower($user)) ?></b></p>
+                            <span class="text-black text-medium"><b>USER INPUT </b></span>
                         </label>
                     </div>
+                </div>
 
-                    <div class="col-md-4 col-12">
+                <div class="row g-3">
+                    <div class="col-md-6">
                         <label class="mb-3 top-label">
-                            <p class="form-control"><b><?= tanggal($header['tanggal']) ?></b></p>
+                            <p class="form-control"><b><?= tanggal($header['tanggal_input']) ?></b></p>
                             <span class="text-black text-medium"><b>TANGGAL</b></span>
                         </label>
                     </div>
-                </div>
-
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="mb-3 top-label">
-                            <?php
-                                $getPengirim    = $this->Model_global->getPersonil($header['pengirim']);
-                                $pengirim       = $getPengirim['nip'].'-'.$getPengirim['nama'];
-                            ?>
-                            <p class="form-control"><b><?= uppercase(strtolower($pengirim)) ?></b></p>
-                            <span class="text-black"><b>PENGIRIM </b></span>
-                        </label>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="mb-3 top-label">
-                            <?php
-                                $getPenerima    = $this->Model_global->getPersonil($header['penerima']);
-                                $penerima       = $getPenerima['nip'].'-'.$getPenerima['nama'];
-                            ?>
-                            <p class="form-control"><b><?= uppercase(strtolower($penerima)) ?></b></p>
-                            <span class="text-black"><b>PENERIMA </b></span>
-                        </label>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="mb-3 top-label">
-                            <p class="form-control"><b><?= uppercase(strtolower($header['tujuan'])) ?></b></p>
-                            <span class="text-black"><b>TUJUAN </b></span>
-                        </label>
-                    </div>
-                </div>
-
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="mb-3 top-label">
-                            <p class="form-control"><b><?= tanggal($header['tanggal_pengiriman']) ?></b></p>
-                            <span class="text-black"><b>TANGGAL KIRIM </b></span>
-                        </label>
-                    </div>
 
                     <div class="col-md-6">
                         <label class="mb-3 top-label">
-                            <p class="form-control"><b><?= tanggal($header['tanggal']) ?></b></p>
-                            <span class="text-black"><b>TANGGAL TERIMA </b></span>
+                            <p class="form-control"><b><?= tanggal($header['tanggal_proses']) ?></b></p>
+                            <span class="text-black text-medium"><b>TANGGAL PROSES</b></span>
                         </label>
                     </div>
 
@@ -158,14 +124,14 @@
                     <tbody>
                         <?php foreach ($detail as $key => $val) {
                             $barang = $this->Model_global->getBarang($val['kode_barang']);
-                            $status = $this->Model_global->getStatusBarang($val['status_barang']);
+                            $status = $this->Model_global->getStatusBarang($barang['status_barang']);
                         ?>
                         <tr>
                             <td><?= $val['no_urut'] ?></td>
                             <td><?= $val['kode_barang'] ?></td>
                             <td><?= $barang['nama_barang'] ?></td>
                             <td><?= $status['status_barang'].'-'.$status['nama'] ?></td>
-                            <td><?= $val['qty'] ?></td>
+                            <td><?= $val['qty_in'] ?></td>
                             <td><?= $val['keterangan_barang'] ?></td>
                         </tr>
                         <?php } ?>
@@ -173,12 +139,54 @@
                     </tbody>
                 </table>
 
+                <div class="col-12 mt-5">
+                    <a  data-bs-toggle="modal" data-bs-target="#batalModal" onclick="batal_dokumen('<?= $header['nomor_transaksi'] ?>')"
+                        class="btn btn-danger btn-icon btn-icon-start w-100 w-md-auto  m-1">
+                        <i class="fa fa-trash"></i>
+                        <span>Batal Dokumen</span>
+                    </a>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
 
 
+
+
+<!-- batal dokumen modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="batalModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Modal title</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+
+			<form role="form" action="<?= base_url($mod.'/'.$func.'/batal_action') ?>" method="post" id="batalForm">
+				<div id="id" class="modal-body">
+					<p class="mb-1">Yakin <span></span> ?</p>
+
+                    <div class="mb-2" id="messages_modal_batal"></div>
+
+                    <div class="col-12 col-md-12 mb-5">
+                        <label class="form-label text-black"><strong> Keterangan Batal </label>
+                        <textarea name="keterangan_batal" row="3" class="form-control" placeholder="Input Keterangan" required></textarea>
+                    </div>
+
+                </div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" id='btn-delete'>Submit Batal</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Direct to page with POST Parameter -->
 <div id='containerFormRedirect'>
 	<form action="<?= base_url($mod.'/'.$func.'/print_action') ?>" method="post" id='formPrintsRedirect'>
 	</form>
@@ -195,5 +203,53 @@
         form.html(html);
         form.attr('target', 'new');
         form.get(0).submit();
+    }
+
+    function batal_dokumen(id)
+    {
+        $("#btn-delete").removeAttr('class');
+        $("#btn-delete").text('Dibatalkan');
+        $("#btn-delete").addClass('btn btn-danger');
+        $("#batalModal h5").text(id);
+        $("#messages_modal_batal").html('');
+        $("#id span").html('Dibatalkan '+' <strong> '+id+'</strong>');
+        if(id){
+            $("#batalForm").on('submit', function() {
+                var form = $(this);
+                // remove the text-danger
+                $(".text-danger").remove();
+
+                if(id !== null){
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: form.attr('method'),
+                        data: { id:id },
+                        dataType: 'json',
+                        success:function(response) {
+
+                            tables.ajax.reload(null, false);
+
+                            if(response.success === true) {
+                                $("#messages").html('<div class="alert alert-success alert-dismissible fade show" role="alert">'+
+                                    '<strong>'+response.messages+ '</strong>' +
+                                    + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+
+                                // hide the modal
+                                $("#batalModal").modal('hide');
+
+                            } else {
+
+                                $("#messages_modal_batal").html('<div class="alert alert-warning alert-dismissible fade show" role="alert">'+
+                                    '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span>  '+response.messages+ '</strong>' +
+                                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>' +
+                                + '</div>');
+                            }
+                        }
+                    });
+                }
+                id = null;
+                return false;
+            });
+        }
     }
 </script>

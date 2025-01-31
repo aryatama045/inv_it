@@ -3,11 +3,7 @@
 	$mod = to_strip(lowercase($modul));
 	$func = to_strip(lowercase($pagetitle));
 	$table_data = $func; ?>
-<style>
-	span.select2-selection.select2-selection--single {
-		height: 100% !important;
-	}
-</style>
+
 <div class="row">
 	<div class="col">
 
@@ -48,62 +44,94 @@
                 <hr class="mb-2">
 
                 <form id="form<?= $action ?>" class="row g-3" action="<?= base_url($mod.'/'.$func.'/tambah'); ?>" method="POST">
-                    <div class="col-12 col-md-6" >
-                        <label class="form-label text-black"><strong>Nomor Dokumen</strong></label>
-                        <input type="text" disabled class="form-control" placeholder="<?= $new_nomor_transaksi ?>"/>
+                    <div class="row p-2 m-2">
+                        <div class="col-12 col-md-6" >
+                            <label class="form-label text-black"><strong>Nomor Dokumen</strong></label>
+                            <input type="text" disabled class="form-control" placeholder="<?= $new_nomor_transaksi ?>"/>
+                        </div>
+
+                        <div class="col-12 col-md-4" >
+                            <label class="form-label text-black"><strong>Jenis Dokumen<span style="color:red">*</span></strong></label>
+                            <!-- <select class="form-control select2-single" name="kd_dokumen" id="kd_dokumen" required>
+                                <option value=""> -- Select Jenis --</option>
+                                <option value="IN" >IN - Terima</option>
+                                <option value="OUT" >OUT - Kirim</option>
+                            </select> -->
+
+                            <div class="form-group">
+                                <input type="radio" class="btn-check kd_dokumen" id="inTerima" value="IN" name="kd_dokumen" checked>
+                                <label class="btn btn-outline-primary" for="inTerima">IN - TERIMA</label>
+                                <input type="radio" class="btn-check kd_dokumen" id="outKirim" value="OUT" name="kd_dokumen">
+                                <label class="btn btn-outline-primary" for="outKirim">OUT - KIRIM</label>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="col-12 col-md-6" >
-                        <label class="form-label text-black"><strong>Jenis Dokumen<span style="color:red">*</span></strong></label>
-                        <select class="form-control select2-single" name="kd_dokumen" id="kd_dokumen" required>
-                            <option value=""> -- Select Jenis --</option>
-                            <option value="IN" >IN - Terima</option>
-                            <option value="OUT" >OUT - Kirim</option>
-                        </select>
+                    <div class="row p-2 m-2">
+                        <div class="col-12 col-md-6" >
+                            <label class="form-label text-black"><strong>Tanggal Dokumen</strong></label>
+                            <input class="form-control" readonly name="tanggal" value=<?= date('d-m-Y') ?> />
+                        </div>
 
-                        <!-- <div class="form-group">
-                            <input type="radio" class="btn-check" id="inTerima" name="kd_dokumen" checked>
-                            <label class="btn btn-outline-primary" for="inTerima">IN - TERIMA</label>
-                            <input type="radio" class="btn-check" id="outKirim" name="kd_dokumen">
-                            <label class="btn btn-outline-primary" for="outKirim">OUT - KIRIM</label>
-                        </div> -->
+                        <div class="col-12 col-md-6" >
+                            <label class="form-label text-black"><strong>Tanggal Proses <span style="color:red">*</span></strong></label>
+                            <input class="form-control" name="tanggal_pengiriman" value=<?= date('d-m-Y') ?> required id="selectTanggalAwal" />
+                        </div>
                     </div>
 
-                    <div class="col-12 col-md-6" >
-                        <label class="form-label text-black"><strong>Pengirim<span style="color:red">*</span></strong></label>
-                        <select class="form-select select2-single" name="pengirim" id="pengirim" required>
-                            <option value=""> -- Select Pengirim --</option>
-                            <?php $Personil1 = $this->Model_global->getPersonil();
-                            foreach ($Personil1 as $key => $val) { ?>
-                                <option value="<?= $val['nip'] ?>" ><?= $val['nip'].'-'.$val['nama'] ?></option>
-                            <?php } ?>
-                        </select>
+
+                    <div class="row p-2 m-2">
+                        <div class="col-12 col-md-4" >
+                            <label class="form-label text-black"><strong>Pengirim<span style="color:red">*</span></strong></label>
+                            <select class="form-select select2-single" name="pengirim" id="pengirim" required>
+                                <option value=""> -- Select Pengirim --</option>
+                                <?php $Personil1 = $this->Model_global->getPersonil();
+                                foreach ($Personil1 as $key => $val) { ?>
+                                    <?php if($val['nip'] == 0){ ?>
+                                        <option value="<?= $val['kd_store'] ?>" ><?= $val['kd_store'].'-'.$val['nama'] ?></option>
+                                    <?php } else { ?>
+                                        <option value="<?= $val['nip'] ?>" ><?= $val['nip'].'-'.$val['nama'] ?></option>
+                                    <?php } ?>
+                                <?php } ?>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4" >
+                            <label class="form-label text-black"><strong>Penerima<span style="color:red">*</span></strong></label>
+                            <select class="form-select select2-single" name="penerima" id="penerima" required>
+                                <option value=""> -- Select Tujuan --</option>
+                                <?php $Personil2 = $this->Model_global->getPersonil();
+                                foreach ($Personil2 as $key => $val) { ?>
+                                    <?php if($val['nip'] == 0){ ?>
+                                        <option value="<?= $val['kd_store'] ?>" ><?= $val['kd_store'].'-'.$val['nama'] ?></option>
+                                    <?php } else { ?>
+                                        <option value="<?= $val['nip'] ?>" ><?= $val['nip'].'-'.$val['nama'] ?></option>
+                                    <?php } ?>
+                                <?php } ?>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4" >
+                            <label class="form-label text-black"><strong>Tujuan<span style="color:red">*</span></strong></label>
+                            <select class="form-select select2-single" name="tujuan" id="tujuan" required>
+                                <option value=""> -- Select Tujuan --</option>
+                                <?php $Personil2 = $this->Model_global->getPersonil();
+                                foreach ($Personil2 as $key => $val) { ?>
+                                    <?php if($val['nip'] == 0){ ?>
+                                        <option value="<?= $val['kd_store'] ?>" ><?= $val['kd_store'].'-'.$val['nama'] ?></option>
+                                    <?php } else { ?>
+                                        <option value="<?= $val['nip'] ?>" ><?= $val['nip'].'-'.$val['nama'] ?></option>
+                                    <?php } ?>
+                                <?php } ?>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="col-12 col-md-6" >
-                        <label class="form-label text-black"><strong>Penerima/Tujuan<span style="color:red">*</span></strong></label>
-                        <select class="form-select select2-single" name="tujuan" id="tujuan" required>
-                            <option value=""> -- Select Tujuan --</option>
-                            <?php $Personil2 = $this->Model_global->getPersonil();
-                            foreach ($Personil2 as $key => $val) { ?>
-                                <option value="<?= $val['nip'] ?>" ><?= $val['nip'].'-'.$val['nama'] ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-
-                    <div class="col-12 col-md-6" >
-                        <label class="form-label text-black"><strong>Tanggal Dokumen</strong></label>
-                        <input class="form-control" readonly name="tanggal" value=<?= date('d-m-Y') ?> />
-                    </div>
-
-                    <div class="col-12 col-md-6" >
-                        <label class="form-label text-black"><strong>Tanggal Proses <span style="color:red">*</span></strong></label>
-                        <input class="form-control" name="tanggal_pengiriman" value=<?= date('d-m-Y') ?> required id="selectTanggalAwal" />
-                    </div>
-
-                    <div class="col-12 col-md-12 mb-5">
-                        <label class="form-label text-black"><strong> Keterangan</strong></label>
-                        <textarea name="keterangan_header" row="3" class="form-control" placeholder="Input Keterangan"></textarea>
+                    <div class="row p-2 m-2">
+                        <div class="col-12 col-md-12 mb-5">
+                            <label class="form-label text-black"><strong> Keterangan</strong></label>
+                            <textarea name="keterangan_header" row="3" class="form-control" placeholder="Input Keterangan"></textarea>
+                        </div>
                     </div>
 
                     <h3 class="pb-0"> Data Barang</h3> <hr class="g-0">
@@ -180,30 +208,9 @@
 </div>
 <!-- modal datatable item list -->
 
-<!-- modal alert item list -->
-<div class="modal fade" tabindex="-1" role="dialog" id="modalAlert">
-    <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="staticModalLabel">Information</h3>
-            </div>
-            <div class="modal-body">
-                <div class="box-body">
-                    <div id="messages-alert"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a class="btn btn-default" data-bs-dismiss="modal" id='btn-information'>Close</a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- modal alert item list -->
 
+<script src="<?= base_url('assets/js/jquery-2.2.0.min.js') ?>"></script>
 
-
-<script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" ></script> -->
 
 <script type="text/javascript">
 var base_url  = '<?php echo base_url()?>';
@@ -220,7 +227,7 @@ $(document).ready(function() {
 
     $('.select2-single').select2();
 
-    $("#kd_dokumen").change(function () {
+    $(".kd_dokumen").change(function () {
         jns_kode = $(this).val();
 
         //clear datatable
@@ -319,17 +326,20 @@ $(document).ready(function() {
             }
         });
 
-        /* Cek Stock Sebelum ditambahakan */
-        if(rowData[3]==0){
-            dialog_warning('Notification',"Stock Barang Kosong");
-            return false;
+        /* Cek Stock Jika OUT Sebelum ditambahakan */
+        if(jns_kode === "OUT"){
+            if(rowData[3]==0){
+                dialog_warning('Notification',"Stock Barang Kosong");
+                return false;
+            }
         }
 
         /* Cek Kode barang sudah pernah diinput/belum */
         if(count_kd_double == 0 ){
             /* Add Click/Select Item Browse to Tambe Item BKB */
-            
+
             if(jns_kode === "OUT"){
+                // Cek Barang Stok
                 if(rowData[2] == 'True'){
                     var index   = $('#tableListBKB').DataTable().row.add( [
                         "<input type='hidden' name='urut[]' id='urut_"+urut+"' value='"+urut+"' />"+urut,
@@ -337,13 +347,7 @@ $(document).ready(function() {
                         rowData[1],
                         "<input type='hidden' name='kd_brg[]' id='"+rowData[0]+"' class='form-control' style='width:100%' value='"+rowData[0]+"' />" +
                         "<input type='text' name='qty[]' id='qty' class='form-control' style='width:100%;text-align:center;' data-barang='"+rowData[0]+"' data-value='"+rowData[3]+"' data-max-qty='"+rowData[3]+"' maxlength='5'/>",
-                        '<select class="form-select" name="status[]" required>' +
-                            '<option value=""> -- Select Status --</option>' +
-                            <?php $status = $this->Model_global->getStatusBarang();
-                            foreach ($status as $key => $val) { ?>
-                            '<option value="<?= $val['status_barang'] ?>"><?= $val['status_barang']." - ".trim($val['nama']) ?></option>' +
-                            <?php } ?>
-                        '</select>',
+                        "<input type='text' name='status[]'  class='form-control' value='"+rowData[5]+"' style='width:100%;text-align:center;' readonly  />",
                         "<input type='text' name='ket[]' required class='form-control' style='width:100%' placeholder='Input Keterangan' />",
                         '<button type="button" class="btn btn-danger" onclick="deleteRow(\''+urut+'\',\''+rowData[0]+'\')"><i class="fa fa-trash"></i></button>',
                     ] ).draw( false );
@@ -366,6 +370,7 @@ $(document).ready(function() {
                     ] ).draw( false );
                 }
             }else{
+                // Cek Barang Stok
                 if(rowData[2] == 'True'){
                     var index   = $('#tableListBKB').DataTable().row.add( [
                         "<input type='hidden' name='urut[]' id='urut_"+urut+"' value='"+urut+"' />"+urut,
@@ -373,16 +378,9 @@ $(document).ready(function() {
                         rowData[1],
                         "<input type='hidden' name='kd_brg[]' id='"+rowData[0]+"' class='form-control' style='width:100%' value='"+rowData[0]+"' />" +
                         "<input type='text' name='qty[]' id='qty' class='form-control' style='width:100%;text-align:center;' data-barang='"+rowData[0]+"' data-value='"+rowData[3]+"' maxlength='5'/>",
-                        '<select class="form-select" name="status[]" required>' +
-                            '<option value=""> -- Select Status --</option>' +
-                            <?php $status = $this->Model_global->getStatusBarang();
-                            foreach ($status as $key => $val) { ?>
-                            '<option value="<?= $val['status_barang'] ?>"><?= $val['status_barang']." - ".trim($val['nama']) ?></option>' +
-                            <?php } ?>
-                        '</select>',
+                        "<input type='text' name='status[]'  class='form-control' value='"+rowData[5]+"' style='width:100%;text-align:center;' readonly  />",
                         "<input type='text' name='ket[]' required class='form-control' style='width:100%' placeholder='Input Keterangan' />",
                         '<button type="button" class="btn btn-danger" onclick="deleteRow(\''+urut+'\',\''+rowData[0]+'\')"><i class="fa fa-trash"></i></button>',
-
                     ] ).draw( false );
                 }else{
                     var index   = $('#tableListBKB').DataTable().row.add( [
@@ -391,6 +389,7 @@ $(document).ready(function() {
                         rowData[1],
                         "<input type='hidden' name='kd_brg[]' id='"+rowData[0]+"' class='form-control' style='width:100%' value='"+rowData[0]+"' />" +
                         "<input type='hidden' name='qty[]' id='qty' class='form-control' style='width:100%' value='"+rowData[3]+"' data-barang='"+rowData[0]+"' data-max-qty='"+rowData[3]+"' maxlength='5'/>" + rowData[3],
+                        // "<input type='text' name='status[]'  class='form-control' value='"+rowData[5]+"' style='width:100%;text-align:center;' readonly  />",
                         '<select class="form-select" name="status[]" required>' +
                             '<option value=""> -- Select Status --</option>' +
                             <?php $status = $this->Model_global->getStatusBarang();
@@ -429,7 +428,7 @@ $(document).ready(function() {
                     if(qty=='') qty=0;
                     if(parseInt(qty) > parseInt(max_qty)){
                         // dialog_warning('Notification',"Qty tidak boleh lebih besar dari Stock");
-                        alert("Qty tidak boleh lebih besar dari Stock : '"+max_qty+"' ");
+                        dialog_warning('Notification',"Qty tidak boleh lebih besar dari Stock : <b>"+max_qty+"</b> ");
                         this.value = input_qty;
                     }
                     // else{
@@ -445,7 +444,7 @@ $(document).ready(function() {
             $('#showItemData').modal('hide');
             $('input[data-barang="'+rowData[0]+'"]').focus();
         }else{
-            alert("Barang Sudah Ditambahkan");
+            dialog_warning('Notification',"Barang Sudah Ditambahkan");
             return false;
             // response failed
         }
@@ -490,7 +489,6 @@ function addRow(){
         tableListItems.clear().draw();
         tableListItems.ajax.reload(null,false);
         $('#showItemData').modal('show');
-        // $('#myModal').modal('show');
     }
 }
 /* End Action Button Add (+) Clicked*/
@@ -509,18 +507,23 @@ function validasi_add_item(){
 
 
     if($('#kd_dokumen').val() == ""){
-        alert('Pilih Jenis Dokumen Terlebih Dahulu');
-        // dialog_warning('Notification',"Pilih Tujuan Terlebih Dahulu");
+        // alert('Pilih Jenis Dokumen Terlebih Dahulu');
+        dialog_warning('Notification',"Pilih Jenis Dokumen Terlebih Dahulu");
         return false;
     }
     if($('#pengirim').val() == ""){
-        alert('Pilih Tujuan Terlebih Dahulu');
-        // dialog_warning('Notification',"Pilih Tujuan Terlebih Dahulu");
+        // alert('Pilih Pengirim Terlebih Dahulu');
+        dialog_warning('Notification',"Pilih Pengirim Terlebih Dahulu");
+        return false;
+    }
+    if($('#penerima').val() == ""){
+        // alert('Pilih Tujuan Terlebih Dahulu');
+        dialog_warning('Notification',"Pilih Penerima Terlebih Dahulu");
         return false;
     }
     if($('#tujuan').val() == ""){
-        alert('Pilih Tujuan Terlebih Dahulu');
-        // dialog_warning('Notification',"Pilih Tujuan Terlebih Dahulu");
+        // alert('Pilih Tujuan Terlebih Dahulu');
+        dialog_warning('Notification',"Pilih Tujuan Terlebih Dahulu");
         return false;
     }
 
@@ -549,5 +552,8 @@ function deleteRow(no_urut,kd_brg){
     // count_qty();
 }
 /* End Action Saat tombol delete di click */
+
+
+
 
 </script>

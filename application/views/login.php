@@ -66,10 +66,13 @@
 </head>
 
 <body class="h-100">
+    <!-- Background Start -->
+    <div class="fixed-background"></div>
+    <!-- Background End -->
+
+
     <div id="root" class="h-100">
-        <!-- Background Start -->
-        <div class="fixed-background"></div>
-        <!-- Background End -->
+
 
         <div class="container-fluid p-0 h-100 position-relative">
             <div class="row g-0 h-100">
@@ -107,7 +110,7 @@
                                     <i class="fa fa-eye" onclick="showPass()" id="eye" title="Show Password"></i>
                                 </div>
                                 <button tabIndex="3" type="submit" class="btn btn-lg btn-primary mr-2">Login</button>
-                                <a class="text-medium t-3 e-3" type="button" style="text-decoration:underline;" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdropExample">Forgot?</a>
+                                <!-- <a class="text-medium t-3 e-3" type="button" style="text-decoration:underline;" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdropExample">Forgot?</a> -->
                             </form>
                         </div>
                     </div>
@@ -147,8 +150,10 @@
             </div>
         </div>
 
-        <!-- Modal  Launch static backdrop modal-->
-        <div class="modal fade" id="staticBackdropExample" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    </div>
+
+    <!-- Modal  Launch static backdrop modal-->
+    <div class="modal fade" id="staticBackdropExample" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
             role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form action="<?php echo base_url('auth/forgot_password') ?>" method="post">
@@ -177,8 +182,6 @@
                 </form>
             </div>
         </div>
-
-    </div>
 
 
     <!-- Vendor Scripts Start -->

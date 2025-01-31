@@ -4,14 +4,15 @@ var search_name;
 $(document).ready(function () {
   //# initialize the datatable
   tables = $("#" + tableData).DataTable({
-    processing: true,
-    serverSide: true,
-    serverMethod: "post",
-    scrollX: true,
-    paging: true,
-    autoWidth: false,
-    destroy: true,
-    responsive: false,
+    processing    : true,
+    serverSide    : true,
+    serverMethod  : "post",
+    // scrollX: true,
+    paging        : true,
+    ordering      : false,
+    autoWidth     : false,
+    destroy       : true,
+    responsive    : false,
     ajax: {
       url: linkstore,
       type: "POST",

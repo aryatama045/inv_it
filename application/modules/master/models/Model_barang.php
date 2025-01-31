@@ -9,8 +9,26 @@ class Model_barang extends CI_Model
 		$this->table = 'mst_barang';
 	}
 
+	function getKodeBarang($id = NULL)
+	{
+		$getKode = $this->db->query("SELECT RIGHT(kode_barang,3)+1 as gencode FROM inv_web_it.mst_barang
+		WHERE kode_kategori ='$id' ORDER BY kode_barang DESC LIMIT 1")->row_array();
+
+		$code 	 	 = $id;
+
+		if($getKode){
+			$urut = $getKode['gencode'];
+			for ($i=4; $i > strlen($getKode['gencode']) ; $i--) {
+				$urut = "0".$urut;
+			}
+			return $code.$urut;
+		}else{
+			return $code."0001";
+        }
+	}
+
 	// ---- Datatables Start
-	public function getDataStore($result,$search_kd_barang="", $search_name = "", $kategori = "", $merk = "", $type ="", $stok ="", $length = "", $start = "", $column = "", $order = "")
+	function getDataStore($result,$search_kd_barang="", $search_name = "", $kategori = "", $merk = "", $type ="", $stock ="", $length = "", $start = "", $column = "", $order = "")
 	{
 
 		$this->db->select('*');
@@ -20,7 +38,8 @@ class Model_barang extends CI_Model
         if($search_name !="")
 		{
 			$this->db->group_start();
-                $this->db->like('nama_barang', $search_name);
+				$this->db->like('kode_barang', $search_name);
+                $this->db->or_like('nama_barang', $search_name);
 			$this->db->group_end();
 		}
 
@@ -44,9 +63,9 @@ class Model_barang extends CI_Model
 			$this->db->where('kode_type', $type);
 		}
 
-		if($stok !="")
+		if($stock !="")
 		{
-			$this->db->where('barang_stock', $stok);
+			$this->db->where('barang_stock', $stock);
 		}
 
 		if($result == 'result'){
@@ -65,8 +84,59 @@ class Model_barang extends CI_Model
 	// ---- Action Start
 	function saveTambah()
 	{
-		$data = $_POST;
-		$insert = $this->db->insert($this->table, $data);
+		$data 				= $_POST;
+		if($data['kategori'] != '0'){
+			$kodeBarang 		= $this->getKodeBarang($data['kategori']);
+		}else{
+			$kodeBarang 		= $data['kode_barang'];
+		}
+
+		$cekStok 			= $this->db->query("SELECT * FROM inv_web_it.stock
+								WHERE kode_barang='$kodeBarang' ")->row_array();
+
+		if($data['barang_stock'] == 'True'){
+			$barang_stock	= 'True';
+			$status_barang 	= 'QTY';
+		}else{
+			$barang_stock	= 'False';
+			$status_barang 	= 'N';
+		}
+
+		$dataBarang = array(
+			'kode_barang' 		=> $kodeBarang,
+			'serial_number'		=> $data['serial_number'],
+			'nama_barang' 		=> $data['nama_barang'],
+			'keterangan'		=> $data['keterangan'],
+			'keterangan_acct'	=> $data['keterangan_acct'],
+			'kode_kategori'		=> $data['kategori'],
+			'kode_merk'			=> $data['merk'],
+			'kode_type'			=> $data['type'],
+			'harga_beli'		=> $data['harga_beli'],
+			'harga_asuransi'	=> $data['harga_asuransi'],
+			'lokasi_akhir'		=> 'HO_IT',
+			'status_barang'		=> $status_barang,
+			'barang_stock'		=> $barang_stock,
+			'user_input'		=> $this->session->userdata('username'),
+			'tanggal_input'		=> date('Y-m-d H:i:s'),
+			'tanggal_pembelian'	=> date('Y-m-d H:i:s', strtotime($data['tanggal_pembelian'])),
+
+		);
+
+		if($data['barang_stock'] == 'True'){
+			$addStock = array(
+				'kode_barang'	=> $kodeBarang,
+				'saldo_awal'	=> '0',
+				'in'			=> '0',
+				'out'			=> '0'
+			);
+			if(empty($cekStok)){
+				tesx($dataBarang, $addStock, 'oke');
+				$insert = $this->db->insert('inv_web_it.stock', $addStock);
+			}
+		}
+
+		tesx($dataBarang);
+		$insert = $this->db->insert('inv_web_it.mst_barang', $dataBarang);
 
 		return ($insert)?TRUE:FALSE;
 	}

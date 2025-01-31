@@ -1,7 +1,18 @@
 <?php
 	$mod = to_strip(lowercase($modul));
 	$func = to_strip(lowercase($pagetitle));
-	$table_data = $func; ?>
+	$table_data = $func;
+
+
+	function isMobile() {
+		return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $_SERVER["HTTP_USER_AGENT"]);
+	}
+
+	$isMobile = isMobile();
+
+	// tesx($isMobile);
+
+?>
 
 <div class="row">
 	<div class="col">
@@ -150,11 +161,17 @@
 	</div>
 </div>
 
+<!-- Direct to page with POST Paramaeter -->
+<div id='containerFormRedirect'>
+	<form action="<?= base_url($mod.'/'.$func.'/print_action') ?>" method="post" id='formPrintsRedirect'>
+	</form>
+</div>
+
 <script type="text/javascript">
 	window.base_url = '<?php echo base_url() ?>';
 	window.linkstore = '<?php echo $func.'/store' ?>';
     window.tableData = '<?= $table_data ?>'
 </script>
-<script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="<?= base_url('assets/js/jquery-2.2.0.min.js') ?>"></script>
 
 <?php echo $this->load->assets(to_strip(lowercase($pagetitle)), 'index', 'js');  ?>

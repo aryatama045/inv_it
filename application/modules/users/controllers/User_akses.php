@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Dosen extends Admin_Controller  {
+class User_akses extends Admin_Controller  {
 
 	public function __construct()
 	{
@@ -13,22 +13,16 @@ class Dosen extends Admin_Controller  {
 		$this->data['modul'] 		= 'Users'; // name modul
 
 		//  Load Model
-		$this->load->model('Model_dosen');
-
-	}
-
-	public function starter()
-	{
-		// $this->data['agama'] = $this->Model_global->getAgama();
-		// $this->data['jabatan'] = $this->Model_global->getJabatan();
-		// $this->data['kota'] = $this->Model_global->getKota();
+		$this->load->model('Model_user_akses');
 	}
 
 
-	public function index()
+    public function starter()
+    {}
+
+    public function index()
 	{
-		$this->starter();
-		$this->render_template('dosen/index',$this->data);
+		$this->render_template('user_akses/index');
 	}
 
     public function store()
@@ -38,28 +32,31 @@ class Dosen extends Admin_Controller  {
 		$draw           = $_REQUEST['draw'];
 		$length         = $_REQUEST['length'];
 		$start          = $_REQUEST['start'];
-		$column 		= $_REQUEST['order'][0]['column'];
-		$order 			= $_REQUEST['order'][0]['dir'];
+		// $column 		= $_REQUEST['order'][0]['column'];
+		// $order 		= $_REQUEST['order'][0]['dir'];
+		$column 		= '';
+		$order 			= '';
 
         $output['data']	= array();
         $search_name    = $this->input->post('search_name');
 
-		$data           = $this->Model_dosen->getDataStore('result',$search_name,$length,$start,$column,$order);
-		$data_jum       = $this->Model_dosen->getDataStore('numrows',$search_name);
+		$data           = $this->Model_user_akses->getDataStore('result',$search_name,$length,$start,$column,$order);
+		$data_jum       = $this->Model_user_akses->getDataStore('numrows',$search_name);
 
 		$output=array();
 		$output['draw'] = $draw;
 		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
 
 		if($search_name !="" ){
-			$data_jum = $this->Model_dosen->getDataStore('numrows',$search_name);
+			$data_jum = $this->Model_user_akses->getDataStore('numrows',$search_name);
 			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
 		}
 
 		if($data){
 			foreach ($data as $key => $value) {
 
-				$id		= $value['nip'];
+				$id		= $value['id'];
+
 				$btn 	= '';
 				$btn 	.= '<div class="btn-group">
 								<button type="button" class="btn btn-sm btn btn-light dropdown-toggle mb-1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -68,17 +65,14 @@ class Dosen extends Admin_Controller  {
 								<div class="dropdown-menu">
 									<a href="'.base_url('users/'.$cn.'/detail/'.$id).'" class="dropdown-item">
 										<i data-acorn-icon="search"></i> Detail</a>
-
 									<a href="'.base_url('users/'.$cn.'/edit/'.$id).'" class="dropdown-item">
 										<i data-acorn-icon="edit-square"></i> Edit</a>';
-
 									$btn .= ' <a class="dropdown-item" onclick="';
 									$btn .= "remove('".$id."')";
 									$btn .= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
 											<i data-acorn-icon="bin"></i> Delete</a>
-
 								</div>
-							</div>';
+				</div>';
 
 				if($value['aktif'] == 1){
 					$aktif = '<div class="btn-group"><span class=" btn-outline-info btn-sm">Aktif</span></div>';
@@ -86,13 +80,11 @@ class Dosen extends Admin_Controller  {
 					$aktif = '<div class="btn-group"><span class=" btn-outline-danger btn-sm">Nonktif</span></div>';
 				}
 
-				$nama_dosen = $value['gelar_depan'].' '.capital(strtolower($value['nama'])) .', '.$value['gelar_blk'];
 				$output['data'][$key] = array(
-					$value['nip'],
-					$value['nidn'],
-					$nama_dosen,
-					capital(uppercase($value['nm_jabatan'])),
-                    $value['status'],
+					uppercase(strtolower($value['username'])),
+					uppercase(strtolower($value['name'])),
+					capital(uppercase($value['roles'])),
+                    $aktif,
 					$btn,
 				);
 			}
@@ -105,16 +97,16 @@ class Dosen extends Admin_Controller  {
 
 	public function detail($id)
 	{
-		$this->data['dosen'] = $this->Model_dosen->detail($id);
+		$this->data['karyawan'] = $this->Model_user_akses->detail($id);
 
-		if($this->data['dosen']['nip']){
-			$this->starter();
-			$this->data['dosen'] = $this->Model_dosen->detail($id);
+		if($this->data['karyawan']['nip']){
+			// $this->starter();
+			$this->data['karyawan'] = $this->Model_user_akses->detail($id);
 
-			$this->render_template('dosen/detail',$this->data);
+			$this->render_template('user_akses/detail',$this->data);
 		}else{
 			$this->session->set_flashdata('error', 'Tidak Terdaftar, Silahkan Cek kembali !!');
-			redirect('users/dosen', 'refresh');
+			redirect('users/user_akses', 'refresh');
 		}
 
 	}
@@ -126,19 +118,19 @@ class Dosen extends Admin_Controller  {
 
         if ($this->form_validation->run() == TRUE) {
 
-			$create_form = $this->Model_dosen->saveTambah();
+			$create_form = $this->Model_user_akses->saveTambah();
 
 			if($create_form) {
 				$this->session->set_flashdata('success', ' Berhasil Disimpan !!');
-				redirect('users/dosen', 'refresh');
+				redirect('users/user_akses', 'refresh');
 			} else {
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
-				redirect('users/dosen/tambah', 'refresh');
+				redirect('users/user_akses/tambah', 'refresh');
 			}
 
 		}else{
 			$this->starter();
-			$this->render_template('dosen/tambah',$this->data);
+			$this->render_template('user_akses/tambah',$this->data);
 		}
 
 	}
@@ -149,28 +141,26 @@ class Dosen extends Admin_Controller  {
 		$this->form_validation->set_rules('nip' ,'Nip ' , 'required');
         if ($this->form_validation->run() == TRUE) {
 
-			$edit_form = $this->Model_dosen->saveEdit($id);
+			$edit_form = $this->Model_user_akses->saveEdit($id);
 
 			if($edit_form) {
 				$this->session->set_flashdata('success', 'Nip  : "'.$_POST['nip'].'" <br> Berhasil Di Update !!');
-				redirect('users/dosen', 'refresh');
+				redirect('users/user_akses', 'refresh');
 			} else {
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
-				redirect('users/dosen/edit/'.$id, 'refresh');
+				redirect('users/user_akses/edit/'.$id, 'refresh');
 			}
 
 		}else{
 			$this->starter();
-			$this->data['dosen'] = $this->Model_dosen->detail($id);
+			$this->data['user_akses'] = $this->Model_user_akses->detail($id);
 
-			if($this->data['dosen']['nip']){
+			if($this->data['user_akses']['id']){
 				$this->starter();
-				$this->data['dosen'] = $this->Model_dosen->detail($id);
-
-				$this->render_template('dosen/edit',$this->data);
+				$this->render_template('user_akses/edit',$this->data);
 			}else{
 				$this->session->set_flashdata('error', 'NIP Tidak Terdaftar, Silahkan Cek kembali !!');
-				redirect('users/dosen', 'refresh');
+				redirect('users/user_akses', 'refresh');
 			}
 		}
 	}
@@ -182,14 +172,14 @@ class Dosen extends Admin_Controller  {
 
 		$response = array();
 		if($id) {
-			$delete = $this->Model_dosen->saveDelete($id);
+			$delete = $this->Model_user_akses->saveDelete($id);
 
 			if($delete == true) {
 				$response['success'] 	= true;
-				$response['messages'] 	= " <strong>Kode '".$id."'</strong> Berhasil Di Remove";
+				$response['messages'] 	= " <strong> '".$id."'</strong> Berhasil Di Remove";
 			} else {
 				$response['success'] 	= false;
-				$response['messages'] 	= " <strong>Kode '".$id."'</strong> Gagal Di Remove";
+				$response['messages'] 	= " <strong> '".$id."'</strong> Gagal Di Remove";
 			}
 		}
 		else {
@@ -200,6 +190,6 @@ class Dosen extends Admin_Controller  {
 		echo json_encode($response);
 	}
 
-}
 
-?>
+
+}

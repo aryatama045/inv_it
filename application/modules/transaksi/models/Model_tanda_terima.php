@@ -58,32 +58,55 @@ class Model_tanda_terima extends CI_Model
 
 	}
 
-	public function getData($id, $detail=null)
+	public function getData($id, $type=null)
 	{
 		if($id){
-			if($detail == 'header'){
+			if($type == 'header'){
+
 				$this->db->from('tanda_terima_h');
 				$this->db->where('nomor_transaksi',$id);
 				$query	= $this->db->get();
 				return $query->row_array();
+
+			}else if($type == 'detail'){
+
+				$this->db->select('h.*, d.*, b.nama_barang, s.nama nama_status');
+				$this->db->from('inv_web_it.tanda_terima_d d');
+				$this->db->join('inv_web_it.tanda_terima_h h'		,'d.nomor_transaksi = h.nomor_transaksi','left');
+				$this->db->join('inv_web_it.mst_barang b'			,'d.kode_barang 	= b.kode_barang','left');
+				$this->db->join('inv_web_it.mst_status_barang s'	,'d.status_barang 	= s.status_barang','left');
+				$this->db->where('h.nomor_transaksi', $id);
+				$this->db->order_by('d.no_urut');
+				$query= $this->db->get();
+				// die(nl2br($this->db->last_query()));
+				return $query->result_array();
+
 			}else{
+
 				$this->db->from('tanda_terima_d');
 				$this->db->where('nomor_transaksi',$id);
 				$this->db->or_where('kode_barang',$id);
 				$query	= $this->db->get();
 				return $query->result_array();
+
 			}
 		}else{
 			return false;
 		}
 	}
 
-	public function detail($id)
-	{
-        $this->db->from('tanda_terima_d');
-		$this->db->where('nomor_transaksi',$id);
-		$query	= $this->db->get();
-		return $query->row_array();
+
+	public function getDataDetail($nomor_transaksi){
+		$this->db->select('h.*, d.*, b.nama_barang, s.nama nama_status');
+		$this->db->from('inv_web_it.tanda_terima_d d');
+		$this->db->join('inv_web_it.tanda_terima_h h'		,'d.nomor_transaksi = h.nomor_transaksi','left');
+		$this->db->join('inv_web_it.mst_barang b'			,'d.kode_barang 	= b.kode_barang','left');
+		$this->db->join('inv_web_it.mst_status_barang s'	,'d.status_barang 	= s.status_barang','left');
+		$this->db->where('h.nomor_transaksi', $nomor_transaksi);
+		$this->db->order_by('d.no_urut');
+		$query= $this->db->get();
+		// die(nl2br($this->db->last_query()));
+		return $query->result_array();
 	}
 
 	// ---- Action Start
@@ -92,12 +115,13 @@ class Model_tanda_terima extends CI_Model
 		$data = $_POST;
 
 		if($data['kd_dokumen'] == 'IN'){
-			$penerima 	= $data['tujuan'];
-			$tujuan 	= '';
+			$tgl_pengiriman 	= '';
+			$tgl_terima_it	 	= date('Y-m-d', strtotime($data['tanggal_pengiriman']));
 		}else{
-			$penerima 	= '';
-			$tujuan 	= $data['tujuan'];
+			$tgl_pengiriman 	= date('Y-m-d', strtotime($data['tanggal_pengiriman']));
+			$tgl_terima_it	 	= '';
 		}
+
 		$log_detail = array();
 		$count_d 	= count($data['urut']);
 
@@ -106,15 +130,15 @@ class Model_tanda_terima extends CI_Model
 			'kode_dokumen' 		=> $data['kd_dokumen'],
 			'keterangan'		=> $data['keterangan_header'],
 			'pengirim'			=> $data['pengirim'],
-			'penerima'			=> $penerima,
-			'tujuan'			=> $tujuan,
+			'penerima'			=> $data['penerima'],
+			'tujuan'			=> $data['tujuan'],
 			'jumlah_detail'		=> $count_d,
 			'user_input'		=> $this->session->userdata('name'),
 			'tanggal'			=> date('Y-m-d'),
 			'tanggal_input'		=> date('Y-m-d'),
-			'tanggal_pengiriman'=> date('Y-m-d', strtotime($data['tanggal_pengiriman'])),
+			'tanggal_pengiriman'=> $tgl_pengiriman,
+			'tgl_terima_it'		=> $tgl_terima_it,
 		);
-
 
 		for($x = 0; $x < $count_d ; $x++) {
 

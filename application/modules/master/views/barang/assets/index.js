@@ -1,6 +1,6 @@
 var tables;
 
-var search_name,kategori,merk ,type;
+var search_name,kategori,merk ,type, stock;
 $(document).ready(function() {
 
     $('.select2-single').select2({});
@@ -24,11 +24,14 @@ $(document).ready(function() {
                 data.kategori       = $("#kategori").val();
                 data.merk           = $("#merk").val();
                 data.type           = $("#type").val();
+                data.stock          = $("#stock").val();
             },
         },
         'order': [0, 'ASC'],
         "columnDefs":[
-            {"orderData": 1, "targets": 2}]
+            {"orderData": 1, "targets": 2},
+            {targets: 0,width:'10%',className: 'text-center'},
+        ]
     });
 
     $("#"+tableData+"_filter").css("display", "none");
@@ -49,6 +52,10 @@ $(document).ready(function() {
     });
 
     $("#type").on("change", function () { //button filter event click
+        tables.ajax.reload(); //just reload table
+    });
+
+    $("#stock").on("change", function () { //button filter event click
         tables.ajax.reload(); //just reload table
     });
 });

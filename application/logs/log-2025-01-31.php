@@ -1290,3 +1290,7 @@ ERROR - 2025-01-31 15:19:06 --> Language file contains no data: language/indones
 ERROR - 2025-01-31 15:20:16 --> Language file contains no data: language/indonesian/config_lang.php
 ERROR - 2025-01-31 15:20:16 --> Language file contains no data: language/indonesian/config_lang.php
 ERROR - 2025-01-31 15:20:16 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2025-01-31 16:55:54 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2025-01-31 16:55:55 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2025-01-31 16:55:55 --> Language file contains no data: language/indonesian/config_lang.php
+ERROR - 2025-01-31 16:55:55 --> Language file contains no data: language/indonesian/config_lang.php

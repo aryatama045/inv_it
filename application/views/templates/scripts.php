@@ -92,7 +92,7 @@
 <script src="<?= base_url('assets/') ?>js/base/settings.js"></script>
 <!-- Template Base Scripts End -->
 
-<script src="<?= base_url('assets/') ?>js/pages/customerDetails.js"></script>
+<script src="<?= base_url('assets/') ?>js/pages/customers.detail.js"></script>
 <script src="<?= base_url('assets/') ?>js/pages/profile.standard.js"></script>
 <script src="<?= base_url('assets/') ?>js/plugins/notifies.js"></script>
 

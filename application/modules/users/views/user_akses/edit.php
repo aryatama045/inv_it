@@ -43,23 +43,23 @@
                 <h3 class="pb-0">Form  <?= $function ?> - <?= $pagetitle ?></h3>
                 <hr class="mb-2">
 
-                <form class="row g-3" action="<?= base_url($mod.'/'.$func.'/edit/'.$user_akses['nip']); ?>" method="POST">
+                <form class="row g-3" action="<?= base_url($mod.'/'.$func.'/edit/'.$user_akses['id']); ?>" method="POST">
                     <div class="col-12 col-md-6" >
                         <label class="form-label text-black"><strong>NIP <span style="color:red">*</span></strong></label>
-                        <input type="text" class="form-control" required name="nip" value="<?= $user_akses['username'] ?>" />
+                        <input type="text" class="form-control" required name="username" value="<?= $user_akses['username'] ?>" />
                     </div>
 
                     <div class="col-12 col-md-6">
                         <label class="form-label text-black"><strong>Nama Lengkap <span style="color:red">*</span>  </strong></label>
                         <div class="input-group">
-                            <input type="text" required name="nama" class="form-control" value="<?= $user_akses['name'] ?>"  />
+                            <input type="text" required name="name" class="form-control" value="<?= $user_akses['name'] ?>"  />
                         </div>
                     </div>
 
 
                     <div class="col-12 col-md-3">
                         <label class="form-label text-black"><strong>Roles<span style="color:red">*</span></strong></label>
-                        <select class="form-control" name="roles" id="roles" required>
+                        <select class="form-control" name="roles_id" id="roles_id" required>
                             <option value="" >-- Select Roles --</option>
                             <?php $roles = $this->Model_global->getRoles();
                                 foreach($roles as $key => $val) { ?>

@@ -47,8 +47,29 @@ class Model_user_akses extends CI_Model
 	// ---- Action Start
 	function saveTambah()
 	{
-		$data = $_POST;
-		$insert = $this->db->insert($this->table, $data);
+		$data 				= $_POST;
+		$password 			= password_hash($data['nip'], PASSWORD_DEFAULT);
+
+		$dataUsers = array(
+			'name'			=> 'name',
+			'username'		=> $data['nip'],
+			'roles_id'		=> $data['roles'],
+			'password'		=> $password ,
+			'status'		=> $data['status'],
+			'created_at'	=> date('Y-m-d H:i:s'),
+		);
+		$insert  = $this->db->insert('users', $dataUsers);
+
+		$getUser = $this->db->where('username', $data['nip'])
+							->from('users')
+							->get()->row_array();
+
+		$dataRoles = array(
+			'user_id'	=> $getUser['id'],
+			'role_id'	=> $data['roles'],
+		);
+		$insert  = $this->db->insert('roles_users', $dataRoles);
+
 		return ($insert)?TRUE:FALSE;
 	}
 

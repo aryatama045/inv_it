@@ -47,7 +47,7 @@
 
                     <div class="col-12 col-md-6">
                         <label class="form-label text-black"><strong>Nip Karyawan<span style="color:red">*</span></strong></label>
-                        <select class="form-select select2-single" name="pengirim" id="pengirim" required>
+                        <select class="form-select select2-single" name="nip" id="nip" required>
                             <option value=""> -- Select Nip Karyawan --</option>
                             <?php $Personil1 = $this->Model_global->getPersonil();
                             foreach ($Personil1 as $key => $val) { ?>

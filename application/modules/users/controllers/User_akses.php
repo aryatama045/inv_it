@@ -138,13 +138,13 @@ class User_akses extends Admin_Controller  {
 	public function edit($id)
 	{
 
-		$this->form_validation->set_rules('nip' ,'Nip ' , 'required');
+		$this->form_validation->set_rules('username' ,'Nip ' , 'required');
         if ($this->form_validation->run() == TRUE) {
 
-			$edit_form = $this->Model_user_akses->saveEdit($id);
+			$edit_form = $this->Model_user_akses->saveEdit();
 
 			if($edit_form) {
-				$this->session->set_flashdata('success', 'Nip  : "'.$_POST['nip'].'" <br> Berhasil Di Update !!');
+				$this->session->set_flashdata('success', 'Nip  : "'.$_POST['username'].'" <br> Berhasil Di Update !!');
 				redirect('users/user_akses', 'refresh');
 			} else {
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');

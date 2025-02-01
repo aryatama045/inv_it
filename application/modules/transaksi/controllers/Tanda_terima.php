@@ -412,7 +412,7 @@ class Tanda_terima extends Admin_Controller  {
 				}
 			}
 
-			$insert = $this->db->insert_batch('inv_web_it.tanda_terima_h', $temp_data);
+			$insert = $this->db->insert_batch('tanda_terima_h', $temp_data);
 			if($insert){
 				$this->session->set_flashdata('success', '<span class="glyphicon glyphicon-ok"></span> Data Berhasil di Import ke Database');
 				redirect($_SERVER['HTTP_REFERER']);

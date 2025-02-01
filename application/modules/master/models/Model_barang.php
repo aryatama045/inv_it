@@ -11,7 +11,7 @@ class Model_barang extends CI_Model
 
 	function getKodeBarang($id = NULL)
 	{
-		$getKode = $this->db->query("SELECT RIGHT(kode_barang,3)+1 as gencode FROM inv_web_it.mst_barang
+		$getKode = $this->db->query("SELECT RIGHT(kode_barang,3)+1 as gencode FROM mst_barang
 		WHERE kode_kategori ='$id' ORDER BY kode_barang DESC LIMIT 1")->row_array();
 
 		$code 	 	 = $id;
@@ -91,7 +91,7 @@ class Model_barang extends CI_Model
 			$kodeBarang 		= $data['kode_barang'];
 		}
 
-		$cekStok 			= $this->db->query("SELECT * FROM inv_web_it.stock
+		$cekStok 			= $this->db->query("SELECT * FROM stock
 								WHERE kode_barang='$kodeBarang' ")->row_array();
 
 		if($data['barang_stock'] == 'True'){
@@ -131,12 +131,12 @@ class Model_barang extends CI_Model
 			);
 			if(empty($cekStok)){
 				tesx($dataBarang, $addStock, 'oke');
-				$insert = $this->db->insert('inv_web_it.stock', $addStock);
+				$insert = $this->db->insert('stock', $addStock);
 			}
 		}
 
 		tesx($dataBarang);
-		$insert = $this->db->insert('inv_web_it.mst_barang', $dataBarang);
+		$insert = $this->db->insert('mst_barang', $dataBarang);
 
 		return ($insert)?TRUE:FALSE;
 	}

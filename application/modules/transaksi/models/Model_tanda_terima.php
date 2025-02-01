@@ -19,7 +19,7 @@ class Model_tanda_terima extends CI_Model
 		$date		 = date('ym');
 		$sno_doc 	 = $docCode.$date;
 
-		$hasil = $this->db->query("SELECT RIGHT(nomor_transaksi,4)+1 as gencode FROM inv_web_it.tanda_terima_h
+		$hasil = $this->db->query("SELECT RIGHT(nomor_transaksi,4)+1 as gencode FROM tanda_terima_h
 		WHERE nomor_transaksi LIKE '".$sno_doc."%' ORDER BY nomor_transaksi DESC LIMIT 1");
 
         $result = $hasil->row_array();
@@ -71,10 +71,10 @@ class Model_tanda_terima extends CI_Model
 			}else if($type == 'detail'){
 
 				$this->db->select('h.*, d.*, b.nama_barang, s.nama nama_status');
-				$this->db->from('inv_web_it.tanda_terima_d d');
-				$this->db->join('inv_web_it.tanda_terima_h h'		,'d.nomor_transaksi = h.nomor_transaksi','left');
-				$this->db->join('inv_web_it.mst_barang b'			,'d.kode_barang 	= b.kode_barang','left');
-				$this->db->join('inv_web_it.mst_status_barang s'	,'d.status_barang 	= s.status_barang','left');
+				$this->db->from('tanda_terima_d d');
+				$this->db->join('tanda_terima_h h'		,'d.nomor_transaksi = h.nomor_transaksi','left');
+				$this->db->join('mst_barang b'			,'d.kode_barang 	= b.kode_barang','left');
+				$this->db->join('mst_status_barang s'	,'d.status_barang 	= s.status_barang','left');
 				$this->db->where('h.nomor_transaksi', $id);
 				$this->db->order_by('d.no_urut');
 				$query= $this->db->get();
@@ -98,10 +98,10 @@ class Model_tanda_terima extends CI_Model
 
 	public function getDataDetail($nomor_transaksi){
 		$this->db->select('h.*, d.*, b.nama_barang, s.nama nama_status');
-		$this->db->from('inv_web_it.tanda_terima_d d');
-		$this->db->join('inv_web_it.tanda_terima_h h'		,'d.nomor_transaksi = h.nomor_transaksi','left');
-		$this->db->join('inv_web_it.mst_barang b'			,'d.kode_barang 	= b.kode_barang','left');
-		$this->db->join('inv_web_it.mst_status_barang s'	,'d.status_barang 	= s.status_barang','left');
+		$this->db->from('tanda_terima_d d');
+		$this->db->join('tanda_terima_h h'		,'d.nomor_transaksi = h.nomor_transaksi','left');
+		$this->db->join('mst_barang b'			,'d.kode_barang 	= b.kode_barang','left');
+		$this->db->join('mst_status_barang s'	,'d.status_barang 	= s.status_barang','left');
 		$this->db->where('h.nomor_transaksi', $nomor_transaksi);
 		$this->db->order_by('d.no_urut');
 		$query= $this->db->get();
@@ -166,13 +166,13 @@ class Model_tanda_terima extends CI_Model
 				$kode_barang 	= $data['kd_brg'][$x];
 				$where 		 	= array('kode_barang' => $kode_barang);
 				$update_status 	= array('status_barang' => $status_barang);
-				$this->db->where($where)->update('inv_web_it.mst_barang', $update_status);
+				$this->db->where($where)->update('mst_barang', $update_status);
 			// Update Status Barang
 		}
 
-		$insert 		= $this->db->insert('inv_web_it.tanda_terima_h', $header);
+		$insert 		= $this->db->insert('tanda_terima_h', $header);
 
-		$insert_detail 	= $this->db->insert_batch('inv_web_it.tanda_terima_d', $log_detail);
+		$insert_detail 	= $this->db->insert_batch('tanda_terima_d', $log_detail);
 
 		return ($insert)?TRUE:FALSE;
 	}

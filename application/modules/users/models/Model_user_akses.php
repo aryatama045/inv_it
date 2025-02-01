@@ -15,9 +15,9 @@ class Model_user_akses extends CI_Model
 	{
 
 		$this->db->select("a.*, a.status aktif, b.nip, b.nama nama_karyawan, b.kd_store, c.name roles");
-        $this->db->from('inv_web_it.users a');
-        $this->db->join('inv_web_it.mst_personil b',    'a.username = b.nip', 'left');
-        $this->db->join('inv_web_it.roles c',           'a.roles_id = c.id', 'left');
+        $this->db->from('users a');
+        $this->db->join('mst_personil b',    'a.username = b.nip', 'left');
+        $this->db->join('roles c',           'a.roles_id = c.id', 'left');
         $this->db->order_by('a.name, a.username', 'ASC');
 
         if($search_name !="")

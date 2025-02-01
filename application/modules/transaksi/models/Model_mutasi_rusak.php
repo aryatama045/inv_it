@@ -112,9 +112,9 @@ class Model_mutasi_rusak extends CI_Model
 			array_push($log_detail, $detail);
 		}
 
-		$insert 		= $this->db->insert('inv_web_it.mutasi_rusak_h', $header);
+		$insert 		= $this->db->insert('mutasi_rusak_h', $header);
 
-		$insert_detail 	= $this->db->insert_batch('inv_web_it.mutasi_rusak_d', $log_detail);
+		$insert_detail 	= $this->db->insert_batch('mutasi_rusak_d', $log_detail);
 
 		return ($insert)?TRUE:FALSE;
 	}

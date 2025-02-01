@@ -15,11 +15,14 @@ class Model_status_barang extends CI_Model
 
 		$this->db->select('*');
         $this->db->from($this->table);
-        $this->db->order_by('status_barang', 'ASC');
+        $this->db->order_by('nama,status_barang', 'ASC');
 
-        if($search_name !="")
-			$this->db->like('status_barang',$search_name);
-			$this->db->or_like('nama',$search_name);
+        if($search_name !=""){
+			$this->db->group_start();
+				$this->db->like('status_barang',$search_name);
+				$this->db->or_like('nama',$search_name);
+			$this->db->group_end();
+		}
 
 		if($result == 'result'){
 			$this->db->limit($length,$start);

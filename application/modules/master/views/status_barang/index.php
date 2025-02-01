@@ -64,7 +64,7 @@
 				<table id="<?= $table_data ?>" class="table table-bordered data-table responsive stripe w-100">
 					<thead class="mt-4">
 						<tr>
-							<th class="text-bold text-uppercase">Kode</th>
+							<th class="text-bold text-uppercase text-center">Kode</th>
 							<th class="text-bold text-uppercase">Nama</th>
 							<th class="text-bold text-uppercase">Action</th>
 						</tr>

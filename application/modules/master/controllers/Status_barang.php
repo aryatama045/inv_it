@@ -32,25 +32,27 @@ class Status_barang extends Admin_Controller  {
 	{
 		$cn 	= $this->router->fetch_class(); // Controller
 
-		$draw           = $_REQUEST['draw'];
-		$length         = $_REQUEST['length'];
-		$start          = $_REQUEST['start'];
-		$column 		= $_REQUEST['order'][0]['column'];
-		$order 			= $_REQUEST['order'][0]['dir'];
+		$draw           		= $_REQUEST['draw'];
+		$length         		= $_REQUEST['length'];
+		$start          		= $_REQUEST['start'];
+		// $column 				= $_REQUEST['order'][0]['column'];
+		// $order 				= $_REQUEST['order'][0]['dir'];
+		$column 				= '';
+		$order 					= '';
 
-        $output['data']	= array();
-		$search_name   = $this->input->post('search_name');
+        $output['data']			= array();
+		$search_name   			= $this->input->post('search_name');
 
-		$data           = $this->Model_status_barang->getDataStore('result',$search_name,$length,$start,$column,$order);
-		$data_jum       = $this->Model_status_barang->getDataStore('numrows',$search_name);
+		$data           		= $this->Model_status_barang->getDataStore('result',$search_name,$length,$start,$column,$order);
+		$data_jum       		= $this->Model_status_barang->getDataStore('numrows',$search_name);
 
-		$output=array();
-		$output['draw'] = $draw;
+		$output					= array();
+		$output['draw'] 		= $draw;
 		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
 
 		if($search_name !=""  ){
-			$data_jum = $this->Model_status_barang->getDataStore('numrows',$search_name);
-			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
+			$data_jum 				= $this->Model_status_barang->getDataStore('numrows',$search_name);
+			$output['recordsTotal']	= $output['recordsFiltered'] = $data_jum;
 		}
 
 		if($data){

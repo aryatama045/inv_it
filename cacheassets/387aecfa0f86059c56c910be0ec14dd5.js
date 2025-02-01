@@ -7,11 +7,11 @@ $(document).ready(function() {
     tables = $('#'+tableData).DataTable({
         'processing': true,
         'serverSide': true,
-        'serverMethod': 'post',
         'paging' : true,
         'autoWidth': false,
         'destroy': true,
         'responsive': false,
+        'ordering' : false,
         'ajax': {
             'url': linkstore,
             'type': 'POST',
@@ -21,7 +21,9 @@ $(document).ready(function() {
         },
         'order': [0, 'ASC'],
         "columnDefs":[
-            {"orderData": 1, "targets": 2}]
+            {"orderData": 1, "targets": 2},
+            {targets: 0,width:'10%',className: 'text-center'},
+        ]
     });
 
     $("#"+tableData+"_filter").css("display", "none");

@@ -5,24 +5,28 @@ $(document).ready(function() {
 
     //# initialize the datatable
     tables = $('#'+tableData).DataTable({
-        'processing': true,
-        'serverSide': true,
-        'serverMethod': 'post',
-        'scrollX': true,
-        'paging' : true,
-        'autoWidth': false,
-        'destroy': true,
-        'responsive': false,
-        'ajax': {
-            'url': linkstore,
-            'type': 'POST',
-            'data': function(data) {
-                data.search_name = $('#search_name').val();
-            },
-        },
-        'order': [0, 'ASC'],
-        "columnDefs":[
-            {"orderData": 1, "targets": 2}]
+        'processing'    : true,
+        'serverSide'    : true,
+        'serverMethod'  : 'post',
+        'paging'        : true,
+        'autoWidth'     : false,
+        'destroy'       : true,
+        'responsive'    : false,
+        'ajax'          : {
+                            'url': linkstore,
+                            'type': 'POST',
+                            'data': function(data) {
+                                data.search_name = $('#search_name').val();
+                            },
+                        },
+        'order'         : [0, 'ASC'],
+        "columnDefs"    : [
+                            {"orderData": 1, "targets": 2},
+                            {targets: 0,className: 'text-center'},
+                            {targets: 1,className: 'text-center'},
+                            {targets: 2,className: 'text-center'},
+                            {targets: 3,className: 'text-center'},
+                        ],
     });
 
     $("#"+tableData+"_filter").css("display", "none");
@@ -40,7 +44,7 @@ function remove(id)
     $("#btn-delete").removeAttr('class');
     $("#btn-delete").text('Remove');
     $("#btn-delete").addClass('btn btn-danger');
-    $("#removeModal h5").text('Remove Mata Kuliah');
+    $("#removeModal h5").text('Remove  ');
     $("#messages_modal_remove").html('');
     $("#id span").html('Remove '+' <strong> '+id+'</strong>');
     if(id){
@@ -62,7 +66,7 @@ function remove(id)
                         if(response.success === true) {
                             $("#messages").html('<div class="alert alert-success alert-dismissible fade show" role="alert">'+
                                 '<strong>'+response.messages+ '</strong>' +
-                                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+                                + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
 
                             // hide the modal
                             $("#removeModal").modal('hide');
@@ -72,7 +76,7 @@ function remove(id)
                             $("#messages_modal_remove").html('<div class="alert alert-warning alert-dismissible fade show" role="alert">'+
                                 '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span>  '+response.messages+ '</strong>' +
                                 '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>' +
-                            '</div>');
+                            + '</div>');
                         }
                     }
                 });

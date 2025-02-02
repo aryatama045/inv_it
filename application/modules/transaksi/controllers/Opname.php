@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Mutasi_rusak extends Admin_Controller  {
+class Opname extends Admin_Controller  {
 
 	public function __construct()
 	{
@@ -12,25 +12,26 @@ class Mutasi_rusak extends Admin_Controller  {
 		$this->data['pagetitle'] = capital($cn);
 		$this->data['function'] = capital($f);
 
-		$this->load->model('Model_mutasi_rusak');
+		$this->load->model('Model_opname');
 		$this->load->model('master/Model_barang');
 
 	}
 
 	public function starter()
 	{
-		$this->data['new_nomor_transaksi'] = $this->Model_mutasi_rusak->getNomorTransaksi();
+		$this->data['new_nomor_transaksi'] = $this->Model_opname->getNomorTransaksi();
 	}
 
 	public function index()
 	{
 		$this->starter();
-		$this->render_template('mutasi_rusak/index',$this->data);
+		$this->render_template('opname/index',$this->data);
 	}
 
 
 	public function store()
 	{
+        $f 		= $this->router->fetch_method(); // Function
 		$cn 	= $this->router->fetch_class(); // Controller
 
 		$draw           = $_REQUEST['draw'];
@@ -42,15 +43,15 @@ class Mutasi_rusak extends Admin_Controller  {
         $output['data']	= array();
 		$search_name   = $this->input->post('search_name');
 
-		$data           = $this->Model_mutasi_rusak->getDataStore('result',$search_name,$length,$start,$column,$order);
-		$data_jum       = $this->Model_mutasi_rusak->getDataStore('numrows',$search_name);
+		$data           = $this->Model_opname->getDataStore('result',$search_name,$length,$start,$column,$order);
+		$data_jum       = $this->Model_opname->getDataStore('numrows',$search_name);
 
 		$output=array();
 		$output['draw'] = $draw;
 		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
 
 		if($search_name !=""  ){
-			$data_jum = $this->Model_mutasi_rusak->getDataStore('numrows',$search_name);
+			$data_jum = $this->Model_opname->getDataStore('numrows',$search_name);
 			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
 		}
 
@@ -63,13 +64,14 @@ class Mutasi_rusak extends Admin_Controller  {
 				$btn 	.= '
 						<a href="'.base_url('transaksi/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-success mb-1">
 							<i class="fa fa-eye"></i> </a>
-						</a>
-						<a hidden href="'.base_url('transaksi/'.$cn.'/print/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-info mb-1">
-							<i class="fa fa-print"></i> </a>
-						</a>
-						<a hidden href="'.base_url('transaksi/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-warning mb-1">
-							<i class="fa fa-edit"></i> </a>
 						</a>';
+						
+                $btn 	.= '<a hidden href="'.base_url('transaksi/'.$cn.'/print/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-info mb-1">
+							<i class="fa fa-print"></i> </a>
+                            </a>
+                            <a hidden href="'.base_url('transaksi/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-warning mb-1">
+                                <i class="fa fa-edit"></i> </a>
+                            </a>';
 
 				$btn .= ' <a hidden class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
 				$btn .= "remove('".$id."')";
@@ -96,15 +98,14 @@ class Mutasi_rusak extends Admin_Controller  {
 	{
 
 		$this->starter();
-		// $this->data['data_mutasi'] = $this->Model_mutasi_rusak->getData($id);
-		$this->data['header'] = $this->Model_mutasi_rusak->getData($id, 'header');
-		$this->data['detail'] = $this->Model_mutasi_rusak->getData($id);
+		$this->data['header'] = $this->Model_opname->getData($id, 'header');
+		$this->data['detail'] = $this->Model_opname->getData($id);
 
 		if($this->data['header']['nomor_transaksi']){
-			$this->render_template('mutasi_rusak/detail',$this->data);
+			$this->render_template('opname/detail',$this->data);
 		}else{
 			$this->session->set_flashdata('error', 'Silahkan Cek kembali data !!');
-			redirect('transaksi/mutasi_rusak', 'refresh');
+			redirect('transaksi/opname', 'refresh');
 		}
 
 	}
@@ -118,19 +119,19 @@ class Mutasi_rusak extends Admin_Controller  {
 
         if ($this->form_validation->run() == TRUE) {
 
-			$create_form = $this->Model_mutasi_rusak->saveTambah();
+			$create_form = $this->Model_opname->saveTambah();
 
 			if($create_form) {
 				$this->session->set_flashdata('success', 'Berhasil Disimpan !!');
-				redirect('transaksi/mutasi_rusak', 'refresh');
+				redirect('transaksi/opname', 'refresh');
 			} else {
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
-				redirect('transaksi/mutasi_rusak/tambah', 'refresh');
+				redirect('transaksi/opname/tambah', 'refresh');
 			}
 
 		}else{
 			$this->starter();
-			$this->render_template('mutasi_rusak/tambah',$this->data);
+			$this->render_template('opname/tambah',$this->data);
 		}
 
 	}
@@ -141,25 +142,25 @@ class Mutasi_rusak extends Admin_Controller  {
 
         if ($this->form_validation->run() == TRUE) {
 
-			$edit_form = $this->Model_mutasi_rusak->saveEdit($id);
+			$edit_form = $this->Model_opname->saveEdit($id);
 
 			if($edit_form) {
 				$this->session->set_flashdata('success', 'Nama : "'.$_POST['nama'].'" <br> Berhasil Di Update !!');
 				redirect('master/barang', 'refresh');
 			} else {
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
-				redirect('master/mutasi_rusak/edit/'.$id, 'refresh');
+				redirect('master/opname/edit/'.$id, 'refresh');
 			}
 
 		}else{
 			$this->starter();
-			$this->data['barang'] = $this->Model_mutasi_rusak->getBarang($id);
+			$this->data['barang'] = $this->Model_opname->getBarang($id);
 
 			if($this->data['barang']['kode_barang']){
-				$this->render_template('mutasi_rusak/edit',$this->data);
+				$this->render_template('opname/edit',$this->data);
 			}else{
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
-				redirect('master/mutasi_rusak/edit/'.$id, 'refresh');
+				redirect('master/opname/edit/'.$id, 'refresh');
 			}
 		}
 	}
@@ -170,7 +171,7 @@ class Mutasi_rusak extends Admin_Controller  {
 
 		$response = array();
 		if($id) {
-			$delete = $this->Model_mutasi_rusak->saveDelete($id);
+			$delete = $this->Model_opname->saveDelete($id);
 
 			if($delete == true) {
 				$response['success'] 	= true;

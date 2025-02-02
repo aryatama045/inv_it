@@ -160,15 +160,15 @@ class Barang extends Admin_Controller  {
 
 				$btn 	= '';
 				$btn 	.= '<a href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon  btn-success mb-1">
-								<i class="fa fa-eye"></i> Show</a>
+								<i class="fa fa-eye"></i> </a>
 							</a>
-							<a href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon  btn-warning mb-1">
-								<i class="fa fa-edit"></i> Edit</a>
+							<a hidden href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon  btn-warning mb-1">
+								<i class="fa fa-edit"></i> </a>
 							</a>';
-				// $btn 	.= ' <a class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
-				// $btn 	.= "remove('".$id."')";
-				// $btn 	.= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
-				// 		<i class="fa fa-trash"></i></a>';
+				$btn 	.= '<a hidden class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
+				$btn 	.= "remove('".$id."')";
+				$btn 	.= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
+						<i class="fa fa-trash"></i></a>';
 
 				$StatusBarang = $this->Model_global->getStatusBarang($value['status_barang']);
 

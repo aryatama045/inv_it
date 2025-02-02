@@ -159,25 +159,7 @@
 </div>
 <!-- modal datatable item list -->
 
-<!-- modal alert item list -->
-<div class="modal fade" tabindex="-1" role="dialog" id="modalAlert">
-    <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="staticModalLabel">Information</h3>
-            </div>
-            <div class="modal-body">
-                <div class="box-body">
-                    <div id="messages-alert"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a class="btn btn-default" data-bs-dismiss="modal" id='btn-information'>Close</a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- modal alert item list -->
+
 
 
 <script src="<?= base_url('assets/js/jquery-2.2.0.min.js') ?>"></script>
@@ -246,8 +228,8 @@ $(document).ready(function() {
 
     /* Inisialisasi Table List BKB */
     tableListBKB = $('#tableListBKB').DataTable({
-        'orderCellsTop' : true,
-        'fixedHeader'   : true,
+        // 'orderCellsTop' : true,
+        // 'fixedHeader'   : true,
         'processing'    : true,
         'ordering'      : false,
         'bPaginate'     : false,
@@ -301,8 +283,8 @@ $(document).ready(function() {
 
         /* Cek Stock Sebelum ditambahakan */
         if(rowData[3]==0){
-            // dialog_warning('Notification',"Stock Barang Kosong");
-            alert("Stock Barang Kosong ");
+            dialog_warning('Notification',"Stock Barang Kosong");
+            // alert("Stock Barang Kosong ");
             return false;
         }
 
@@ -359,7 +341,7 @@ $(document).ready(function() {
                 if(qty=='') qty=0;
                 if(parseInt(qty) > parseInt(max_qty)){
                     // dialog_warning('Notification',"Qty tidak boleh lebih besar dari Stock");
-                    alert("Qty tidak boleh lebih besar dari Stock : '"+max_qty+"' ");
+                    dialog_warning("Qty tidak boleh lebih besar dari Stock : '"+max_qty+"' ");
                     this.value = input_qty;
                 }
             });
@@ -371,7 +353,8 @@ $(document).ready(function() {
             $('#showItemData').modal('hide');
             $('input[data-barang="'+rowData[0]+'"]').focus();
         }else{
-            alert("Barang Sudah Ditambahkan");
+            // alert("Barang Sudah Ditambahkan");
+            dialog_warning('Notification',"Barang Sudah Ditambahkan");
             return false;
             // response failed
         }

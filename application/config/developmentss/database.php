@@ -7,13 +7,13 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
 
-	// 'hostname' => '192.168.10.84',
-	// 'username' => 'sa',
-	// 'password' => 'dualcore',
+	'hostname' => '192.168.10.84',
+	'username' => 'sa',
+	'password' => 'dualcore',
 
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
+	// 'hostname' => 'localhost',
+	// 'username' => 'root',
+	// 'password' => '',
 	'database' => 'inv_web_it',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

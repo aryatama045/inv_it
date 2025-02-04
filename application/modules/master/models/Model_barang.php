@@ -79,7 +79,63 @@ class Model_barang extends CI_Model
 		}
 
 	}
+
+	function getBarangTransaksi($result,$search_kd_barang="", $search_name = "", $kategori = "", $merk = "", $type ="", $stock ="", $jenis ="", $length = "", $start = "", $column = "", $order = "")
+	{
+
+		$this->db->select('*');
+        $this->db->from('mst_barang');
+        $this->db->order_by('kode_barang', 'ASC');
+
+        if($search_name !="")
+		{
+			$this->db->group_start();
+				$this->db->like('kode_barang', $search_name);
+                $this->db->or_like('nama_barang', $search_name);
+			$this->db->group_end();
+		}
+
+		if($search_kd_barang !="")
+		{
+			$this->db->like('kode_barang', $search_kd_barang);
+		}
+
+		if($kategori !="")
+		{
+			$this->db->where('kode_kategori', $kategori);
+		}
+
+		if($merk !="")
+		{
+			$this->db->where('kode_merk', $merk);
+		}
+
+		if($type !="")
+		{
+			$this->db->where('kode_type', $type);
+		}
+
+		if($stock !="")
+		{
+			$this->db->where('barang_stock', $stock);
+		}
+
+		$this->db->where_not_in('status_barang', ['R', 'H'] );
+
+		if($result == 'result'){
+			$this->db->limit($length,$start);
+			$query=$this->db->get();
+			return $query->result_array();
+
+		}else{
+			$query=$this->db->get();
+			return $query->num_rows();
+		}
+
+	}
 	// ---- Datatables END
+
+
 
 	// ---- Action Start
 	function saveTambah()
@@ -130,12 +186,12 @@ class Model_barang extends CI_Model
 				'out'			=> '0'
 			);
 			if(empty($cekStok)){
-				tesx($dataBarang, $addStock, 'oke');
+				// tesx($dataBarang, $addStock, 'oke');
 				$insert = $this->db->insert('stock', $addStock);
 			}
 		}
 
-		tesx($dataBarang);
+		// tesx($dataBarang);
 		$insert = $this->db->insert('mst_barang', $dataBarang);
 
 		return ($insert)?TRUE:FALSE;

@@ -24,20 +24,6 @@ class Model_global extends CI_Model {
         }
     }
 
-    function getHistoryBarang($id = NULL)
-    {
-        $this->db->select('d.*, h.kode_dokumen, h.tanggal, st.nama status_new, sto.nama status_old
-            ,h.pengirim, h.penerima, h.tujuan');
-        $this->db->from('tanda_terima_d d');
-        $this->db->join('tanda_terima_h h', 'd.nomor_transaksi = h.nomor_transaksi', 'left');
-        $this->db->join('mst_status_barang st', 'd.status_barang = st.status_barang', 'left');
-        $this->db->join('mst_status_barang sto', 'd.status_barang_old = sto.status_barang', 'left');
-        $this->db->where('d.kode_barang',$id);
-        $this->db->order_by('h.nomor_transaksi, h.tanggal', 'DESC');
-        $query	= $this->db->get();
-        return $query->result_array();
-    }
-
     function getKategori($id = NULL)
     {
         $this->db->select('*');
@@ -83,7 +69,7 @@ class Model_global extends CI_Model {
         }
     }
 
-    function getStatusBarang($id = NULL)
+    function getStatusBarang($id = NULL, $jenis = NULL)
     {
         $this->db->select('mst_status_barang.*, CONCAT(status_barang,"-", nama) AS full_name', FALSE);
 		$this->db->from('mst_status_barang');
@@ -93,8 +79,14 @@ class Model_global extends CI_Model {
             $query=$this->db->get();
             return $query->row_array();
         }else{
-            $query=$this->db->get();
-            return $query->result_array();
+            if($jenis){
+                $this->db->where_not_in('status_barang', ['R','H', 'BS','E','J','N']);
+                $query=$this->db->get();
+                return $query->result_array();
+            }else{
+                $query=$this->db->get();
+                return $query->result_array();
+            }
         }
     }
 
@@ -132,21 +124,6 @@ class Model_global extends CI_Model {
 
     }
 
-    function getRoles($id = NULL)
-    {
-        $this->db->select('roles.*');
-		$this->db->from('roles');
-        $this->db->order_by('id,name', 'ASC');
-        if($id){
-            $this->db->where('id', $id);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
-    }
-
     function getStore($id = NULL)
     {
         $this->db->select('*');
@@ -166,6 +143,8 @@ class Model_global extends CI_Model {
 
     }
 
+    // END DATA MASTER GET
+
     function getMenuSetting()
     {
         $this->db->select('*');
@@ -176,10 +155,23 @@ class Model_global extends CI_Model {
         // die(nl2br($this->db->last_query()));
         return $query->result_array();
     }
-    // END DATA GET
 
+    function getRoles($id = NULL)
+    {
+        $this->db->select('roles.*');
+		$this->db->from('roles');
+        $this->db->order_by('id,name', 'ASC');
+        if($id){
+            $this->db->where('id', $id);
+            $query=$this->db->get();
+            return $query->row_array();
+        }else{
+            $query=$this->db->get();
+            return $query->result_array();
+        }
+    }
 
-    public function showRecentTandaTerima()
+    function showRecentTandaTerima()
 	{
         $this->db->from('tanda_terima_h');
         $this->db->order_by('tanggal, nomor_transaksi', 'DESC');
@@ -187,6 +179,32 @@ class Model_global extends CI_Model {
         $query	= $this->db->get();
         return $query->result_array();
 	}
+
+    function getHistoryBarang($id = NULL)
+    {
+        $this->db->select('d.*, h.kode_dokumen, h.tanggal, st.nama status_new, sto.nama status_old
+            ,h.pengirim, h.penerima, h.tujuan');
+        $this->db->from('tanda_terima_d d');
+        $this->db->join('tanda_terima_h h', 'd.nomor_transaksi = h.nomor_transaksi', 'left');
+        $this->db->join('mst_status_barang st', 'd.status_barang = st.status_barang', 'left');
+        $this->db->join('mst_status_barang sto', 'd.status_barang_old = sto.status_barang', 'left');
+        $this->db->where('d.kode_barang',$id);
+        $this->db->order_by('h.nomor_transaksi, h.tanggal', 'DESC');
+        $query	= $this->db->get();
+        return $query->result_array();
+    }
+
+    function getMutasiBarang($id = NULL)
+    {
+        $this->db->select('d.*,   h.tanggal_input,  sto.nama status_old ');
+        $this->db->from('mutasi_rusak_d d');
+        $this->db->join('mutasi_rusak_h h', 'd.nomor_transaksi = h.nomor_transaksi', 'left');
+        $this->db->join('mst_status_barang sto', 'd.status_barang_old = sto.status_barang', 'left');
+        $this->db->where('d.kode_barang',$id);
+        $this->db->order_by('h.nomor_transaksi, h.tanggal_input', 'DESC');
+        $query	= $this->db->get();
+        return $query->result_array();
+    }
 
 
 }

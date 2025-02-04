@@ -13,7 +13,6 @@ class Tanda_terima extends Admin_Controller  {
 		$this->data['function'] = capital($f);
 
 		$this->load->model('Model_tanda_terima');
-		$this->load->model('master/Model_barang');
 
 	}
 
@@ -194,73 +193,6 @@ class Tanda_terima extends Admin_Controller  {
 		echo json_encode($response);
 	}
 
-
-	// Get Data Ajax
-	public function getBarangAjax()
-	{
-		$draw           = $_REQUEST['draw'];
-		$length         = $_REQUEST['length'];
-		$start          = $_REQUEST['start'];
-		// $column 		= $_REQUEST['order'][0]['column'];
-		// $order 			= $_REQUEST['order'][0]['dir'];
-		$column 		= '';
-		$order 			= '';
-
-        $output['data']	= array();
-		// $search_name   	= $this->input->post('search_name');
-		$kategori   	= $this->input->post('kategori');
-		$merk   		= $this->input->post('merk');
-		$type   		= $this->input->post('type');
-
-		$search_kd_barang 	= $_REQUEST['columns'][0]['search']["value"];
-		$search_name 		= $_REQUEST['columns'][1]['search']["value"];
-		$stok				= $_REQUEST['columns'][2]['search']["value"];
-
-		$data           = $this->Model_barang->getDataStore('result',$search_kd_barang,$search_name,$kategori,$merk,$type,$stok,$length,$start,$column,$order);
-		$data_jum       = $this->Model_barang->getDataStore('numrows',$search_kd_barang,$search_name,$kategori,$merk,$type,$stok);
-
-		$output			= array();
-		$output['draw'] = $draw;
-		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
-
-		if($search_name !="" || $stok != "" ){
-			$data_jum = $this->Model_barang->getDataStore('numrows',$search_kd_barang,$search_name,$kategori,$merk,$type,$stok);
-			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
-		}
-
-		if($data){
-			foreach ($data as $key => $value)  {
-
-				if($value['barang_stock'] == 'True'){
-					$getstock = $this->Model_global->getStockBarang($value['kode_barang']);
-					if($getstock != NULL){
-
-						$stock = $getstock['saldo_awal'] + $getstock['in'] - $getstock['out'];
-					}else{
-						$stock = '0';
-					}
-				}else{
-					$stock = '1';
-				}
-
-				$output['data'][$key] = array(
-					$value['kode_barang'],
-					$value['nama_barang'],
-					$value['barang_stock'],
-					$stock,
-					$value['lokasi_terakhir'],
-					$value['status_barang']
-				);
-
-				$key++;
-
-			}
-
-		}else{
-			$output['data'] = [];
-		}
-		echo json_encode($output);
-	}
 
 
 	public function print_action()

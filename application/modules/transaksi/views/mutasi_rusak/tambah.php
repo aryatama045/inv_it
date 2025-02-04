@@ -186,9 +186,6 @@
 
 
 <script src="<?= base_url('assets/js/jquery-2.2.0.min.js') ?>"></script>
-<!-- Dialog -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.35.4/css/bootstrap-dialog.css"  />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.35.4/js/bootstrap-dialog.min.js" ></script>
 
 <script type="text/javascript">
 var base_url  = '<?php echo base_url()?>';
@@ -226,7 +223,7 @@ $(document).ready(function() {
         'fixedColumns': true,
         'order'         : [0, 'ASC'],
         'ajax': {
-            'url': base_url + 'transaksi/tanda_terima/getBarangAjax',
+            'url': base_url + 'master/barang/getBarangAjax',
             'type':'POST',
             "dataSrc": function ( response ) {
                 // if(!response.model.success){

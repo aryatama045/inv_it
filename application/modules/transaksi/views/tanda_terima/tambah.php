@@ -218,9 +218,8 @@ var tableListItems,tableListBKB;
 var action = 'Tambah';
 var timer;
 var jns_kode='';
-<?php $status = $this->Model_global->getStatusBarang(); ?>
 
-var getstatus = <?php echo json_encode($status) ?>;
+// var getstatus = <?php echo json_encode($status) ?>;
 
 
 $(document).ready(function() {
@@ -239,8 +238,8 @@ $(document).ready(function() {
 
     /* inisialisasi Tabel Browse Barang */
     tableListItems = $('#tableListItems').DataTable({
-        'orderCellsTop' : true,
-        'fixedHeader'   : true,
+        // 'orderCellsTop' : true,
+        // 'fixedHeader'   : true,
         'processing'    : true,
         'serverSide'    : true,
         "autoWidth"     : false,
@@ -248,7 +247,7 @@ $(document).ready(function() {
         'fixedColumns': true,
         'order'         : [0, 'ASC'],
         'ajax': {
-            'url': base_url + 'transaksi/tanda_terima/getBarangAjax',
+            'url': base_url + 'master/barang/getBarangAjax',
             'type':'POST',
             "dataSrc": function ( response ) {
                 // if(!response.model.success){
@@ -360,7 +359,7 @@ $(document).ready(function() {
                         "<input type='hidden' name='qty[]' id='qty' class='form-control' style='width:100%' value='"+rowData[3]+"' data-barang='"+rowData[0]+"' data-max-qty='"+rowData[3]+"' maxlength='5'/>" + rowData[3],
                         '<select class="form-select" name="status[]" required>' +
                             '<option value=""> -- Select Status --</option>' +
-                            <?php $status = $this->Model_global->getStatusBarang();
+                            <?php $status = $this->Model_global->getStatusBarang('', 'tanda_terima');
                             foreach ($status as $key => $val) { ?>
                             '<option value="<?= $val['status_barang'] ?>"><?= $val['status_barang']." - ".trim($val['nama']) ?></option>' +
                             <?php } ?>
@@ -392,7 +391,7 @@ $(document).ready(function() {
                         // "<input type='text' name='status[]'  class='form-control' value='"+rowData[5]+"' style='width:100%;text-align:center;' readonly  />",
                         '<select class="form-select" name="status[]" required>' +
                             '<option value=""> -- Select Status --</option>' +
-                            <?php $status = $this->Model_global->getStatusBarang();
+                            <?php $status = $this->Model_global->getStatusBarang('', 'tanda_terima');
                             foreach ($status as $key => $val) { ?>
                             '<option value="<?= $val['status_barang'] ?>"><?= $val['status_barang']." - ".trim($val['nama']) ?></option>' +
                             <?php } ?>
@@ -552,8 +551,6 @@ function deleteRow(no_urut,kd_brg){
     // count_qty();
 }
 /* End Action Saat tombol delete di click */
-
-
 
 
 </script>

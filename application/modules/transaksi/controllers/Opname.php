@@ -65,7 +65,7 @@ class Opname extends Admin_Controller  {
 						<a href="'.base_url('transaksi/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-success mb-1">
 							<i class="fa fa-eye"></i> </a>
 						</a>';
-						
+
                 $btn 	.= '<a hidden href="'.base_url('transaksi/'.$cn.'/print/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-info mb-1">
 							<i class="fa fa-print"></i> </a>
                             </a>

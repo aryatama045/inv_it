@@ -203,7 +203,7 @@ $(document).ready(function() {
         'fixedColumns': true,
         'order'         : [0, 'ASC'],
         'ajax': {
-            'url': base_url + 'transaksi/tanda_terima/getBarangAjax',
+            'url': base_url + 'master/barang/getBarangAjax',
             'type':'POST',
             "dataSrc": function ( response ) {
                 // if(!response.model.success){

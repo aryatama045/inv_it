@@ -13,13 +13,12 @@ class Barang extends Admin_Controller  {
 		$this->data['function'] = capital($f);
 
 		$this->load->model('Model_barang');
+		$this->load->model('Model_global');
 
 	}
 
 	public function starter()
-	{
-
-	}
+	{}
 
 	public function index()
 	{
@@ -27,6 +26,20 @@ class Barang extends Admin_Controller  {
 		$this->render_template('barang/index',$this->data);
 	}
 
+	public function show($id)
+	{
+
+		$this->starter();
+		$this->data['barang'] = $this->Model_global->getBarang($id,'header');
+
+		if($this->data['barang']['kode_barang']){
+			$this->render_template('barang/show',$this->data);
+		}else{
+			$this->session->set_flashdata('error', 'Silahkan Cek kembali data !!');
+			redirect('master/barang', 'refresh');
+		}
+
+	}
 
 	public function tambah()
 	{
@@ -83,7 +96,6 @@ class Barang extends Admin_Controller  {
 		}
 	}
 
-
 	public function delete()
 	{
 		$id = $_POST['id'];
@@ -109,19 +121,24 @@ class Barang extends Admin_Controller  {
 	}
 
 
-	public function show($id)
+
+	// --- Get Data Ajax
+	public function getKodeBarang()
 	{
 
-		$this->starter();
-		$this->data['barang'] = $this->Model_global->getBarang($id,'header');
+		$id = $_POST['id'];
 
-		if($this->data['barang']['kode_barang']){
-			$this->render_template('barang/show',$this->data);
+		if($id == '0'){
+			$getKodeBarang = '';
 		}else{
-			$this->session->set_flashdata('error', 'Silahkan Cek kembali data !!');
-			redirect('master/barang', 'refresh');
+			$getKodeBarang = $this->Model_barang->getKodeBarang($id);
 		}
 
+		$output['kode'] = $getKodeBarang;
+
+		//"<input type='text' readonly value='". $getKodeBarang ."' name='kode_barang' class='form-control'>";
+
+		echo json_encode($output);
 	}
 
 	public function store()
@@ -190,25 +207,70 @@ class Barang extends Admin_Controller  {
 		echo json_encode($output);
 	}
 
-	public function getKodeBarang()
+	public function getBarangAjax()
 	{
+		$output['data']		= array();
+		$draw           	= $_REQUEST['draw'];
+		$length         	= $_REQUEST['length'];
+		$start          	= $_REQUEST['start'];
+		$column 			= '';
+		$order 				= '';
 
-		$id = $_POST['id'];
+		$search_kd_barang 	= $_REQUEST['columns'][0]['search']["value"];
+		$search_name 		= $_REQUEST['columns'][1]['search']["value"];
+		$stok				= $_REQUEST['columns'][2]['search']["value"];
+		$jenis 				= $this->input->post('jenis_transaksi');
 
-		if($id == '0'){
-			$getKodeBarang = '';
-		}else{
-			$getKodeBarang = $this->Model_barang->getKodeBarang($id);
+		$kategori   		= $this->input->post('kategori');
+		$merk   			= $this->input->post('merk');
+		$type   			= $this->input->post('type');
+
+
+		$data           	= $this->Model_barang->getBarangTransaksi('result',$search_kd_barang,$search_name,$kategori,$merk,$type,$stok,$jenis,$length,$start,$column,$order);
+		$data_jum       	= $this->Model_barang->getBarangTransaksi('numrows',$search_kd_barang,$search_name,$kategori,$merk,$type,$stok,$jenis);
+
+		$output			= array();
+		$output['draw'] = $draw;
+		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
+
+		if($search_name !="" || $search_kd_barang != "" || $stok != "" || $jenis != "" ){
+			$data_jum = $this->Model_barang->getBarangTransaksi('numrows',$search_kd_barang,$search_name,$kategori,$merk,$type,$stok,$jenis);
+			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
 		}
 
-		$output['kode'] = $getKodeBarang;
+		if($data){
+			foreach ($data as $key => $value)  {
 
-		//"<input type='text' readonly value='". $getKodeBarang ."' name='kode_barang' class='form-control'>";
+				if($value['barang_stock'] == 'True'){
+					$getstock = $this->Model_global->getStockBarang($value['kode_barang']);
+					if($getstock != NULL){
 
+						$stock = $getstock['saldo_awal'] + $getstock['in'] - $getstock['out'];
+					}else{
+						$stock = '0';
+					}
+				}else{
+					$stock = '1';
+				}
+
+				$output['data'][$key] = array(
+					$value['kode_barang'],
+					$value['nama_barang'],
+					$value['barang_stock'],
+					$stock,
+					$value['lokasi_terakhir'],
+					$value['status_barang']
+				);
+
+				$key++;
+
+			}
+
+		}else{
+			$output['data'] = [];
+		}
 		echo json_encode($output);
 	}
-
-
 
 }
 

@@ -302,9 +302,9 @@
                         <h4 class="text-black pb-1 border-bottom border-separator-light mb-2">Log Mutasi Rusak</h4>
 
                         <?php
-                            $history = $this->Model_global->getHistoryBarang($barang['kode_barang']);
-                            if($history) {
-                            foreach ($history as $key => $val) { ?>
+                            $mutasi = $this->Model_global->getMutasiBarang($barang['kode_barang']);
+                            if($mutasi) {
+                            foreach ($mutasi as $key => $val) { ?>
 
                         <div class="row g-0">
                             <div class="col-auto sw-1 d-flex flex-column justify-content-center align-items-center position-relative me-4">
@@ -320,41 +320,23 @@
                                 <div class="h-100">
                                     <div class="d-flex flex-column justify-content-start">
                                         <div class="d-flex flex-column">
-                                            <?php
-                                                $getPengirim    = $this->Model_global->getPersonil($val['pengirim']);
-                                                $pengirim       = $getPengirim['nip'].'-'.$getPengirim['nama'];
-                                                $getPenerima    = $this->Model_global->getPersonil($val['penerima']);
-                                                $penerima       = $getPenerima['nip'].'-'.$getPenerima['nama'];
-                                                $getTujuan    = $this->Model_global->getPersonil($val['tujuan']);
-                                                $tujuan       = ($getTujuan['nip'])?$getTujuan['nip'].'-'.$getTujuan['nama']:$getTujuan['kd_store'].'-'.$getTujuan['nama'];
-
-                                            ?>
-                                            <h4 class="text-black border-bottom border-separator-light mb-1"><b><?= $val['kode_dokumen'] ?> - <?= $val['nomor_transaksi'] ?> </b></h4>
+                                            <h4 class="text-black border-bottom border-separator-light mb-1">
+                                                <b><a href="<?= base_url('transaksi/mutasi_rusak/show/').$val['nomor_transaksi'] ?>"> <?= $val['nomor_transaksi'] ?> </a></b>
+                                            </h4>
                                             <table class="table table-borderless">
                                                 <tbody>
                                                     <tr>
                                                         <td width="16%">Tanggal</td>
-                                                        <td class="font-weight-bold"> : <?= tanggal($val['tanggal']) ?></td>
+                                                        <td class="font-weight-bold"> : <?= tanggal($val['tanggal_input']) ?></td>
                                                     </tr>
-                                                    <tr>
-                                                        <td >Pengirim</td>
-                                                        <td class="font-weight-bold"> : <?= $pengirim ?></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Penerima</td>
-                                                        <td class="font-weight-bold"> : <?= $penerima ?></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Tujuan</td>
-                                                        <td class="font-weight-bold"> : <?= $tujuan ?></td>
-                                                    </tr>
+
                                                     <tr>
                                                         <td>Status</td>
-                                                        <td class="font-weight-bold"> : <?= $val['status_barang_old'] ?>-<?= $val['status_old'] ?> => <?= $val['status_barang'] ?>-<?= $val['status_new'] ?></td>
+                                                        <td class="font-weight-bold"> : <?= $barang['status_barang'] ?> - <?= $status_barang['nama'] ?> </td>
                                                     </tr>
                                                     <tr>
                                                         <td>Qty Barang</td>
-                                                        <td class="font-weight-bold"> : <?= $val['qty'] ?></td>
+                                                        <td class="font-weight-bold"> : <?= $val['qty_in'] ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td>Keterangan</td>

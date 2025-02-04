@@ -8,7 +8,8 @@
                 <a class="muted-link pb-2 d-inline-block hidden" href="#">
                     <span class="align-middle lh-1 text-small">&nbsp;</span>
                 </a>
-                <h1 class="mb-0 pb-0 display-4" id="title">Welcome, <?= $this->session->userdata('username'); ?> ! <br>
+                <?php $Personil = $this->Model_global->getPersonil($this->session->userdata('username')); ?>
+                <h1 class="mb-0 pb-0 display-4 text-black font-weight-bold" id="title">Welcome, <b> <?= $Personil['nip'].' - '.$Personil['nama'] ?></b> ! <br>
             </div>
             <!-- Title End -->
         </div>

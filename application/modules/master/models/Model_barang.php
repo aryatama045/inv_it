@@ -120,7 +120,7 @@ class Model_barang extends CI_Model
 			$this->db->where('barang_stock', $stock);
 		}
 
-		$this->db->where_not_in('status_barang', ['R', 'H'] );
+		// $this->db->where_not_in('status_barang', ['R', 'H'] );
 
 		if($result == 'result'){
 			$this->db->limit($length,$start);

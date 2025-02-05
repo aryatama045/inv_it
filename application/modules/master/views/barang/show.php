@@ -81,7 +81,11 @@
                                         </tr>
                                         <tr>
                                             <td>Serial Number</td>
-                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['serial_number'])) ?></td>
+                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['keterangan_acct'])) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Keterangan</td>
+                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['keterangan'])) ?></td>
                                         </tr>
                                         <tr>
                                             <td>Kode Barang</td>

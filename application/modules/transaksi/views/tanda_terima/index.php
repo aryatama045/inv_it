@@ -30,12 +30,12 @@
 				<!-- Top Buttons Start -->
 				<div class="col-12 col-md-5 d-flex align-items-start justify-content-end">
 
-					<a class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1"
+					<!-- <a class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1"
 						data-bs-effect="effect-super-scaled"
                         data-bs-toggle="modal" href="#modal_import">
 						<i class="fa fa-download"></i>
 						<span>Import</span>
-					</a>
+					</a> -->
 
 					<!-- Add New Button Start -->
 					<a href="<?= base_url($mod.'/'.$func.'/tambah') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">

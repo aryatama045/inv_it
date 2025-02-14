@@ -6,7 +6,6 @@ class Dashboard extends Admin_Controller
 	{
 		parent::__construct();
 
-
 		$this->data['pagetitle'] = 'Dashboard';
 		$this->load->model('Model_dashboard');
 		$this->load->model('Model_auth');

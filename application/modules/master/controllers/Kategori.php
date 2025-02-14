@@ -18,7 +18,7 @@ class Kategori extends Admin_Controller  {
 
 	public function starter()
 	{
-
+		$this->data['kode_kategori'] = $this->Model_kategori->getKodeKategori();
 	}
 
 
@@ -142,9 +142,9 @@ class Kategori extends Admin_Controller  {
 
 		}else{
 			$this->starter();
-			$this->data['kategori'] = $this->Model_global->getKategori($id);
+			$this->data['param'] = $this->Model_global->getKategori($id);
 
-			if($this->data['kategori']['kode_kategori']){
+			if($this->data['param']['kode_kategori']){
 				$this->render_template('kategori/edit',$this->data);
 			}else{
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');

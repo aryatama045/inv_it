@@ -18,7 +18,7 @@ class Merk extends Admin_Controller  {
 
 	public function starter()
 	{
-
+		$this->data['kode_merk'] = $this->Model_merk->getKodeMerk();
 	}
 
 
@@ -125,9 +125,9 @@ class Merk extends Admin_Controller  {
 
 		}else{
 			$this->starter();
-			$this->data['merk'] = $this->Model_global->getMerk($id);
+			$this->data['param'] = $this->Model_global->getMerk($id);
 
-			if($this->data['merk']['kode_merk']){
+			if($this->data['param']['kode_merk']){
 				$this->render_template('merk/edit',$this->data);
 			}else{
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');

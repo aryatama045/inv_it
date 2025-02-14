@@ -60,10 +60,11 @@ class Status_barang extends Admin_Controller  {
 				$id		= $value['status_barang'];
 
 				$btn 	= '';
-				$btn 	.= '<a href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-success mb-1">
+				$btn 	.= '<a hidden href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-success mb-1">
 								<i class="fa fa-eye"></i> </a>
-							</a>
-							<a href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-warning mb-1">
+							</a>';
+
+				$btn 	.= '<a href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-warning mb-1">
 								<i class="fa fa-edit"></i> </a>
 							</a>';
 
@@ -127,9 +128,9 @@ class Status_barang extends Admin_Controller  {
 
 		}else{
 			$this->starter();
-			$this->data['type'] = $this->Model_global->getStatusBarang($id);
+			$this->data['param'] = $this->Model_global->getStatusBarang($id);
 
-			if($this->data['type']['status_barang']){
+			if($this->data['param']['status_barang']){
 				$this->render_template('status_barang/edit',$this->data);
 			}else{
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');

@@ -81,7 +81,7 @@
 
                     <div class="col-12 col-md-6" >
                         <label class="form-label text-black"><strong>Tanggal Proses <span style="color:red">*</span></strong></label>
-                        <input class="form-control" type="datetime-local" name="tanggal_pengiriman" value=<?= date('d-m-Y') ?> required id="selectTanggalWaktu" />
+                        <input class="form-control" name="tanggal_pengiriman" value=<?= date('d-m-Y') ?> required id="selectTanggalAwal" />
                     </div>
 
 
@@ -248,8 +248,8 @@ $(document).ready(function() {
 
     /* Inisialisasi Table List BKB */
     tableListBKB = $('#tableListBKB').DataTable({
-        'orderCellsTop' : true,
-        'fixedHeader'   : true,
+        // 'orderCellsTop' : true,
+        // 'fixedHeader'   : true,
         'processing'    : true,
         'ordering'      : false,
         'bPaginate'     : false,

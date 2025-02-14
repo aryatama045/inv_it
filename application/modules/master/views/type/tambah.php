@@ -42,9 +42,15 @@
                 <hr class="mb-2">
 
                 <form class="row g-3" action="<?= base_url($mod.'/'.$func.'/tambah'); ?>" method="POST">
+
                     <div class="col-12 col-md-6">
-                        <label class="form-label text-black-50"><strong>Nama Agama<span style="color:red">*</span></strong></label>
-                        <input type="text" class="form-control" required name="nama" placeholder="Input Nama Agama" />
+                        <label class="form-label text-black-50"><strong>Kode <span style="color:red">*</span></strong></label>
+                        <input type="text" class="form-control" required name="kode_type" value="<?= $kode_type ?>" readonly/>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label text-black-50"><strong>Nama <span style="color:red">*</span></strong></label>
+                        <input type="text" class="form-control" required name="nama" placeholder="Input Nama" />
                     </div>
 
                     <div class="col-12">

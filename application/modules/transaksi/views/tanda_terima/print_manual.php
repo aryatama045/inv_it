@@ -37,7 +37,7 @@ class PDF extends Pdf_javascript
         $this->Ln(0.8);
         $this->Line(11,$this->GetY(),199,$this->GetY());
         $this->setFont('Arial','BU',8);
-        $this->cell(0,6,'TANDA TERIMA - '.$this->header['kode_dokumen'],0,0,'C');
+        $this->cell(0,6,'TANDA TERIMA MANUAL - '.$this->header['kode_dokumen'],0,0,'C');
         $this->Ln(10);
         $this->setFont('Arial','',8);
         $this->cell(30,1,'Kepada',0,0,'L');
@@ -61,15 +61,9 @@ class PDF extends Pdf_javascript
         $this->Line(11,$this->GetY(),199,$this->GetY());
         $this->Ln(3);
         $this->cell(8,1,'NO.',0,0,'C');
-        $this->cell(20,1,'KODE ',0,0,'L');
-        $this->cell(2,1,'',0,0,'R');
-        $this->cell(65,1,'NAMA BARANG',0,0,'L');
-        $this->cell(30,1,'STATUS',0,0,'L');
         $this->cell(15,1,'QTY',0,0,'C');
         $this->cell(35,1,'KETERANGAN',0,0,'L');
         $this->Ln(3);
-        $this->cell(40,1,'',0,0,'R');
-        // $this->cell(10,1,'RUSAK',0,0,'C');
         $this->cell(175,1,'',0,0,'L');
         $this->Ln(4);
         $this->Line(11,$this->GetY(),199,$this->GetY());
@@ -88,10 +82,6 @@ class PDF extends Pdf_javascript
             if($value['qty']!=0){
 
                 $this->cell(8,1,$urut,0,0,'C');
-                $this->cell(20,1,$value['kode_barang'],0,0,'L');
-                $this->cell(2,1,'',0,0,'R');
-                $this->cell(65,1,$value['nama_barang'],0,0,'L');
-                $this->cell(30,1,$value['status_barang'],0,0,'L');
                 $this->cell(15,1,$value['qty'],0,0,'C');
                 $this->cell(35,1,$value['keterangan_barang'],0,0,'L');
 
@@ -135,7 +125,7 @@ class PDF extends Pdf_javascript
         $this->Ln(18);
         $this->cell(155,1,'',0,0,'C');
         $this->Ln(4);
-        $this->cell(60,1,'(                              )',0,0,'C');
+        $this->cell(60,1,'(                           )',0,0,'C');
         $this->cell(30,1,'',0,0,'C');
         $this->cell(40,1,'',0,0,'C');
         $this->cell(45,1,'('.$this->header['pengirim'].')',0,0,'C');

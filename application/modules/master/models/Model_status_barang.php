@@ -46,7 +46,7 @@ class Model_status_barang extends CI_Model
 	function saveEdit()
 	{
 		$data = $_POST;
-		$this->db->where(['kode_type' => $data['kode_type']]);
+		$this->db->where(['status_barang' => $data['status_barang']]);
 		$update = $this->db->update($this->table, $data);
 
 		return ($update)?TRUE:FALSE;
@@ -54,7 +54,7 @@ class Model_status_barang extends CI_Model
 
 	function saveDelete($id)
 	{
-		$this->db->where(['kode_type' => $id]);
+		$this->db->where(['status_barang' => $id]);
 		$delete = $this->db->delete($this->table);
 
 		return ($delete)?TRUE:FALSE;

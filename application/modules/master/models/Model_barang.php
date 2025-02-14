@@ -120,7 +120,11 @@ class Model_barang extends CI_Model
 			$this->db->where('barang_stock', $stock);
 		}
 
-		// $this->db->where_not_in('status_barang', ['R', 'H'] );
+		if($jenis == "OUT")
+		{
+			$this->db->where_in('status_barang', ['S', 'QTY', 'N'] );
+			// $this->db->where_not_in('status_barang', ['R', 'H'] );
+		}
 
 		if($result == 'result'){
 			$this->db->limit($length,$start);
@@ -141,11 +145,11 @@ class Model_barang extends CI_Model
 	function saveTambah()
 	{
 		$data 				= $_POST;
-		if($data['kategori'] != '0'){
+		// if($data['kategori'] != '0'){
 			$kodeBarang 		= $this->getKodeBarang($data['kategori']);
-		}else{
+		// }else{
 			$kodeBarang 		= $data['kode_barang'];
-		}
+		// }
 
 		$cekStok 			= $this->db->query("SELECT * FROM stock
 								WHERE kode_barang='$kodeBarang' ")->row_array();
@@ -169,7 +173,7 @@ class Model_barang extends CI_Model
 			'kode_type'			=> $data['type'],
 			'harga_beli'		=> $data['harga_beli'],
 			'harga_asuransi'	=> $data['harga_asuransi'],
-			'lokasi_akhir'		=> 'HO_IT',
+			'lokasi_terakhir'	=> 'HO_IT',
 			'status_barang'		=> $status_barang,
 			'barang_stock'		=> $barang_stock,
 			'user_input'		=> $this->session->userdata('username'),
@@ -186,12 +190,10 @@ class Model_barang extends CI_Model
 				'out'			=> '0'
 			);
 			if(empty($cekStok)){
-				// tesx($dataBarang, $addStock, 'oke');
 				$insert = $this->db->insert('stock', $addStock);
 			}
 		}
 
-		// tesx($dataBarang);
 		$insert = $this->db->insert('mst_barang', $dataBarang);
 
 		return ($insert)?TRUE:FALSE;

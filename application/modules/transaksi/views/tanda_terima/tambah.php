@@ -52,18 +52,18 @@
 
                         <div class="col-12 col-md-4" >
                             <label class="form-label text-black"><strong>Jenis Dokumen<span style="color:red">*</span></strong></label>
-                            <!-- <select class="form-control select2-single" name="kd_dokumen" id="kd_dokumen" required>
+                            <select class="form-control select2-single kd_dokumen" name="kd_dokumen" id="kd_dokumen" required>
                                 <option value=""> -- Select Jenis --</option>
                                 <option value="IN" >IN - Terima</option>
                                 <option value="OUT" >OUT - Kirim</option>
-                            </select> -->
+                            </select>
 
-                            <div class="form-group">
-                                <input type="radio" class="btn-check kd_dokumen" id="inTerima" value="IN" name="kd_dokumen" checked>
+                            <!-- <div class="form-group">
+                                <input type="radio" class="btn-check kd_dokumen" id="inTerima" value="IN" name="kd_dokumen" >
                                 <label class="btn btn-outline-primary" for="inTerima">IN - TERIMA</label>
                                 <input type="radio" class="btn-check kd_dokumen" id="outKirim" value="OUT" name="kd_dokumen">
                                 <label class="btn btn-outline-primary" for="outKirim">OUT - KIRIM</label>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 
@@ -86,7 +86,7 @@
                             <select class="form-select select2-single" name="pengirim" id="pengirim" required>
                                 <option value=""> -- Select Pengirim --</option>
                                 <?php $Personil1 = $this->Model_global->getPersonil();
-                                foreach ($Personil1 as $key => $val) { ?>
+                                    foreach ($Personil1 as $key => $val) { ?>
                                     <?php if($val['nip'] == 0){ ?>
                                         <option value="<?= $val['kd_store'] ?>" ><?= $val['kd_store'].'-'.$val['nama'] ?></option>
                                     <?php } else { ?>
@@ -142,7 +142,7 @@
                             <th class="text-center">Kode Barang</th>
                             <th class="text-center">Nama Barang</th>
                             <th class="text-center" width="10%">Qty</th>
-                            <th class="text-center">Status</th>
+                            <th class="text-center">Status <span style="color:red">*</span></th>
                             <th class="text-center">Keterangan</th>
                             <th class="text-center"> <a class="btn btn-icon btn-icon-only btn-primary btn-icon-end addRow" onclick='addRow()'><i data-acorn-icon="plus"></i> </a> </th>
                         </thead>
@@ -259,6 +259,7 @@ $(document).ready(function() {
                 return $.extend({}, d, {
                 'kd_store_tujuan' : $('#kd_store_tujuan').val(),
                 'kategori'        : $('#kategori').val(),
+                'kode_dokumen'    : jns_kode,
                 });
             }
             },
@@ -391,7 +392,7 @@ $(document).ready(function() {
                         // "<input type='text' name='status[]'  class='form-control' value='"+rowData[5]+"' style='width:100%;text-align:center;' readonly  />",
                         '<select class="form-select" name="status[]" required>' +
                             '<option value=""> -- Select Status --</option>' +
-                            <?php $status = $this->Model_global->getStatusBarang('', 'tanda_terima');
+                            <?php $status = $this->Model_global->getStatusBarang('', '');
                             foreach ($status as $key => $val) { ?>
                             '<option value="<?= $val['status_barang'] ?>"><?= $val['status_barang']." - ".trim($val['nama']) ?></option>' +
                             <?php } ?>
@@ -505,7 +506,7 @@ function validasi_add_item(){
     // }
 
 
-    if($('#kd_dokumen').val() == ""){
+    if($('.kd_dokumen').val() == ""){
         // alert('Pilih Jenis Dokumen Terlebih Dahulu');
         dialog_warning('Notification',"Pilih Jenis Dokumen Terlebih Dahulu");
         return false;

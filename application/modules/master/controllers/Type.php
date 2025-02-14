@@ -18,7 +18,7 @@ class Type extends Admin_Controller  {
 
 	public function starter()
 	{
-
+		$this->data['kode_type'] = $this->Model_type->getKodeTypes();
 	}
 
 
@@ -27,6 +27,7 @@ class Type extends Admin_Controller  {
 		$this->starter();
 		$this->render_template('type/index',$this->data);
 	}
+
 
 	public function store()
 	{
@@ -55,10 +56,11 @@ class Type extends Admin_Controller  {
 
 		if($data){
 			foreach ($data as $key => $value) {
+
 				$id		= $value['kode_type'];
 
 				$btn 	= '';
-				$btn 	.= '<a href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-success mb-1">
+				$btn 	.= '<a hidden href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-success mb-1">
 								<i class="fa fa-eye"></i> </a>
 							</a>
 							<a href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-warning mb-1">
@@ -125,9 +127,9 @@ class Type extends Admin_Controller  {
 
 		}else{
 			$this->starter();
-			$this->data['type'] = $this->Model_global->getType($id);
+			$this->data['param'] = $this->Model_global->getType($id);
 
-			if($this->data['type']['kode_type']){
+			if($this->data['param']['kode_type']){
 				$this->render_template('type/edit',$this->data);
 			}else{
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');

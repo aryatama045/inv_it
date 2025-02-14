@@ -41,10 +41,16 @@
                 <h3 class="pb-0">Form <?= $function ?> - <?= $pagetitle ?></h3>
                 <hr class="mb-2">
 
-                <form class="row g-3" action="<?= base_url($mod.'/'.$func.'/edit/'.$agama['id']); ?>" method="POST">
-                    <div class="col-12 col-md-4">
-                        <label class="form-label text-black-50"><strong>Nama Agama<span style="color:red">*</span></strong></label>
-                        <input type="text" class="form-control" required name="nama" value="<?= $agama['nama'] ?>"/>
+                <form class="row g-3" action="<?= base_url($mod.'/'.$func.'/edit/'.$param['kode_kategori']); ?>" method="POST">
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label text-black-50"><strong>Kode Kategori<span style="color:red">*</span></strong></label>
+                        <input type="text" class="form-control" required name="kode_kategori" value="<?= $param['kode_kategori'] ?>" readonly />
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label text-black-50"><strong>Nama Kategori<span style="color:red">*</span></strong></label>
+                        <input type="text" class="form-control" required name="nama" value="<?= $param['nama'] ?>" />
                     </div>
 
                     <div class="col-12">

@@ -58,7 +58,7 @@ class Model_global extends CI_Model {
     {
         $this->db->select('*');
 		$this->db->from('mst_type');
-        $this->db->order_by('kode_type,nama', 'ASC');
+        $this->db->order_by('kode_type', 'DESC');
         if($id){
             $this->db->where('kode_type', $id);
             $query=$this->db->get();
@@ -80,10 +80,11 @@ class Model_global extends CI_Model {
             return $query->row_array();
         }else{
             if($jenis){
-                $this->db->where_not_in('status_barang', ['R','H', 'BS','E','J','N']);
+                $this->db->where_not_in('status_barang', ['R','H', 'BS','E','J','N','RJ1','RJ2','TOL','W','WJ2','QTY','S']);
                 $query=$this->db->get();
                 return $query->result_array();
             }else{
+                $this->db->where_not_in('status_barang', ['R','H', 'BS','E','J','N','RJ1','RJ2','W','WJ2','QTY','U','TOL','TM','PG']);
                 $query=$this->db->get();
                 return $query->result_array();
             }
@@ -105,17 +106,41 @@ class Model_global extends CI_Model {
         }
     }
 
+    function getDataPengiriman()
+    {
+        $sql = "SELECT * FROM(
+                    SELECT nip id, nama_lengkap nama  FROM hrd_all.mst_biodata
+                    UNION
+                    SELECT kode_store id, nama_store nama FROM hrd_all.mst_store
+                ) h";
+
+        $query = $this->db->query($sql)->result_array();
+
+        return $query;
+    }
+
+
+    // -------
     function getPersonil($id = NULL)
     {
+        $id = preg_replace('/\s+/', '', $id);
         $this->db->select('*');
 		$this->db->from('mst_personil');
         // $this->db->where('aktif', 1);
         $this->db->order_by('nama', 'ASC');
         if($id){
-            $this->db->where('nip', $id);
-            $this->db->or_where('kd_store', $id);
-            $query=$this->db->get();
-            return $query->row_array();
+            $cek_id = is_numeric($id);
+
+            if($cek_id == TRUE){
+                $this->db->where('nip', $id);
+                $query=$this->db->get();
+                return $query->row_array();
+            }else{
+                $this->db->where('kd_store', $id);
+                $this->db->where('nip', 0);
+                $query=$this->db->get();
+                return $query->row_array();
+            }
 
         }else{
             $query=$this->db->get();
@@ -126,15 +151,24 @@ class Model_global extends CI_Model {
 
     function getStore($id = NULL)
     {
+        $id = preg_replace('/\s+/', '', $id);
         $this->db->select('*');
 		$this->db->from('mst_personil');
         // $this->db->where('aktif', 1);
         $this->db->order_by('nama', 'ASC');
         if($id){
+            $cek_id = is_numeric($id);
 
-            $this->db->where('kd_store', $id);
-            $query=$this->db->get();
-            return $query->row_array();
+            if($cek_id == TRUE){
+                $this->db->where('nip', $id);
+                $query=$this->db->get();
+                return $query->row_array();
+            }else{
+                $this->db->where('kd_store', $id);
+                $this->db->where('nip', 0);
+                $query=$this->db->get();
+                return $query->row_array();
+            }
 
         }else{
             $query=$this->db->get();
@@ -142,6 +176,7 @@ class Model_global extends CI_Model {
         }
 
     }
+    // --------
 
     // END DATA MASTER GET
 
@@ -196,7 +231,7 @@ class Model_global extends CI_Model {
 
     function getMutasiBarang($id = NULL)
     {
-        $this->db->select('d.*,   h.tanggal_input,  sto.nama status_old ');
+        $this->db->select('d.*,   h.tanggal_input,h.keterangan, sto.nama status_old ');
         $this->db->from('mutasi_rusak_d d');
         $this->db->join('mutasi_rusak_h h', 'd.nomor_transaksi = h.nomor_transaksi', 'left');
         $this->db->join('mst_status_barang sto', 'd.status_barang_old = sto.status_barang', 'left');

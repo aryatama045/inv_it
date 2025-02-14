@@ -81,11 +81,14 @@
                                         </tr>
                                         <tr>
                                             <td>Serial Number</td>
-                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['keterangan_acct'])) ?></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Keterangan</td>
-                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['keterangan'])) ?></td>
+                                            <td class="font-weight-bold"> :
+                                                <?php if($barang['serial_number'] != NULL){ ?>
+                                                    <?= uppercase(lowercase($barang['serial_number'])) ?>
+                                                <?php }else{ ?>
+
+                                                    <?= uppercase(lowercase($barang['keterangan_acct'])) ?>
+                                                <?php } ?>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Kode Barang</td>
@@ -110,6 +113,10 @@
                                             <td>Status</td>
                                             <?php $status_barang = $this->Model_global->getStatusBarang($barang['status_barang']); ?>
                                             <td class="font-weight-bold"> : <?= $barang['status_barang'] ?> - <?= $status_barang['nama'] ?> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Keterangan</td>
+                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['keterangan'])) ?></td>
                                         </tr>
                                         <tr>
                                             <td>Barang Stock</td>

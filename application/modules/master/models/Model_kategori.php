@@ -10,6 +10,23 @@ class Model_kategori extends CI_Model
 		$this->table = 'mst_kategori';
 	}
 
+	function sortByGrade($a, $b) {
+		if ($a == $b) return 0;
+		return ($a < $b) ? -1 : 1;
+	}
+
+	public function getKodeKategori()
+	{
+		$kode_kategori = $this->Model_global->getKategori();
+
+		usort($kode_kategori, array($this,'sortByGrade'));
+
+		$myLastKode = $kode_kategori[array_key_last($kode_kategori)];
+
+		return $myLastKode;
+	}
+
+
 	public function getDataStore($result, $search_name = "", $length = "", $start = "", $column = "", $order = "")
 	{
 

@@ -35,6 +35,28 @@ class Model_tanda_terima extends CI_Model
         }
 	}
 
+	public function getNomorTransaksiManual()
+	{
+		$docCode	 ='TTM';
+		$date		 = date('ym');
+		$sno_doc 	 = $docCode.$date;
+
+		$hasil = $this->db->query("SELECT RIGHT(nomor_transaksi,4)+1 as gencode FROM tanda_terima_h
+		WHERE nomor_transaksi LIKE '".$sno_doc."%' ORDER BY nomor_transaksi DESC LIMIT 1");
+
+        $result = $hasil->row_array();
+
+		if($result){
+			$urut = $result['gencode'];
+			for ($i=4; $i > strlen($result['gencode']) ; $i--) {
+				$urut = "0".$urut;
+			}
+			return $sno_doc.$urut;
+		}else{
+			return $sno_doc."0001";
+        }
+	}
+
 	public function getDataStore($result, $search_name = "", $length = "", $start = "", $column = "", $order = "")
 	{
 
@@ -134,6 +156,7 @@ class Model_tanda_terima extends CI_Model
 			'tujuan'			=> $data['tujuan'],
 			'jumlah_detail'		=> $count_d,
 			'user_input'		=> $this->session->userdata('name'),
+			'manual'			=> "False",
 			'tanggal'			=> date('Y-m-d'),
 			'tanggal_input'		=> date('Y-m-d'),
 			'tanggal_pengiriman'=> $tgl_pengiriman,
@@ -168,6 +191,60 @@ class Model_tanda_terima extends CI_Model
 				$update_status 	= array('status_barang' => $status_barang);
 				$this->db->where($where)->update('mst_barang', $update_status);
 			// Update Status Barang
+		}
+
+		$insert 		= $this->db->insert('tanda_terima_h', $header);
+
+		$insert_detail 	= $this->db->insert_batch('tanda_terima_d', $log_detail);
+
+		return ($insert)?TRUE:FALSE;
+	}
+
+	function saveTambahManual()
+	{
+		$data = $_POST;
+
+		if($data['kd_dokumen'] == 'IN'){
+			$tgl_pengiriman 	= '';
+			$tgl_terima_it	 	= date('Y-m-d', strtotime($data['tanggal_pengiriman']));
+		}else{
+			$tgl_pengiriman 	= date('Y-m-d', strtotime($data['tanggal_pengiriman']));
+			$tgl_terima_it	 	= '';
+		}
+
+		$log_detail = array();
+		$count_d 	= count($data['keterangan']);
+
+		$header = array(
+			'nomor_transaksi' 	=> $this->getNomorTransaksiManual(),
+			'kode_dokumen' 		=> $data['kd_dokumen'],
+			'keterangan'		=> $data['keterangan_header'],
+			'pengirim'			=> $data['pengirim'],
+			'penerima'			=> $data['penerima'],
+			'tujuan'			=> $data['tujuan'],
+			'jumlah_detail'		=> $count_d,
+			'user_input'		=> $this->session->userdata('name'),
+			'manual'			=> "True",
+			'tanggal'			=> date('Y-m-d'),
+			'tanggal_input'		=> date('Y-m-d'),
+			'tanggal_pengiriman'=> $tgl_pengiriman,
+			'tgl_terima_it'		=> $tgl_terima_it,
+		);
+
+		for($x = 0; $x < $count_d ; $x++) {
+
+			$detail = array(
+				'nomor_transaksi' 	=> $header['nomor_transaksi'],
+				'no_urut' 			=> $x+1,
+				'kode_barang' 		=> '',
+				'qty'		 		=> $data['qty'][$x],
+				'status_barang_old'	=> '',
+				'status_barang'		=> '',
+				'harga_asuransi'	=> '',
+				'keterangan_barang'	=> $data['keterangan'][$x],
+			);
+			array_push($log_detail, $detail);
+
 		}
 
 		$insert 		= $this->db->insert('tanda_terima_h', $header);

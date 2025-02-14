@@ -23,8 +23,16 @@
 
 				<!-- Top Buttons Start -->
 				<div class="col-12 col-md-5 d-flex align-items-start justify-content-end">
+					<!-- <a class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1"
+						data-bs-effect="effect-super-scaled"
+                        data-bs-toggle="modal" href="#modal_import">
+						<i class="fa fa-download"></i>
+						<span>Import</span>
+					</a> -->
+
+
 					<!-- Add New Button Start -->
-					<a href="<?= base_url($mod.'/'.$func.'/tambah') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto add-datatable">
+					<a href="<?= base_url($mod.'/'.$func.'/tambah') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
 						<i data-acorn-icon="plus"></i>
 						<span>Add New</span>
 					</a>
@@ -193,6 +201,46 @@
 </div>
 
 
+<!-- Modal Import -->
+<div class="modal fade" data-bs-backdrop="static" id="modal_import">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content modal-content-demo">
+
+            <div class="card-header">
+                <h2 class="card-title m-0">Import </h2>
+            </div>
+            <form class="modal-dialog-scrollable" enctype='multipart/form-data'  action="<?= base_url($mod.'/'.$func.'/import_excel'); ?>" method="POST">
+
+                <div class="card-body">
+
+                    <div class="form-group mb-2">
+                        <input name="fileExcel" class="form-control" type="file" />
+                    </div>
+
+                    <div class="form-group">
+                        <a href="<?= base_url('upload/template/Template-Barang.xls')?>" download
+							class="btn btn-sm btn-success mb-2"><i class="far fa-save"></i> Download Template</a>
+                    </div>
+
+                </div>
+
+                <div class="card-footer ">
+					<div class="row">
+						<div class="col-md-6">
+							<button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+						</div>
+						<div class="col-md-6">
+							<div class="d-flex align-items-start justify-content-end">
+								<button type="submit" class="btn btn-primary  float-right"><i class="fa fa-save"></i> Submit</button>
+							</div>
+						</div>
+					</div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 

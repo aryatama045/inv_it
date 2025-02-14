@@ -219,7 +219,8 @@ class Barang extends Admin_Controller  {
 		$search_kd_barang 	= $_REQUEST['columns'][0]['search']["value"];
 		$search_name 		= $_REQUEST['columns'][1]['search']["value"];
 		$stok				= $_REQUEST['columns'][2]['search']["value"];
-		$jenis 				= $this->input->post('jenis_transaksi');
+		$jenis 				= $this->input->post('kode_dokumen');
+
 
 		$kategori   		= $this->input->post('kategori');
 		$merk   			= $this->input->post('merk');
@@ -270,6 +271,101 @@ class Barang extends Admin_Controller  {
 			$output['data'] = [];
 		}
 		echo json_encode($output);
+	}
+
+
+	function sortByGrade($a, $b) {
+		if ($a == $b) return 0;
+		return ($a < $b) ? -1 : 1;
+	}
+
+
+	// Import Excel
+	public function import_excel(){
+		$this->load->library(array('excel'));
+		if (isset($_FILES["fileExcel"]["name"])) {
+			$path = $_FILES["fileExcel"]["tmp_name"];
+			$object = PHPExcel_IOFactory::load($path);
+
+			$dataArray = $object->getWorksheetIterator();
+
+			foreach($object->getWorksheetIterator() as $worksheet)
+			{
+				$highestRow = $worksheet->getHighestRow();
+				$highestColumn = $worksheet->getHighestColumn();
+				for($row=2; $row<=$highestRow; $row++)
+				{
+					$kode_kategori 		= $worksheet->getCellByColumnAndRow(0, $row)->getValue();
+					$kode_type 			= $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+					$kode_merk 			= $worksheet->getCellByColumnAndRow(2, $row)->getValue();
+					$kode_barang		= $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+					$nama_barang		= $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+					$tanggal_pembelian	= date('Y-m-d', PHPExcel_Shared_Date::ExcelToPHP($worksheet->getCellByColumnAndRow(5, $row)->getValue()));
+					$harga_beli			= $worksheet->getCellByColumnAndRow(6, $row)->getValue();
+					$serial_number		= $worksheet->getCellByColumnAndRow(7, $row)->getValue();
+					$keterangan_acct	= $worksheet->getCellByColumnAndRow(8, $row)->getValue();
+
+
+					if(strtotime($tanggal_pembelian) > 0){
+						$tgl_pembelian = date('d-m-Y', strtotime($tanggal_pembelian));
+					}else{
+						$tgl_pembelian = '00-00-0000';
+					}
+
+					$cek_type = $this->db->like('nama',$kode_type)->get('mst_type')->row_array();
+					if($cek_type == NULL){
+						$get_type = $this->Model_global->getType();
+
+						usort($get_type, array($this,'sortByGrade'));
+
+						$myLast = $get_type[array_key_last($get_type)];
+
+						$count_type = count($get_type);
+
+						$data_kode_type = $myLast['kode_type']+1;
+
+						$data_type = [
+							'kode_type'	=> $data_kode_type,
+							'nama' => $kode_type
+						];
+						$this->db->insert('mst_type', $data_type);
+					}else{
+						$data_kode_type = $cek_type['kode_type'];
+					}
+
+					$temp_data[] = array(
+						'kode_kategori'			=> $kode_kategori,
+						'kode_type'				=> $data_kode_type,
+						'kode_merk'				=> $kode_merk,
+						'kode_barang'			=> $kode_barang,
+						'nama_barang'			=> $nama_barang,
+						'tanggal_pembelian'		=> $tgl_pembelian,
+						'harga_beli'			=> $harga_beli,
+						'keterangan'			=> '',
+						'keterangan_acct'		=> $keterangan_acct,
+						'status_barang'			=> 'N',
+						'barang_stock'			=> 'False',
+						'serial_number'			=> $serial_number,
+						'harga_asuransi'		=> '0',
+						'tanggal_input'			=> date('Y-m-d'),
+						'user_input'			=> $this->session->userdata('username'),
+					);
+				}
+			}
+
+			$insert = $this->db->insert_batch('mst_barang', $temp_data);
+			if($insert) {
+				$this->session->set_flashdata('success', 'Barang Berhasil Disimpan !!');
+				redirect('master/barang', 'refresh');
+			} else {
+				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
+				redirect('master/barang', 'refresh');
+			}
+
+		}else{
+			$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
+			redirect('master/barang', 'refresh');
+		}
 	}
 
 }

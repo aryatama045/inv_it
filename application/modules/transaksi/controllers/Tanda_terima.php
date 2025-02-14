@@ -19,6 +19,7 @@ class Tanda_terima extends Admin_Controller  {
 	public function starter()
 	{
 		$this->data['new_nomor_transaksi'] = $this->Model_tanda_terima->getNomorTransaksi();
+		$this->data['new_nomor_transaksi_manual'] = $this->Model_tanda_terima->getNomorTransaksiManual();
 	}
 
 	public function index()
@@ -106,7 +107,11 @@ class Tanda_terima extends Admin_Controller  {
 		$this->data['detail'] = $this->Model_tanda_terima->getData($id);
 
 		if($this->data['header']['nomor_transaksi']){
-			$this->render_template('tanda_terima/detail',$this->data);
+			if($this->data['header']['manual'] == 'True'){
+				$this->render_template('tanda_terima/detail_manual',$this->data);
+			}else{
+				$this->render_template('tanda_terima/detail',$this->data);
+			}
 		}else{
 			$this->session->set_flashdata('error', 'Silahkan Cek kembali data !!');
 			redirect('transaksi/tanda_terima', 'refresh');
@@ -135,6 +140,31 @@ class Tanda_terima extends Admin_Controller  {
 		}else{
 			$this->starter();
 			$this->render_template('tanda_terima/tambah',$this->data);
+		}
+
+	}
+
+	public function tambah_manual()
+	{
+		$this->form_validation->set_rules('keterangan[]', 'Keterangan','required',
+				array(	'required' 	=> 'Keterangan Tidak Boleh Kosong !!',
+		));
+
+        if ($this->form_validation->run() == TRUE) {
+
+			$create_form = $this->Model_tanda_terima->saveTambahManual();
+
+			if($create_form) {
+				$this->session->set_flashdata('success', 'Berhasil Disimpan !!');
+				redirect('transaksi/tanda_terima', 'refresh');
+			} else {
+				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
+				redirect('transaksi/tanda_terima/tambah_manual', 'refresh');
+			}
+
+		}else{
+			$this->starter();
+			$this->render_template('tanda_terima/tambah_manual',$this->data);
 		}
 
 	}
@@ -209,20 +239,31 @@ class Tanda_terima extends Admin_Controller  {
 
                     if ($data) {
 
+						$tujuan_str = preg_replace('/\s+/', '', $data[0]['tujuan']);
+
+						$tujuan_cek_numeric = is_numeric($tujuan_str);
+						if($tujuan_cek_numeric == TRUE){
+							$tujuan 	= $this->Model_global->getPersonil($tujuan_str);
+							$header['tujuan']    			= $tujuan['nama'];
+						}else{
+							$header['tujuan']    			= $tujuan_str;
+						}
+
 						$pengirim 	= $this->Model_global->getPersonil($data[0]['pengirim']);
-						$header['pengirim']    			= $pengirim['nip'].'-'.$pengirim['nama'];
+						$header['pengirim']    			= $pengirim['nama'];
 
 						$penerima 	= $this->Model_global->getPersonil($data[0]['penerima']);
 						$header['penerima']    			= ($data[0]['penerima'])?$penerima['nip'].'-'.$penerima['nama']:'';
 
-						$header['tujuan'] 				= $data[0]['tujuan'];
 
                         $header['nomor_transaksi']    	= $data[0]['nomor_transaksi'];
                         $header['kode_dokumen']    		= $data[0]['kode_dokumen'];
                         $header['user_input'] 			= $data[0]['user_input'];
+						$header['manual'] 				= $data[0]['manual'];
                         $header['keterangan']    		= $data[0]['keterangan'];
                         $header['tanggal']				= date('d-m-Y', strtotime($data[0]['tanggal']));
 						$header['tanggal_pengiriman']	= date('d-m-Y', strtotime($data[0]['tanggal_pengiriman']));
+
                         $header['total'] 				= 0;
 
                         foreach ($data as $key => $value) {
@@ -256,8 +297,14 @@ class Tanda_terima extends Admin_Controller  {
         if(isset($output)){
             $send_data['data']         	 = $output;
             $send_data['printer']        = 'laser jet';
-            $send_data['page_title']     = 'Print BKB';
-            $this->load->view('tanda_terima/print', $send_data);
+            $send_data['page_title']     = 'Print ';
+
+			if($output[0]['header']['manual'] == 'True'){
+				$this->load->view('tanda_terima/print_manual',$send_data);
+			}else{
+				$this->load->view('tanda_terima/print',$send_data);
+			}
+
         }else{
             $this->session->set_flashdata('warning', 'Jika Muncul Popup Untuk Membuka Tab Baru dari browses pilih, "Allow/Izinkan"<br> Silakan Cetak Ulang');
             redirect('transaksi/tanda_terima', 'refresh');

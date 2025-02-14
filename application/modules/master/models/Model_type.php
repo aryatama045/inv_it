@@ -10,6 +10,24 @@ class Model_type extends CI_Model
 		$this->table = 'mst_type';
 	}
 
+	function sortByGrade($a, $b) {
+		if ($a == $b) return 0;
+		return ($a < $b) ? -1 : 1;
+	}
+
+	public function getKodeTypes()
+	{
+		$kode = $this->Model_global->getType();
+
+		usort($kode, array($this,'sortByGrade'));
+
+		$myLastKode = $kode[array_key_last($kode)];
+
+		$myLastKode = $myLastKode['kode_type']+1;
+
+		return $myLastKode;
+	}
+
 	public function getDataStore($result, $search_name = "", $length = "", $start = "", $column = "", $order = "")
 	{
 

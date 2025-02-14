@@ -42,6 +42,11 @@
 						<i data-acorn-icon="plus"></i>
 						<span>Add New</span>
 					</a>
+
+					<a href="<?= base_url($mod.'/'.$func.'/tambah_manual') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
+						<i data-acorn-icon="plus"></i>
+						<span>Add Manual New</span>
+					</a>
 					<!-- Add New Button End -->
 
 				</div>

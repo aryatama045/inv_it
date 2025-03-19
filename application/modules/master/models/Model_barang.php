@@ -28,7 +28,7 @@ class Model_barang extends CI_Model
 	}
 
 	// ---- Datatables Start
-	function getDataStore($result,$search_kd_barang="", $search_name = "", $kategori = "", $merk = "", $type ="", $stock ="", $length = "", $start = "", $column = "", $order = "")
+	function getDataStore($result,$search_kd_barang="", $search_name = "", $kategori = "", $merk = "", $type ="", $stock ="", $status ="", $lokasi ="", $length = "", $start = "", $column = "", $order = "")
 	{
 
 		$this->db->select('*');
@@ -40,6 +40,7 @@ class Model_barang extends CI_Model
 			$this->db->group_start();
 				$this->db->like('kode_barang', $search_name);
                 $this->db->or_like('nama_barang', $search_name);
+				$this->db->or_like('serial_number', $search_name);
 			$this->db->group_end();
 		}
 
@@ -66,6 +67,16 @@ class Model_barang extends CI_Model
 		if($stock !="")
 		{
 			$this->db->where('barang_stock', $stock);
+		}
+
+		if($status !="")
+		{
+			$this->db->where('status_barang', $status);
+		}
+
+		if($lokasi !="")
+		{
+			$this->db->where('lokasi_terakhir', $lokasi);
 		}
 
 		if($result == 'result'){
@@ -202,8 +213,8 @@ class Model_barang extends CI_Model
 	function saveEdit($id)
 	{
 		$data = $_POST;
-		$this->db->where(['id' => $id]);
-		$update = $this->db->update($this->table, $data);
+		$this->db->where(['kode_barang' => $id]);
+		$update = $this->db->update('mst_barang', $data);
 
 		return ($update)?TRUE:FALSE;
 	}

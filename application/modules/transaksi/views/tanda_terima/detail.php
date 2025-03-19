@@ -107,7 +107,11 @@
 
                     <div class="col-md-4">
                         <label class="mb-3 top-label">
-                            <p class="form-control"><b><?= uppercase(strtolower($header['tujuan'])) ?></b></p>
+                            <?php
+                                $getTujuan    = $this->Model_global->getPersonil($header['tujuan']);
+                                $tujuan       = $getTujuan['nip'].'-'.$getTujuan['nama'];
+                            ?>
+                            <p class="form-control"><b><?= uppercase(strtolower($tujuan)) ?></b></p>
                             <span class="text-black"><b>TUJUAN </b></span>
                         </label>
                     </div>

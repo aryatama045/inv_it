@@ -1,5 +1,5 @@
 var tables;
-var search_name;
+var search_name,jenis,pengirim,penerima,tujuan;
 
 $(document).ready(function() {
 
@@ -18,16 +18,20 @@ $(document).ready(function() {
                             'type': 'POST',
                             'data': function(data) {
                                 data.search_name = $('#search_name').val();
+                                data.jenis       = $("#jenis").val();
+                                data.pengirim    = $("#pengirim").val();
+                                data.penerima    = $("#penerima").val();
+                                data.tujuan      = $("#tujuan").val();
                             },
                         },
         'order'         : [0, 'ASC'],
         "columnDefs"    : [
-                            {"orderData": 1, "targets": 2},
                             {targets: 0,width:'10%',className: 'text-center'},
                             {targets: 1,width:'20%',className: 'text-center'},
                             {targets: 2,width:'10%',className: 'text-center'},
-                            {targets: 3,className: 'text-center'},
-                            {targets: 4,className: 'text-center'},
+                            {targets: 3,className: 'text-left'},
+                            {targets: 4,className: 'text-left'},
+                            {targets: 5,className: 'text-left'},
                         ],
     });
 
@@ -37,6 +41,22 @@ $(document).ready(function() {
     tables.columns.adjust().draw();
 
     $('#search_name').on('keyup', function(event) { // for text boxes
+        tables.ajax.reload(); //just reload table
+    });
+
+    $("#jenis").on("change", function () { //button filter event click
+        tables.ajax.reload(); //just reload table
+    });
+
+    $("#pengirim").on("change", function () { //button filter event click
+        tables.ajax.reload(); //just reload table
+    });
+
+    $("#penerima").on("change", function () { //button filter event click
+        tables.ajax.reload(); //just reload table
+    });
+
+    $("#tujuan").on("change", function () { //button filter event click
         tables.ajax.reload(); //just reload table
     });
 });

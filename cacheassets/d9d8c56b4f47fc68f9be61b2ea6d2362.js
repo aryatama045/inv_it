@@ -1,6 +1,6 @@
 var tables;
 
-var search_name,kategori,merk ,type, stock;
+var search_name,kategori,merk ,type, stock,status, lokasi;
 $(document).ready(function() {
 
     $('.select2-single').select2({});
@@ -10,12 +10,14 @@ $(document).ready(function() {
     tables = $('#'+tableData).DataTable({
         'processing': true,
         'serverSide': true,
-        // 'serverMethod': 'post',
-        // 'scrollX': true,
         'paging' : true,
         'autoWidth': false,
         'destroy': true,
         'responsive': false,
+        // 'fixedHeader': {
+        //     'header': true,
+        //     'footer': true
+        // },
         'ajax': {
             'url': linkstore,
             'type': 'POST',
@@ -25,12 +27,14 @@ $(document).ready(function() {
                 data.merk           = $("#merk").val();
                 data.type           = $("#type").val();
                 data.stock          = $("#stock").val();
+                data.status         = $("#status").val();
+                data.lokasi         = $("#lokasi").val();
             },
         },
         'order': [0, 'ASC'],
         "columnDefs":[
             {"orderData": 1, "targets": 2},
-            {targets: 0,width:'10%',className: 'text-center'},
+            {targets: 0,width:'5%',className: 'text-center'},
         ]
     });
 
@@ -56,6 +60,14 @@ $(document).ready(function() {
     });
 
     $("#stock").on("change", function () { //button filter event click
+        tables.ajax.reload(); //just reload table
+    });
+
+    $("#status").on("change", function () { //button filter event click
+        tables.ajax.reload(); //just reload table
+    });
+
+    $("#lokasi").on("change", function () { //button filter event click
         tables.ajax.reload(); //just reload table
     });
 });

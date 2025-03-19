@@ -1,6 +1,6 @@
 <?php
 
-class Model_karyawan extends CI_Model
+class Model_data_store extends CI_Model
 {
 	public $table;
 
@@ -16,16 +16,22 @@ class Model_karyawan extends CI_Model
 
 		$this->db->select("mst_personil.*");
         $this->db->from($this->table);
+        $this->db->where('nip', 0);
+        $this->db->where("IFNULL(kd_store,'')<>'' ");
         $this->db->order_by('nama', 'ASC');
 
         if($search_name !="")
-			$this->db->like('nip',$search_name);
+		{
+			$this->db->group_start();
+			$this->db->like('kd_store',$search_name);
             $this->db->or_like('nama',$search_name);
-			$this->db->or_like('kd_store',$search_name);
+			$this->db->group_end();
+        }
 
 		if($result == 'result'){
 			$this->db->limit($length,$start);
 			$query=$this->db->get();
+            // die($this->db->last_query());
 			return $query->result_array();
 
 		}else{
@@ -57,7 +63,6 @@ class Model_karyawan extends CI_Model
 			$this->db->select("mst_personil.*");
 			$this->db->from('mst_personil');
 			$this->db->where('nip','0');
-			$this->db->where("IFNULL(kd_store,'')<>'' ");
 			$this->db->order_by('nama', 'ASC');
 			$query	= $this->db->get();
 			return $query->result_array();

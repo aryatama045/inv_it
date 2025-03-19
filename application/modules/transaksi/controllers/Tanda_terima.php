@@ -42,17 +42,21 @@ class Tanda_terima extends Admin_Controller  {
 		$order 			= '';
 
         $output['data']	= array();
-		$search_name   = $this->input->post('search_name');
+		$search_name   	= $this->input->post('search_name');
+		$jenis   		= $this->input->post('jenis');
+		$pengirim   	= $this->input->post('pengirim');
+		$penerima   	= $this->input->post('penerima');
+		$tujuan   		= $this->input->post('tujuan');
 
-		$data           = $this->Model_tanda_terima->getDataStore('result',$search_name,$length,$start,$column,$order);
-		$data_jum       = $this->Model_tanda_terima->getDataStore('numrows',$search_name);
+		$data           = $this->Model_tanda_terima->getDataStore('result',$search_name,$jenis,$pengirim,$penerima,$tujuan,$length,$start,$column,$order);
+		$data_jum       = $this->Model_tanda_terima->getDataStore('numrows',$search_name,$jenis,$pengirim,$penerima,$tujuan);
 
 		$output=array();
 		$output['draw'] = $draw;
 		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
 
 		if($search_name !=""  ){
-			$data_jum = $this->Model_tanda_terima->getDataStore('numrows',$search_name);
+			$data_jum = $this->Model_tanda_terima->getDataStore('numrows',$search_name,$jenis,$pengirim,$penerima,$tujuan);
 			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
 		}
 
@@ -70,24 +74,21 @@ class Tanda_terima extends Admin_Controller  {
 							<i class="fa fa-print"></i>
 						</button>';
 
-						// $btn 	.= '<a href="'.base_url('transaksi/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-warning mb-1">
-						// 			<i class="fa fa-edit"></i> </a>
-						// 		</a>';
-
-						// $btn .= ' <a class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
-						// $btn .= "remove('".$id."')";
-						// $btn .= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
-						// 		<i class="fa fa-trash"></i></a>
-
-						// </div>';
+				if($value['pengirim']){
+					$pengirim = $this->Model_global->getPersonil($value['pengirim']);}
+				if($value['penerima']){
+					$penerima = $this->Model_global->getPersonil($value['penerima']);}
+				if($value['tujuan']){
+					$tujuan   = $this->Model_global->getPersonil($value['tujuan']);}
 
 
 				$output['data'][$key] = array(
 					$value['kode_dokumen'],
 					$value['nomor_transaksi'],
 					tanggal($value['tanggal']),
-					$value['pengirim'],
-					($value['tujuan'])?$value['tujuan']:$value['penerima'],
+					($pengirim)?$pengirim['nip'].' - '.$pengirim['nama']:'-',
+					($penerima)?$penerima['nip'].' - '.$penerima['nama']:'-',
+					($tujuan)?$tujuan['nip'].' - '.$tujuan['nama']:'-',
 					$btn,
 				);
 			}
@@ -327,66 +328,67 @@ class Tanda_terima extends Admin_Controller  {
 				{
 					$kode_dokumen 		= $worksheet->getCellByColumnAndRow(0, $row)->getValue();
 					$nomor_transaksi 	= $worksheet->getCellByColumnAndRow(1, $row)->getValue();
-					$nomor_transaksi_um = $worksheet->getCellByColumnAndRow(2, $row)->getValue();
-					$tanggal 			= $worksheet->getCellByColumnAndRow(3, $row)->getValue();
-					$tujuan 			= $worksheet->getCellByColumnAndRow(4, $row)->getValue();
-					$pengirim 			= $worksheet->getCellByColumnAndRow(5, $row)->getValue();
-					$tanggal_pengiriman	= $worksheet->getCellByColumnAndRow(6, $row)->getValue();
-					$penerima 			= $worksheet->getCellByColumnAndRow(7, $row)->getValue();
-					$tanggal_input 		= $worksheet->getCellByColumnAndRow(8, $row)->getValue();
-					$user_input 		= $worksheet->getCellByColumnAndRow(9, $row)->getValue();
-					$jumlah_detail		= $worksheet->getCellByColumnAndRow(10, $row)->getValue();
-					$manual 			= $worksheet->getCellByColumnAndRow(11, $row)->getValue();
-					$tanggal_batal		= $worksheet->getCellByColumnAndRow(12, $row)->getValue();
-					$keterangan_batal	= $worksheet->getCellByColumnAndRow(13, $row)->getValue();
-					$tgl_terima_it		= $worksheet->getCellByColumnAndRow(14, $row)->getValue();
+					$tanggal 			= $worksheet->getCellByColumnAndRow(2, $row)->getValue();//date('Y-m-d', PHPExcel_Shared_Date::ExcelToPHP($worksheet->getCellByColumnAndRow(2, $row)->getValue()));
+					$tujuan 			= $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+					$pengirim 			= $worksheet->getCellByColumnAndRow(4, $row)->getValue();
+					$tanggal_pengiriman	= $worksheet->getCellByColumnAndRow(5, $row)->getValue();//date('Y-m-d', PHPExcel_Shared_Date::ExcelToPHP($worksheet->getCellByColumnAndRow(5, $row)->getValue()));
+					$penerima 			= $worksheet->getCellByColumnAndRow(6, $row)->getValue();
+					$tanggal_input 		= $worksheet->getCellByColumnAndRow(7, $row)->getValue();//date('Y-m-d', PHPExcel_Shared_Date::ExcelToPHP($worksheet->getCellByColumnAndRow(7, $row)->getValue()));
+					$user_input 		= $worksheet->getCellByColumnAndRow(8, $row)->getValue();
+					$jumlah_detail		= $worksheet->getCellByColumnAndRow(9, $row)->getValue();
+					$manual 			= $worksheet->getCellByColumnAndRow(10, $row)->getValue();
+					$tanggal_batal		= '';
+					$keterangan_batal	= '';
+					$tgl_terima_it		= '';
 
-					if(strtotime($tanggal_batal) > 0){
-						$tgl_batal = date('Y-m-d H:i:s', strtotime($tanggal_batal));
+					if(strtotime($tanggal) > 0){
+						$tanggal = date('Y-m-d', strtotime($tanggal));
 					}else{
-						$tgl_batal = '0000-00-00 00:00:00';
-					}
-
-					if(strtotime($tgl_terima_it) > 0){
-						$tgl_terimaIT = date('Y-m-d', strtotime($tgl_terima_it));
-					}else{
-						$tgl_terimaIT = '0000-00-00';
-					}
-
-					if(strtotime($tanggal_input) > 0){
-						$tgl_input = date('Y-m-d', strtotime($tanggal_input));
-					}else{
-						$tgl_input = '0000-00-00';
+						$tanggal = '0000-00-00';
 					}
 
 					if(strtotime($tanggal_pengiriman) > 0){
-						$tgl_pengiriman = date('Y-m-d', strtotime($tanggal_pengiriman));
+						$tanggal_pengiriman = date('Y-m-d', strtotime($tanggal_pengiriman));
 					}else{
-						$tgl_pengiriman = '0000-00-00';
+						$tanggal_pengiriman = '0000-00-00';
 					}
 
-					if(strtotime($tanggal) > 0){
-						$tgl = date('Y-m-d', strtotime($tanggal));
+					if(strtotime($tanggal_input) > 0){
+						$tanggal_input = date('Y-m-d', strtotime($tanggal_input));
 					}else{
-						$tgl = '0000-00-00';
+						$tanggal_input = '0000-00-00';
+					}
+
+					// tesx($tujuan, $tanggal,$tanggal_pengiriman,$tanggal_input,$tanggal_batal, $tgl_terima_it );
+
+
+					if(strtotime($tanggal_batal) > 0){
+						$tanggal_batal = date('Y-m-d H:i:s', strtotime($tanggal_batal));
+					}else{
+						$tanggal_batal = '0000-00-00 00:00:00';
+					}
+
+					if(strtotime($tgl_terima_it) > 0){
+						$tgl_terima_it = date('Y-m-d', strtotime($tgl_terima_it));
+					}else{
+						$tgl_terima_it = '0000-00-00';
 					}
 
 					$temp_data[] = array(
 						'kode_dokumen'			=> $kode_dokumen,
 						'nomor_transaksi'		=> $nomor_transaksi,
-						'nomor_transaksi_num'	=> trim($nomor_transaksi_um),
-						'tanggal'				=> $tgl,
+						'tanggal'				=> $tanggal,
 						'tujuan'				=> $tujuan,
 						'pengirim'				=> $pengirim,
-						'tanggal_pengiriman'	=> $tgl_pengiriman,
+						'tanggal_pengiriman'	=> $tanggal_pengiriman,
 						'penerima'				=> $penerima,
-						'tanggal_input'			=> $tgl_input,
+						'tanggal_input'			=> $tanggal_input,
 						'user_input'			=> $user_input,
 						'jumlah_detail'			=> $jumlah_detail,
 						'manual'				=> $manual,
-						'tanggal_batal'			=> $tgl_batal,
+						'tanggal_batal'			=> $tanggal_batal,
 						'keterangan_batal'		=> $keterangan_batal,
-						'tgl_terima_it'			=> $tgl_terimaIT,
+						'tgl_terima_it'			=> $tgl_terima_it,
 					);
 				}
 			}

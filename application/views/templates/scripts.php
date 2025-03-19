@@ -65,6 +65,31 @@
 <!-- modal alert item list -->
 
 
+
+
+<!-- modal alert item list -->
+<div class="modal fade" tabindex="-1" role="dialog" id="submitModal">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="title-notif">Notif</h3>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <h3><b> Yakin Simpan!!</b></h3>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-warning" data-bs-dismiss="modal" >Close</a>
+                <button type="submit" class="btn btn-success" id="btn-submit" >Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal alert item list -->
+
+
+
 <!-- Vendor Scripts Start -->
 <script src="<?= base_url('assets/') ?>js/vendor/jquery-3.5.1.min.js"></script>
 <script src="<?= base_url('assets/') ?>js/vendor/bootstrap.bundle.min.js"></script>
@@ -245,6 +270,13 @@ function dialog_warning(title,messages)
     $('#title-notif').html('<strong>'+title+'</strong>');
     $("#messages").html( '<strong><h5>'+messages+ '</h5></strong>');
     $('#modalAlert').modal("show");
+}
+
+function dialog_submit(title,messages)
+{
+    $('#title-notif').html('<strong>'+title+'</strong>');
+    $("#messages").html( '<strong><h5>'+messages+ '</h5></strong>');
+    $('#submitModal').modal("show");
 }
 
 function dialog_success(title,messages)

@@ -102,7 +102,20 @@
                                         <div class="card-body pt-0 pb-0 h-100">
                                             <div class="row g-0 h-100 align-content-center">
                                                 <div class="col-10 col-md-4 d-flex align-items-center mb-3 mb-md-0 h-md-100">
-                                                    <a href="<?= base_url('transaksi/tanda_terima/show/'.$val['nomor_transaksi']) ?>" class="body-link stretched-link">#<b><?= $val['nomor_transaksi'] ?></b></a>
+                                                    <a href="<?= base_url('transaksi/tanda_terima/show/'.$val['nomor_transaksi']) ?>" class="body-link stretched-link">
+                                                        #<b><?= $val['nomor_transaksi'] ?></b>
+
+                                                        <!-- <?php $pengirim = $this->Model_global->getPersonil($val['pengirim']);
+                                                                if($val['penerima']){
+                                                                    $penerima = $this->Model_global->getPersonil($val['penerima']);}
+                                                                if($val['tujuan']){
+                                                                    $tujuan   = $this->Model_global->getPersonil($val['tujuan']);} 
+                                                        ?>
+                                                            <br>Pengirim : <?= $pengirim['nip'].'-'.$pengirim['nama'] ?>
+                                                            <br>Penerima : <?= $penerima['nip'].'-'.$penerima['nama'] ?>
+                                                            <br>Tujuan : <?= $tujuan['nip'].'-'.$tujuan['nama'] ?> -->
+                                                    </a>
+
                                                 </div>
                                                 <div class="col-2 col-md-3 d-flex align-items-center text-black mb-1 mb-md-0 justify-content-end justify-content-md-start">
                                                     <span class="badge bg-primary me-1"><?= $val['kode_dokumen'] ?></span>
@@ -115,6 +128,8 @@
                                                 <div class="col-12 col-md-3 d-flex align-items-center justify-content-md-end mb-1 mb-md-0">
                                                     <b><?= tanggal($val['tanggal']) ?></b>
                                                 </div>
+
+
                                             </div>
                                         </div>
                                     </div>

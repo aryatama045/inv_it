@@ -58,14 +58,14 @@ class Merk extends Admin_Controller  {
 				$id		= $value['kode_merk'];
 
 				$btn 	= '';
-				$btn 	.= '<a href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-success mb-1">
+				$btn 	.= '<a hidden href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-success mb-1">
 								<i class="fa fa-eye"></i> </a>
 							</a>
 							<a href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon btn-icon-only btn-warning mb-1">
 								<i class="fa fa-edit"></i> </a>
 							</a>';
 
-				$btn 	.= ' <a class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
+				$btn 	.= ' <a hidden class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
 				$btn 	.= "remove('".$id."')";
 				$btn 	.= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
 							<i class="fa fa-trash"></i></a>';

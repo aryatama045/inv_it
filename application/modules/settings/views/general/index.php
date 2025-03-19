@@ -36,7 +36,11 @@
 			<!-- Icons Start -->
 			<div class="col-xl-3 mb-1">
 				<div class="card">
-					<a href="<?= base_url(''.$val['link'].'') ?>" class="row g-0 sh-10">
+					<?php if($val['id']=='9'){ ?>
+						<a href="<?= base_url(''.$val['link'].'/'.'edit') ?>" class="row g-0 sh-10">
+					<?php }else{ ?>
+						<a href="<?= base_url(''.$val['link']) ?>" class="row g-0 sh-10">
+					<?php } ?>
 						<div class="col-auto">
 							<div class="sw-9 sh-10 d-inline-block d-flex justify-content-center align-items-center">
 								<i data-acorn-icon="<?= $val['icon'] ?>" class="text-primary"></i>

@@ -23,12 +23,12 @@
 
 				<!-- Top Buttons Start -->
 				<div class="col-12 col-md-5 d-flex align-items-start justify-content-end">
-					<!-- <a class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1"
+					<a class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1"
 						data-bs-effect="effect-super-scaled"
                         data-bs-toggle="modal" href="#modal_import">
 						<i class="fa fa-download"></i>
 						<span>Import</span>
-					</a> -->
+					</a>
 
 
 					<!-- Add New Button Start -->
@@ -93,36 +93,23 @@
                     <div class="col-sm-12 col-md-5 col-lg-9 col-xxl-9 mb-1">
                         <div class="d-inline-block float-md-start me-1  w-100">
 							<div class="row g-2">
-								<div hidden class="col-3 text-center">
-									<div class="input-group" >
-										<select class="form-control" id="tanggal1">
-											<option value=""> -- Tahun --</option>
-											<?php for ($year = (int)date('Y'); 2010 <= $year; $year--): ?>
-													<option value="<?=$year;?>"><?=$year;?></option>
-											<?php endfor; ?>
-										</select>
-									</div>
-								</div>
 
-								<div class="col-3 text-center">
+								<div class="col-2 text-center">
 									<div class="form-group ">
-										<!-- <label class="top-label mb-0 w-100"> -->
 										<select class="form-control select2-single" name="kategori" id="kategori">
-											<option value="" >-- Select Kategori--</option>
+											<option value="" >-- Kategori--</option>
 											<option value="">All</option>
 											<?php $nk=1; foreach ($cKategori as $key => $val) { ?>
 												<option value="<?= $val['kode_kategori'] ?>"><?= $nk++ .'. ('. $val['kode_kategori'].')' ?> - <?= $val['nama'] ?></option>
 											<?php } ?>
 										</select>
-										<!-- <span>Kategori</span>
-										</label> -->
 									</div>
 								</div>
 
-								<div class="col-3 text-center">
+								<div class="col-2 text-center">
 									<div class="form-group ">
 										<select class="form-control select2-single" name="merk" id="merk">
-											<option value="">-- Select Merk--</option>
+											<option value="">-- Merk--</option>
 											<option value="">All</option>
 											<?php $nm=1; foreach ($cMerk as $key => $val) { ?>
 												<option value="<?= $val['kode_merk'] ?>"><?= $nm++.'. ('. $val['kode_merk'] .')' ?> - <?= $val['nama'] ?></option>
@@ -131,10 +118,10 @@
 									</div>
 								</div>
 
-								<div class="col-3 text-center">
+								<div class="col-2 text-center">
 									<div class="form-group ">
 										<select class="form-select select2-single" name="type" id="type">
-											<option value="">-- Select Type--</option>
+											<option value="">-- Type--</option>
 											<option value="">All</option>
 											<?php $nt=1; foreach ($cType as $key => $val) { ?>
 												<option value="<?= $val['kode_type'] ?>"><?= $nt++.'. ('. $val['kode_type'] .')' ?> - <?= $val['nama'] ?></option>
@@ -143,13 +130,43 @@
 									</div>
 								</div>
 
-								<div class="col-3 text-center">
+								<div class="col-2 text-center">
 									<div class="form-group ">
 										<select class="form-select select2-single" name="stock" id="stock">
 											<option value="">-- Stock--</option>
 											<option value="">All</option>
 											<option value="True">With Stock</option>
 											<option value="False">Without Stock</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="col-2 text-center">
+									<div class="form-group ">
+										<select class="form-select select2-single" name="status" id="status">
+											<option value="">-- Status--</option>
+											<option value="">All</option>
+											<?php $statuGet = $this->Model_global->getStatusBarang();
+												foreach ($statuGet as $key => $val) { ?>
+													<option value="<?= $val['status_barang'] ?>" ><?= $val['status_barang'].'-'.$val['nama'] ?></option>
+											<?php } ?>
+										</select>
+									</div>
+								</div>
+
+								<div class="col-2 text-center">
+									<div class="form-group ">
+										<select class="form-select select2-single" name="lokasi" id="lokasi">
+											<option value="">-- User Akhir--</option>
+											<option value="">All</option>
+											<?php $Personil1 = $this->Model_global->getPersonil();
+												foreach ($Personil1 as $key => $val) { ?>
+												<?php if($val['nip'] == 0){ ?>
+													<option value="<?= $val['kd_store'] ?>" ><?= $val['kd_store'].'-'.$val['nama'] ?></option>
+												<?php } else { ?>
+													<option value="<?= $val['nip'] ?>" ><?= $val['nip'].'-'.$val['nama'] ?></option>
+												<?php } ?>
+											<?php } ?>
 										</select>
 									</div>
 								</div>
@@ -187,9 +204,10 @@
 					<thead class="mt-4">
 						<tr>
 							<th class="text-bold text-uppercase">#</th>
-							<th class="text-bold text-uppercase">Kode Barang</th>
-							<th class="text-bold text-uppercase">Nama Barang</th>
-							<th class="text-bold text-uppercase">Status Barang</th>
+							<th class="text-bold text-uppercase">Kode</th>
+							<th class="text-bold text-uppercase">Nama</th>
+							<th class="text-bold text-uppercase">Status</th>
+							<th class="text-bold text-uppercase">Lokasi</th>
 							<th class="text-bold text-uppercase">Action</th>
 						</tr>
 					</thead>

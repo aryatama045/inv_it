@@ -190,4 +190,17 @@
         });
     });
 
+    (function() {
+        var textField = document.getElementById('serial_number');
+
+        if(textField) {
+            textField.addEventListener('keydown', function(mozEvent) {
+                var event = window.event || mozEvent;
+                if(event.keyCode === 13) {
+                    event.preventDefault();
+                }
+            });
+        }
+    })();
+
 </script>

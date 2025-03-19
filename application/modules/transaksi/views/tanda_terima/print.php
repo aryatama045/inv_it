@@ -112,7 +112,7 @@ class PDF extends Pdf_javascript
     function FooterTotal(){
         // Go to 1.5 cm from bottom
         // tesx($this->jml_baris);
-        if($this->jml_baris <= 12){
+        if($this->jml_baris <= 13){
             $this->SetY(-195);
         }else{
             $this->SetY(-75);

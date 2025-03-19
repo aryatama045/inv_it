@@ -1,6 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Karyawan extends Admin_Controller  {
+class Data_store extends Admin_Controller  {
 
 	public function __construct()
 	{
@@ -13,16 +13,15 @@ class Karyawan extends Admin_Controller  {
 		$this->data['modul'] 		= 'Users'; // name modul
 
 		//  Load Model
-		$this->load->model('Model_karyawan');
+		$this->load->model('Model_data_store');
 	}
 
-	public function starter(){
-		
-	}
+	public function starter()
+    { }
 
     public function index()
 	{
-		$this->render_template('karyawan/index');
+		$this->render_template('data_store/index');
 	}
 
     public function store()
@@ -40,15 +39,15 @@ class Karyawan extends Admin_Controller  {
         $output['data']	= array();
         $search_name    = $this->input->post('search_name');
 
-		$data           = $this->Model_karyawan->getDataStore('result',$search_name,$length,$start,$column,$order);
-		$data_jum       = $this->Model_karyawan->getDataStore('numrows',$search_name);
+		$data           = $this->Model_data_store->getDataStore('result',$search_name,$length,$start,$column,$order);
+		$data_jum       = $this->Model_data_store->getDataStore('numrows',$search_name);
 
 		$output=array();
 		$output['draw'] = $draw;
 		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
 
 		if($search_name !="" ){
-			$data_jum = $this->Model_karyawan->getDataStore('numrows',$search_name);
+			$data_jum = $this->Model_data_store->getDataStore('numrows',$search_name);
 			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
 		}
 
@@ -88,10 +87,8 @@ class Karyawan extends Admin_Controller  {
 				}
 
 				$output['data'][$key] = array(
-					uppercase(strtolower($id)),
+					uppercase(un_strip($id)),
 					uppercase(strtolower($value['nama'])),
-					uppercase(un_strip($value['kd_store'])),
-                    $aktif,
 					$btn,
 				);
 			}
@@ -104,13 +101,13 @@ class Karyawan extends Admin_Controller  {
 
 	public function detail($id)
 	{
-		$this->data['karyawan'] = $this->Model_karyawan->detail($id);
+		$this->data['karyawan'] = $this->Model_data_store->detail($id);
 
 		if($this->data['karyawan']['nip']){
 			// $this->starter();
-			$this->data['karyawan'] = $this->Model_karyawan->detail($id);
+			$this->data['karyawan'] = $this->Model_data_store->detail($id);
 
-			$this->render_template('karyawan/detail',$this->data);
+			$this->render_template('data_store/detail',$this->data);
 		}else{
 			$this->session->set_flashdata('error', 'Tidak Terdaftar, Silahkan Cek kembali !!');
 			redirect('users/dosen', 'refresh');
@@ -121,24 +118,23 @@ class Karyawan extends Admin_Controller  {
 	public function tambah()
 	{
 
-		$this->form_validation->set_rules('nip' ,'Nip ' , 'required');
+		$this->form_validation->set_rules('kd_store' ,'Kode Store ' , 'required');
 
         if ($this->form_validation->run() == TRUE) {
 
-			$create_form = $this->Model_karyawan->saveTambah();
+			$create_form = $this->Model_data_store->saveTambah();
 
 			if($create_form) {
 				$this->session->set_flashdata('success', ' Berhasil Disimpan !!');
-				redirect('users/karyawan', 'refresh');
+				redirect('users/data_store', 'refresh');
 			} else {
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
-				redirect('users/karyawan/tambah', 'refresh');
+				redirect('users/data_store/tambah', 'refresh');
 			}
 
 		}else{
 			$this->starter();
-			$this->data['store'] = $this->Model_karyawan->storeData();
-			$this->render_template('karyawan/tambah',$this->data);
+			$this->render_template('data_store/tambah',$this->data);
 		}
 
 	}
@@ -149,7 +145,7 @@ class Karyawan extends Admin_Controller  {
 		$this->form_validation->set_rules('nip' ,'Nip ' , 'required');
         if ($this->form_validation->run() == TRUE) {
 
-			$edit_form = $this->Model_karyawan->saveEdit($id);
+			$edit_form = $this->Model_data_store->saveEdit($id);
 
 			if($edit_form) {
 				$this->session->set_flashdata('success', 'Nip  : "'.$_POST['nip'].'" <br> Berhasil Di Update !!');
@@ -161,11 +157,11 @@ class Karyawan extends Admin_Controller  {
 
 		}else{
 			$this->starter();
-			$this->data['dosen'] = $this->Model_karyawan->detail($id);
+			$this->data['dosen'] = $this->Model_data_store->detail($id);
 
 			if($this->data['dosen']['nip']){
 				$this->starter();
-				$this->data['dosen'] = $this->Model_karyawan->detail($id);
+				$this->data['dosen'] = $this->Model_data_store->detail($id);
 
 				$this->render_template('dosen/edit',$this->data);
 			}else{
@@ -182,7 +178,7 @@ class Karyawan extends Admin_Controller  {
 
 		$response = array();
 		if($id) {
-			$delete = $this->Model_karyawan->saveDelete($id);
+			$delete = $this->Model_data_store->saveDelete($id);
 
 			if($delete == true) {
 				$response['success'] 	= true;

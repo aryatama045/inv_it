@@ -69,14 +69,20 @@ class Barang extends Admin_Controller  {
 
 	public function edit($id)
 	{
-		$this->form_validation->set_rules('nama' ,'Nama' , 'required');
+		$cek = $this->Model_global->getBarang($id);
+		if($cek == NULL){
+			$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
+			redirect('master/barang', 'refresh');
+		}
+
+		$this->form_validation->set_rules('kode_barang' ,'Kode Barang' , 'required');
 
         if ($this->form_validation->run() == TRUE) {
 
 			$edit_form = $this->Model_barang->saveEdit($id);
 
 			if($edit_form) {
-				$this->session->set_flashdata('success', 'Nama : "'.$_POST['nama'].'" <br> Berhasil Di Update !!');
+				$this->session->set_flashdata('success', 'Kode Barang : "'.$_POST['kode_barang'].'" <br> Berhasil Di Update !!');
 				redirect('master/barang', 'refresh');
 			} else {
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
@@ -85,14 +91,8 @@ class Barang extends Admin_Controller  {
 
 		}else{
 			$this->starter();
-			$this->data['barang'] = $this->Model_barang->getBarang($id);
-
-			if($this->data['barang']['kode_barang']){
-				$this->render_template('barang/edit',$this->data);
-			}else{
-				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
-				redirect('master/barang/edit/'.$id, 'refresh');
-			}
+			$this->data['param'] = $this->Model_global->getBarang($id);
+			$this->render_template('barang/edit',$this->data);
 		}
 	}
 
@@ -157,16 +157,18 @@ class Barang extends Admin_Controller  {
 		$merk   		= $this->input->post('merk');
 		$type   		= $this->input->post('type');
 		$stock			= $this->input->post('stock');
+		$status			= $this->input->post('status');
+		$lokasi			= $this->input->post('lokasi');
 
-		$data           = $this->Model_barang->getDataStore('result',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock,$length,$start,$column,$order);
-		$data_jum       = $this->Model_barang->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock);
+		$data           = $this->Model_barang->getDataStore('result',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock,$status,$lokasi,$length,$start,$column,$order);
+		$data_jum       = $this->Model_barang->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock,$status,$lokasi);
 
 		$output=array();
 		$output['draw'] = $draw;
 		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
 
 		if($search_name !=""  ){
-			$data_jum = $this->Model_barang->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock);
+			$data_jum = $this->Model_barang->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock,$status,$lokasi);
 			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
 		}
 
@@ -179,7 +181,7 @@ class Barang extends Admin_Controller  {
 				$btn 	.= '<a href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon  btn-success mb-1">
 								<i class="fa fa-eye"></i> </a>
 							</a>
-							<a hidden href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon  btn-warning mb-1">
+							<a  href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon  btn-warning mb-1">
 								<i class="fa fa-edit"></i> </a>
 							</a>';
 				$btn 	.= '<a hidden class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
@@ -189,11 +191,26 @@ class Barang extends Admin_Controller  {
 
 				$StatusBarang = $this->Model_global->getStatusBarang($value['status_barang']);
 
+				if($value['lokasi_terakhir']){
+					$getPerson = $this->Model_global->getPersonil($value['lokasi_terakhir']);
+
+					if($getPerson){
+						$LokasiAkhir = $getPerson['nip'].'-'.$getPerson['nama'];
+					}else{
+						$LokasiAkhir = '-';
+					}
+
+				}else{
+					$LokasiAkhir = '-';
+				}
+
+
 				$output['data'][$key] = array(
 					$key+$start+1,
-					$value['kode_barang'],
-					$value['nama_barang'],
+					$value['kode_barang'].'<br><small>S/N : '.$value['serial_number'].'</small>',
+					uppercase(lowercase($value['nama_barang'])),
 					$StatusBarang['full_name'],
+					$LokasiAkhir,
 					$btn,
 				);
 
@@ -333,29 +350,33 @@ class Barang extends Admin_Controller  {
 						$data_kode_type = $cek_type['kode_type'];
 					}
 
-					$temp_data[] = array(
-						'kode_kategori'			=> $kode_kategori,
-						'kode_type'				=> $data_kode_type,
-						'kode_merk'				=> $kode_merk,
-						'kode_barang'			=> $kode_barang,
-						'nama_barang'			=> $nama_barang,
-						'tanggal_pembelian'		=> $tgl_pembelian,
-						'harga_beli'			=> $harga_beli,
-						'keterangan'			=> '',
-						'keterangan_acct'		=> $keterangan_acct,
-						'status_barang'			=> 'N',
-						'barang_stock'			=> 'False',
-						'serial_number'			=> $serial_number,
-						'harga_asuransi'		=> '0',
-						'tanggal_input'			=> date('Y-m-d'),
-						'user_input'			=> $this->session->userdata('username'),
-					);
+					if($kode_kategori != ''){
+						$temp_data[] = array(
+							'kode_kategori'			=> $kode_kategori,
+							'kode_type'				=> $data_kode_type,
+							'kode_merk'				=> $kode_merk,
+							'kode_barang'			=> $kode_barang,
+							'nama_barang'			=> $nama_barang,
+							'tanggal_pembelian'		=> $tgl_pembelian,
+							'harga_beli'			=> $harga_beli,
+							'keterangan'			=> '',
+							'keterangan_acct'		=> $keterangan_acct,
+							'status_barang'			=> 'N',
+							'barang_stock'			=> 'False',
+							'serial_number'			=> $serial_number,
+							'harga_asuransi'		=> '0',
+							'tanggal_input'			=> date('Y-m-d'),
+							'user_input'			=> $this->session->userdata('username'),
+						);
+					}
 				}
 			}
 
+			$tot_brg = count($temp_data);
+
 			$insert = $this->db->insert_batch('mst_barang', $temp_data);
 			if($insert) {
-				$this->session->set_flashdata('success', 'Barang Berhasil Disimpan !!');
+				$this->session->set_flashdata('success', 'Barang : '.$tot_brg.' Berhasil Disimpan !!');
 				redirect('master/barang', 'refresh');
 			} else {
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');

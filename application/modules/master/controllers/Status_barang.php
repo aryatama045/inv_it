@@ -68,7 +68,7 @@ class Status_barang extends Admin_Controller  {
 								<i class="fa fa-edit"></i> </a>
 							</a>';
 
-				$btn 	.= ' <a class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
+				$btn 	.= ' <a hidden class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
 				$btn 	.= "remove('".$id."')";
 				$btn 	.= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
 						<i class="fa fa-trash"></i></a>';

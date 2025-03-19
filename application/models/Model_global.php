@@ -9,6 +9,7 @@ class Model_global extends CI_Model {
         $this->load->library('auth');
     }
 
+    // ------- START DATA MASTER GET
     function getBarang($id = NULL)
     {
         $this->db->select('*');
@@ -58,7 +59,7 @@ class Model_global extends CI_Model {
     {
         $this->db->select('*');
 		$this->db->from('mst_type');
-        $this->db->order_by('kode_type', 'DESC');
+        $this->db->order_by('kode_type,nama', 'ASC');
         if($id){
             $this->db->where('kode_type', $id);
             $query=$this->db->get();
@@ -79,16 +80,20 @@ class Model_global extends CI_Model {
             $query=$this->db->get();
             return $query->row_array();
         }else{
-            if($jenis){
+            if($jenis =='tt_out'){
                 $this->db->where_not_in('status_barang', ['R','H', 'BS','E','J','N','RJ1','RJ2','TOL','W','WJ2','QTY','S']);
                 $query=$this->db->get();
                 return $query->result_array();
+            }else if($jenis =='tt_in'){
+                $this->db->where_not_in('status_barang', ['R','H', 'BS','J','N','RJ1','RJ2','W','WJ2','QTY','U','TOL','TM','PG']);
+                $query=$this->db->get();
+                return $query->result_array();
             }else{
-                $this->db->where_not_in('status_barang', ['R','H', 'BS','E','J','N','RJ1','RJ2','W','WJ2','QTY','U','TOL','TM','PG']);
                 $query=$this->db->get();
                 return $query->result_array();
             }
         }
+
     }
 
     function getStockBarang($id = NULL)
@@ -119,8 +124,6 @@ class Model_global extends CI_Model {
         return $query;
     }
 
-
-    // -------
     function getPersonil($id = NULL)
     {
         $id = preg_replace('/\s+/', '', $id);
@@ -136,6 +139,7 @@ class Model_global extends CI_Model {
                 $query=$this->db->get();
                 return $query->row_array();
             }else{
+                $this->db->select('kd_store as nip, nama');
                 $this->db->where('kd_store', $id);
                 $this->db->where('nip', 0);
                 $query=$this->db->get();
@@ -176,9 +180,8 @@ class Model_global extends CI_Model {
         }
 
     }
-    // --------
 
-    // END DATA MASTER GET
+    // ------- END DATA MASTER GET
 
     function getMenuSetting()
     {

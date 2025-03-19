@@ -45,25 +45,17 @@
 
                 <form class="row g-3" action="<?= base_url($mod.'/'.$func.'/tambah'); ?>" method="POST">
                     <div class="col-12 col-md-6" >
-                        <label class="form-label text-black"><strong>NIP<span style="color:red">*</span></strong></label>
-                        <input type="text" class="form-control" required name="nip" placeholder="Input Nomor Induk Pegawai"/>
+                        <label class="form-label text-black"><strong>Kode Store<span style="color:red">*</span></strong></label>
+                        <input type="text" class="form-control" required name="nip" placeholder="Input Kode Store"/>
                     </div>
                     <div class="col-12 col-md-6" >
-                        <label class="form-label text-black"><strong>Nama Lengkap <span style="color:red">*</span>  </strong></label>
+                        <label class="form-label text-black"><strong>Nama Store <span style="color:red">*</span>  </strong></label>
                         <div class="input-group">
-                            <input type="text" required name="nama" class="form-control" placeholder="Nama Lengkap">
+                            <input type="text" required name="nama" class="form-control" placeholder="Nama Store">
                         </div>
                     </div>
 
-                    <div class="col-12 col-md-6">
-                        <label class="form-label text-black"><strong>Store<span style="color:red">*</span></strong></label>
-                        <select class="form-control select2-single" name="store" required>
-                            <option value="" >-- Select Store --</option>
-                            <?php foreach($store as $key => $val) { ?>
-                            <option value="<?= $val['kd_store'] ?>">[<?= un_strip($val['kd_store']) ?>] <?= $val['nama'] ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
+
 
                     <hr>
                     <div class="col-12 mt-5">

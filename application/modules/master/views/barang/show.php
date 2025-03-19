@@ -77,7 +77,7 @@
                                     <tbody>
                                         <tr>
                                             <td width="40%">Nama Barang</td>
-                                            <td class="font-weight-bold"> : <?= capital(lowercase($barang['nama_barang'])) ?></td>
+                                            <td class="font-weight-bold"> : <?= uppercase(lowercase($barang['nama_barang'])) ?></td>
                                         </tr>
                                         <tr>
                                             <td>Serial Number</td>
@@ -162,7 +162,8 @@
                                     <tbody>
                                         <tr>
                                             <td width="40%">Lokasi</td>
-                                            <td class="font-weight-bold"> : <?= $barang['lokasi_terakhir'] ?> </td>
+                                            <?php $user_akhir = $this->Model_global->getPersonil($barang['lokasi_terakhir']); ?>
+                                            <td class="font-weight-bold"> : <?= un_strip($user_akhir['nip']).' - '.$user_akhir['nama'] ?> </td>
                                         </tr>
                                         <tr>
                                             <td>Tanggal Akhir</td>
@@ -398,7 +399,7 @@
                         <h4 class="text-black pb-1 border-bottom border-separator-light mb-2">Log Opname</h4>
 
                         <?php
-                            $history = $this->Model_global->getHistoryBarang($barang['kode_barang']);
+                            $history = $this->Model_global->getHistoryBarang('000');
                             if($history) {
                             foreach ($history as $key => $val) { ?>
 
@@ -474,7 +475,7 @@
                                 <div class="h-100">
                                     <div class="d-flex flex-column justify-content-start">
                                         <div class="d-flex flex-column">
-                                            <div class="heading stretched-link">Tidak Ada History</div>
+                                            <div class="heading stretched-link">Under Maintaince</div>
                                         </div>
                                     </div>
                                 </div>

@@ -57,20 +57,38 @@ class Model_tanda_terima extends CI_Model
         }
 	}
 
-	public function getDataStore($result, $search_name = "", $length = "", $start = "", $column = "", $order = "")
+	public function getDataStore($result, $search_name = "",$jenis="",$pengirim="",$penerima="",$tujuan="", $length = "", $start = "", $column = "", $order = "")
 	{
 
-		$this->db->select("tanda_terima_h.*");
-        $this->db->from($this->table);
-        $this->db->order_by('tanggal, nomor_transaksi', 'DESC');
+		$this->db->select("a.* ");
+        $this->db->from('tanda_terima_h a');
+        $this->db->order_by('a.tanggal_input, a.nomor_transaksi', 'DESC');
 
-        if($search_name !="")
-			$this->db->like('nomor_transaksi',$search_name);
-            $this->db->or_like('tujuan',$search_name);
+        if($search_name !=""){
+			$this->db->group_start();
+			$this->db->like('a.nomor_transaksi',$search_name);
+            $this->db->or_like('a.pengirim',$search_name);
+			// $this->db->or_like('b.nama',$search_name);
+			$this->db->group_end();
+		}
+
+		if($jenis !=""){
+			$this->db->where('a.kode_dokumen',$jenis);
+		}
+		if($pengirim !=""){
+			$this->db->where('a.pengirim',$pengirim);
+		}
+		if($penerima !=""){
+			$this->db->where('a.penerima',$penerima);
+		}
+		if($tujuan !=""){
+			$this->db->where('a.tujuan',$tujuan);
+		}
 
 		if($result == 'result'){
 			$this->db->limit($length,$start);
 			$query=$this->db->get();
+			// die($this->db->last_query());
 			return $query->result_array();
 
 		}else{
@@ -188,7 +206,10 @@ class Model_tanda_terima extends CI_Model
 			// Update Status Barang
 				$kode_barang 	= $data['kd_brg'][$x];
 				$where 		 	= array('kode_barang' => $kode_barang);
-				$update_status 	= array('status_barang' => $status_barang);
+				$update_status 	= array(
+									'status_barang' => $status_barang,
+									'lokasi_terakhir' => $data['tujuan']
+								);
 				$this->db->where($where)->update('mst_barang', $update_status);
 			// Update Status Barang
 		}

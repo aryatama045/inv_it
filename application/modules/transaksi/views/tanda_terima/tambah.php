@@ -43,7 +43,7 @@
                 <h3 class="pb-0">Form  <?= $function ?> </h3>
                 <hr class="mb-2">
 
-                <form id="form<?= $action ?>" class="row g-3" action="<?= base_url($mod.'/'.$func.'/tambah'); ?>" method="POST">
+                <form id="formTambah" class="row g-3" action="<?= base_url($mod.'/'.$func.'/tambah'); ?>" method="POST">
                     <div class="row p-2 m-2">
                         <div class="col-12 col-md-6" >
                             <label class="form-label text-black"><strong>Nomor Dokumen</strong></label>
@@ -115,8 +115,8 @@
                             <label class="form-label text-black"><strong>Tujuan<span style="color:red">*</span></strong></label>
                             <select class="form-select select2-single" name="tujuan" id="tujuan" required>
                                 <option value=""> -- Select Tujuan --</option>
-                                <?php $Personil2 = $this->Model_global->getPersonil();
-                                foreach ($Personil2 as $key => $val) { ?>
+                                <?php $Personil3 = $this->Model_global->getPersonil();
+                                foreach ($Personil3 as $key => $val) { ?>
                                     <?php if($val['nip'] == 0){ ?>
                                         <option value="<?= $val['kd_store'] ?>" ><?= $val['kd_store'].'-'.$val['nama'] ?></option>
                                     <?php } else { ?>
@@ -360,7 +360,7 @@ $(document).ready(function() {
                         "<input type='hidden' name='qty[]' id='qty' class='form-control' style='width:100%' value='"+rowData[3]+"' data-barang='"+rowData[0]+"' data-max-qty='"+rowData[3]+"' maxlength='5'/>" + rowData[3],
                         '<select class="form-select" name="status[]" required>' +
                             '<option value=""> -- Select Status --</option>' +
-                            <?php $status = $this->Model_global->getStatusBarang('', 'tanda_terima');
+                            <?php $status = $this->Model_global->getStatusBarang('', 'tt_out');
                             foreach ($status as $key => $val) { ?>
                             '<option value="<?= $val['status_barang'] ?>"><?= $val['status_barang']." - ".trim($val['nama']) ?></option>' +
                             <?php } ?>
@@ -392,7 +392,7 @@ $(document).ready(function() {
                         // "<input type='text' name='status[]'  class='form-control' value='"+rowData[5]+"' style='width:100%;text-align:center;' readonly  />",
                         '<select class="form-select" name="status[]" required>' +
                             '<option value=""> -- Select Status --</option>' +
-                            <?php $status = $this->Model_global->getStatusBarang('', '');
+                            <?php $status = $this->Model_global->getStatusBarang('', 'tt_in');
                             foreach ($status as $key => $val) { ?>
                             '<option value="<?= $val['status_barang'] ?>"><?= $val['status_barang']." - ".trim($val['nama']) ?></option>' +
                             <?php } ?>
@@ -452,34 +452,20 @@ $(document).ready(function() {
     });
     /* End Event On tr Table Browse Item */
 
+
     /* Action Form Submit */
-    $("#form<?=$action?>").unbind('submit').on('submit', function() {
-        var form = $(this);
-        if(validation()==true){
-        $('#btn-save').prop('disabled', true);
-        $.ajax({
-            url: form.attr('action'),
-            type: form.attr('method'),
-            data: form.serialize(),
-            dataType: 'json',
-            success:function(response) {
-            if(response.success === true) {
-                // response success
-                no_doc_trans = response.no_doc_trans;
-                $("#formPrintRedirect").submit();
-                dialog_success('Success',response.messages,true,'transaksi/tanda_terima');
-                // clearTempQty(null,'34');
-            } else {
-                // response failed
-                dialog_warning('Notification',response.messages);
-                $('#btn-save').prop('disabled', false);
-            }
-            }
+    $("#formTambah").unbind('submit').on('submit', function() {
+        dialog_submit('Notification',"Simpan !!");
+
+        $('#btn-submit').click(function() {
+            document.getElementById('formTambah').submit();
         });
-        }
+
         return false;
     });
+
 });
+
 
 
 /* Action Button Add (+) Clicked*/
@@ -493,17 +479,9 @@ function addRow(){
 }
 /* End Action Button Add (+) Clicked*/
 
+
 /* Validation Before addRow() */
 function validasi_add_item(){
-    // if($('input[id="harga_jual"]').length > 0){
-        var qty = $("#form<?=$action?> input[id='qty']");
-        for (i = 0; i < qty.length; i++) {
-            if( $(qty[i]).val() == '' || $(qty[i]).val() == 0){
-                dialog_warning('Notification',"Ada Qty Yang Kosong");
-                return false;
-            }
-        }
-    // }
 
 
     if($('.kd_dokumen').val() == ""){

@@ -30,14 +30,14 @@ class General extends Admin_Controller  {
 		$this->render_template($this->data['page'].'/index',$this->data);
 	}
 
-	public function edit($id)
+	public function edit()
 	{
 
 		$this->form_validation->set_rules('name' ,'Name ' , 'required');
 
         if ($this->form_validation->run() == TRUE) {
 
-			$edit_form = $this->Model_role->saveEdit($id);
+			$edit_form = $this->Model_general->saveEdit();
 
 			if($edit_form) {
 				$this->session->set_flashdata('success', 'Role Name  : "'.$_POST['name'].'" <br> Berhasil Di Update !!');
@@ -49,9 +49,11 @@ class General extends Admin_Controller  {
 
 		}else{
 			$this->starter();
-            $this->data['role']  	= $this->Model_role->getDataRow($id);
+            $this->data['setting']  	= $this->Model_general->getDataSetting();
 
-			if($this->data['role']['id']){
+			// tesx($this->data['setting']);
+
+			if($this->data['setting']){
 				$this->render_template($this->data['page'].'/edit',$this->data);
 			}else{
 				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');

@@ -33,7 +33,7 @@ class Model_type extends CI_Model
 
 		$this->db->select('*');
         $this->db->from($this->table);
-        $this->db->order_by('kode_type', 'ASC');
+        $this->db->order_by('ABS(kode_type)', 'ASC');
 
         if($search_name !="")
 			$this->db->like('kode_type',$search_name);

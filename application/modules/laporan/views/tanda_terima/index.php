@@ -6,6 +6,9 @@
 	span.select2-selection.select2-selection--single {
 		height: 100% !important;
 	}
+	table.dataTable.stripe tbody tr.odd {
+		background-color: rgb(255 252 252) !important;
+	}
 </style>
 
 <div class="row">
@@ -16,34 +19,35 @@
 			<div class="row">
 				<!-- Title Start -->
 				<div class="col-12 col-md-7">
-					<h1 class="mb-0 pb-0 display-4" id="title"><?= $pagetitle ?></h1>
+					<h1 class="mb-0 pb-0 display-4" id="title"><?= capital($modul).' '.$pagetitle ?></h1>
 					<?php $this->load->view('templates/breadcrumb'); ?>
 				</div>
 				<!-- Title End -->
 
 				<!-- Top Buttons Start -->
 				<div class="col-12 col-md-5 d-flex align-items-start justify-content-end">
-					<a class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1"
-						data-bs-effect="effect-super-scaled"
-                        data-bs-toggle="modal" href="#modal_import">
-						<i class="fa fa-download"></i>
-						<span>Import</span>
-					</a>
+					<!-- Dropdown Button Start -->
+                    <div class="ms-1">
 
+                        <button type="button" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1"
+                            data-bs-offset="0,3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-submenu >
+                            <i data-acorn-icon="more-horizontal"></i>
+                            <span>Export</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+								<button type="button"  class="dropdown-item" id='btn-pdf-action' title="Print PDF"><i class="fas fa-print"></i> PDF</button>
+								<button type="button"  class="dropdown-item" id='btn-excel-action' title="Export Excel"><i class="fas fa-file-excel"></i> Excel</button>
 
-					<!-- Add New Button Start -->
-					<a href="<?= base_url($mod.'/'.$func.'/tambah') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
-						<i data-acorn-icon="plus"></i>
-						<span>Add New</span>
-					</a>
+								<!-- <a href="<?= base_url($mod.'/'.$func.'/export/excel') ?>" class="dropdown-item" ><i class="fas fa-file-excel"></i> Excel</a>
+								<a href="<?= base_url($mod.'/'.$func.'/export/pdf') ?>" class="dropdown-item" ><i class="fas fa-print"></i> PDF</a> -->
 
-					<a href="<?= base_url($mod.'/'.$func.'/tambah_bulk') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
-						<i data-acorn-icon="plus"></i>
-						<span>Add New Bulk</span>
-					</a>
-					<!-- Add New Button End -->
+                        </div>
+                    </div>
+                    <!-- Dropdown Button End -->
+
 				</div>
 				<!-- Top Buttons End -->
+
 			</div>
 		</div>
 		<!-- Title and Top Buttons End -->
@@ -205,16 +209,26 @@
 					</div>
 				</div>
 
-				<table id="<?= $table_data ?>" class="table table-bordered data-table data-table-pagination  responsive nowrap stripe w-100">
+				<table id="<?= $table_data ?>"  class="table table-stripped stripe w-100" style="background:white;width:100%">
 					<thead class="mt-4">
 						<tr>
-							<th class="text-bold text-uppercase">#</th>
-							<th class="text-bold text-uppercase">Kode</th>
-							<th class="text-bold text-uppercase">Nama</th>
-							<th class="text-bold text-uppercase">Status</th>
-							<th class="text-bold text-uppercase">Qty</th>
-							<th class="text-bold text-uppercase">Lokasi</th>
-							<th class="text-bold text-uppercase">Action</th>
+							<th class="text-bold text-center text-uppercase">Kode_Barang</th>
+							<th class="text-bold text-center text-uppercase">Nama_Barang</th>
+							<th class="text-bold text-center text-uppercase">Kode_Kategori</th>
+							<th class="text-bold text-center text-uppercase">Kode_Merk</th>
+							<th class="text-bold text-center text-uppercase">Kode_Type</th>
+							<th class="text-bold text-center text-uppercase">Tanggal_Pembelian</th>
+							<th class="text-bold text-center text-uppercase">Harga_Pembelian</th>
+							<th class="text-bold text-center text-uppercase">Keterangan_Barang</th>
+							<th class="text-bold text-center text-uppercase">Keterangan_ACCT</th>
+							<th class="text-bold text-center text-uppercase">Status_Barang</th>
+							<th class="text-bold text-center text-uppercase">Tanggal_Terakhir</th>
+							<th class="text-bold text-center text-uppercase">Lokasi_Terakhir</th>
+							<th class="text-bold text-center text-uppercase">Serial_Number</th>
+							<th class="text-bold text-center text-uppercase">Qty_Baik</th>
+							<th class="text-bold text-center text-uppercase">Qty_Rusak</th>
+							<th class="text-bold text-center text-uppercase">Barang_Stock</th>
+							<th class="text-bold text-center text-uppercase">Tanggal_Opname</th>
 						</tr>
 					</thead>
 				</table>
@@ -225,52 +239,10 @@
 </div>
 
 
-<!-- Modal Import -->
-<div class="modal fade" data-bs-backdrop="static" id="modal_import">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content modal-content-demo">
-
-            <div class="card-header">
-                <h2 class="card-title m-0">Import </h2>
-            </div>
-            <form class="modal-dialog-scrollable" enctype='multipart/form-data'  action="<?= base_url($mod.'/'.$func.'/import_excel'); ?>" method="POST">
-
-                <div class="card-body">
-
-                    <div class="form-group mb-2">
-                        <input name="fileExcel" class="form-control" type="file" />
-                    </div>
-
-                    <div class="form-group">
-                        <a href="<?= base_url('upload/template/Template-Barang.xls')?>" download
-							class="btn btn-sm btn-success mb-2"><i class="far fa-save"></i> Download Template</a>
-                    </div>
-
-                </div>
-
-                <div class="card-footer ">
-					<div class="row">
-						<div class="col-md-6">
-							<button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
-						</div>
-						<div class="col-md-6">
-							<div class="d-flex align-items-start justify-content-end">
-								<button type="submit" class="btn btn-primary  float-right"><i class="fa fa-save"></i> Submit</button>
-							</div>
-						</div>
-					</div>
-
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-
 <script type="text/javascript">
 	window.base_url = '<?php echo base_url() ?>';
 	window.linkstore = '<?php echo $func.'/store' ?>';
+	window.linkexport = '<?php echo $func.'/export' ?>';
     window.tableData = '<?= $table_data ?>'
 </script>
 <script src="//code.jquery.com/jquery-2.2.0.min.js"></script>

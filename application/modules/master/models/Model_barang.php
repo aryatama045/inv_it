@@ -11,19 +11,35 @@ class Model_barang extends CI_Model
 
 	function getKodeBarang($id = NULL)
 	{
-		$getKode = $this->db->query("SELECT RIGHT(kode_barang,3)+1 as gencode FROM mst_barang
+
+		$str_cat = strlen($id);
+
+		$getKode = $this->db->query("SELECT RIGHT(kode_barang,$str_cat)+1 as gencode FROM mst_barang
 		WHERE kode_kategori ='$id' ORDER BY kode_barang DESC LIMIT 1")->row_array();
 
-		$code 	 	 = $id;
-
+		$code    = uppercase($id);
 		if($getKode){
 			$urut = $getKode['gencode'];
-			for ($i=4; $i > strlen($getKode['gencode']) ; $i--) {
-				$urut = "0".$urut;
+			for ($i=$str_cat; $i > strlen($getKode['gencode']) ; $i--) {
+				$urut = $urut;
 			}
+
+			if(strlen($urut) < 3)
+			{
+				if(strlen($urut) < 2)
+				{
+					$urut =  "00".$urut;
+				}else{
+					$urut =  "0".$urut;
+				}
+			}else{
+				$urut = $urut;
+			}
+
 			return $code.$urut;
+
 		}else{
-			return $code."0001";
+			return $code."001";
         }
 	}
 
@@ -84,7 +100,11 @@ class Model_barang extends CI_Model
 			$query=$this->db->get();
 			return $query->result_array();
 
-		}else{
+		}else if($result == 'report'){
+			$query=$this->db->get();
+			return $query->result_array();
+		}
+		else{
 			$query=$this->db->get();
 			return $query->num_rows();
 		}
@@ -149,7 +169,6 @@ class Model_barang extends CI_Model
 
 	}
 	// ---- Datatables END
-
 
 
 	// ---- Action Start

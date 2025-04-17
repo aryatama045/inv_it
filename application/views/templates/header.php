@@ -13,8 +13,8 @@
     <meta name="description" content="<?= $pagetitle; ?>" />
 
     <!-- Favicon Tags Start -->
-    <link rel="shortcut icon" href="https://place-hold.it/100x100/127352/fff/fff?text=INV-IT&fontsize=35&bold" type="image/x-icon" >
-    <link rel="icon" type="image/png" href="https://place-hold.it/128x128/127352/fff/fff?text=INV-IT&fontsize=35&bold" sizes="128x128" />
+    <link rel="shortcut icon" href="https://place-hold.it/100x100/00362b/fff/fff?text=INV-IT&fontsize=35&bold" type="image/x-icon" >
+    <link rel="icon" type="image/png" href="https://place-hold.it/128x128/00362b/fff/fff?text=INV-IT&fontsize=35&bold" sizes="128x128" />
     <meta name="application-name" content="INV IT" />
     <meta name="msapplication-TileColor" content="#FFFFFF" />
     <!-- Favicon Tags End -->

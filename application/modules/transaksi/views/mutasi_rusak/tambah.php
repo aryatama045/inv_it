@@ -235,6 +235,7 @@ $(document).ready(function() {
                 return $.extend({}, d, {
                 'kd_store_tujuan' : $('#kd_store_tujuan').val(),
                 'kategori'        : $('#kategori').val(),
+                'kode_dokumen'    : 'OUT',
                 });
             }
             },

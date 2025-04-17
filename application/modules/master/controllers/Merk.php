@@ -161,6 +161,11 @@ class Merk extends Admin_Controller  {
 		echo json_encode($response);
 	}
 
+	function sortByGrade($a, $b) {
+		if ($a == $b) return 0;
+		return ($a < $b) ? -1 : 1;
+	}
+
 
 }
 

@@ -13,6 +13,7 @@ class Barang extends Admin_Controller  {
 		$this->data['function'] = capital($f);
 
 		$this->load->model('Model_barang');
+		$this->load->model('Model_kategori');
 		$this->load->model('Model_global');
 
 	}
@@ -63,6 +64,32 @@ class Barang extends Admin_Controller  {
 		}else{
 			$this->starter();
 			$this->render_template('barang/tambah',$this->data);
+		}
+
+	}
+
+	public function tambah_bulk()
+	{
+
+		$this->form_validation->set_rules('nama_barang', 'Nama Barang','required',
+				array(	'required' 	=> 'Nama Barang Tidak Boleh Kosong !!',
+		));
+
+        if ($this->form_validation->run() == TRUE) {
+
+			$create_form = $this->Model_barang->saveTambah();
+
+			if($create_form) {
+				$this->session->set_flashdata('success', 'Barang Berhasil Disimpan !!');
+				redirect('master/barang', 'refresh');
+			} else {
+				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
+				redirect('master/barang/tambah_bulk', 'refresh');
+			}
+
+		}else{
+			$this->starter();
+			$this->render_template('barang/tambah_bulk',$this->data);
 		}
 
 	}
@@ -204,12 +231,26 @@ class Barang extends Admin_Controller  {
 					$LokasiAkhir = '-';
 				}
 
+				if($value['barang_stock'] == 'True'){
+                    $getstock = $this->Model_global->getStockBarang($value['kode_barang']);
+                    if($getstock != NULL){
+                        $stock = $getstock['saldo_awal'] + $getstock['in'] - $getstock['out'];
+                    }else{
+                        $stock = '0';
+                    }
+
+                    $Qty = $stock;
+                }else{
+                    $Qty = '1';
+                }
+
 
 				$output['data'][$key] = array(
 					$key+$start+1,
 					$value['kode_barang'].'<br><small>S/N : '.$value['serial_number'].'</small>',
 					uppercase(lowercase($value['nama_barang'])),
 					$StatusBarang['full_name'],
+					$Qty,
 					$LokasiAkhir,
 					$btn,
 				);
@@ -278,6 +319,71 @@ class Barang extends Admin_Controller  {
 					$stock,
 					$value['lokasi_terakhir'],
 					$value['status_barang']
+				);
+
+				$key++;
+
+			}
+
+		}else{
+			$output['data'] = [];
+		}
+		echo json_encode($output);
+	}
+
+	public function getKategoriAjax()
+	{
+		$output['data']		= array();
+		$draw           	= $_REQUEST['draw'];
+		$length         	= $_REQUEST['length'];
+		$start          	= $_REQUEST['start'];
+		$column 			= '';
+		$order 				= '';
+
+		$search_kd_barang 	= $_REQUEST['columns'][0]['search']["value"];
+		$search_name 		= $_REQUEST['columns'][1]['search']["value"];
+		$stok				= $_REQUEST['columns'][2]['search']["value"];
+		$jenis 				= $this->input->post('kode_dokumen');
+
+
+		$kategori   		= $this->input->post('kategori');
+		$merk   			= $this->input->post('merk');
+		$type   			= $this->input->post('type');
+
+
+		$data           	= $this->Model_kategori->getDataStore('result',$search_name,$length,$start,$column,$order);
+		$data_jum       	= $this->Model_kategori->getDataStore('numrows',$search_name);
+
+		$output			= array();
+		$output['draw'] = $draw;
+		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
+
+		if($search_name !="" || $search_kd_barang != "" || $stok != "" || $jenis != "" ){
+			$data_jum = $this->Model_kategori->getDataStore('numrows',$search_name);
+			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
+		}
+
+		if($data){
+			foreach ($data as $key => $value)  {
+
+				// if($value['barang_stock'] == 'True'){
+				// 	$getstock = $this->Model_global->getStockBarang($value['kode_barang']);
+				// 	if($getstock != NULL){
+
+				// 		$stock = $getstock['saldo_awal'] + $getstock['in'] - $getstock['out'];
+				// 	}else{
+				// 		$stock = '0';
+				// 	}
+				// }else{
+				// 	$stock = '1';
+				// }
+
+				$output['data'][$key] = array(
+					$value['kode_kategori'],
+					$value['nama'],
+					"<input type='number' name='qty[]' id='qty' class='form-control' style='width:100%' value='0' data-barang='0'   maxlength='5'/>",
+					'',
+					'',
 				);
 
 				$key++;

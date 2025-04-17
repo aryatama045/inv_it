@@ -35,8 +35,14 @@ class Model_global extends CI_Model {
             $query=$this->db->get();
             return $query->row_array();
         }else{
-            $query=$this->db->get();
-            return $query->result_array();
+            if($id == '0'){
+                $this->db->where('kode_kategori =', '0');
+                $query=$this->db->get();
+                return $query->row_array();
+            }else{
+                $query=$this->db->get();
+                return $query->result_array();
+            }
         }
     }
 
@@ -50,8 +56,14 @@ class Model_global extends CI_Model {
             $query=$this->db->get();
             return $query->row_array();
         }else{
-            $query=$this->db->get();
-            return $query->result_array();
+            if($id == '0'){
+                $this->db->where('kode_merk =', '0');
+                $query=$this->db->get();
+                return $query->row_array();
+            }else{
+                $query=$this->db->get();
+                return $query->result_array();
+            }
         }
     }
 
@@ -65,8 +77,14 @@ class Model_global extends CI_Model {
             $query=$this->db->get();
             return $query->row_array();
         }else{
-            $query=$this->db->get();
-            return $query->result_array();
+            if($id == '0'){
+                $this->db->where('kode_type =', '0');
+                $query=$this->db->get();
+                return $query->row_array();
+            }else{
+                $query=$this->db->get();
+                return $query->result_array();
+            }
         }
     }
 
@@ -94,21 +112,6 @@ class Model_global extends CI_Model {
             }
         }
 
-    }
-
-    function getStockBarang($id = NULL)
-    {
-        $this->db->select('*');
-		$this->db->from('stock');
-        $this->db->order_by('kode_barang', 'ASC');
-        if($id){
-            $this->db->where('kode_barang', $id);
-            $query=$this->db->get();
-            return $query->row_array();
-        }else{
-            $query=$this->db->get();
-            return $query->result_array();
-        }
     }
 
     function getDataPengiriman()
@@ -181,8 +184,6 @@ class Model_global extends CI_Model {
 
     }
 
-    // ------- END DATA MASTER GET
-
     function getMenuSetting()
     {
         $this->db->select('*');
@@ -201,6 +202,39 @@ class Model_global extends CI_Model {
         $this->db->order_by('id,name', 'ASC');
         if($id){
             $this->db->where('id', $id);
+            $query=$this->db->get();
+            return $query->row_array();
+        }else{
+            $query=$this->db->get();
+            return $query->result_array();
+        }
+    }
+
+    // ------- END DATA MASTER GET
+
+
+    function getStockBarang($id = NULL)
+    {
+        $this->db->select('*');
+		$this->db->from('stock');
+        $this->db->order_by('kode_barang', 'ASC');
+        if($id){
+            $this->db->where('kode_barang', $id);
+            $query=$this->db->get();
+            return $query->row_array();
+        }else{
+            $query=$this->db->get();
+            return $query->result_array();
+        }
+    }
+
+    function getStockRusak($id = NULL)
+    {
+        $this->db->select('*');
+		$this->db->from('stock_rusak');
+        $this->db->order_by('kode_barang', 'ASC');
+        if($id){
+            $this->db->where('kode_barang', $id);
             $query=$this->db->get();
             return $query->row_array();
         }else{
@@ -229,6 +263,7 @@ class Model_global extends CI_Model {
         $this->db->where('d.kode_barang',$id);
         $this->db->order_by('h.nomor_transaksi, h.tanggal', 'DESC');
         $query	= $this->db->get();
+        // die(nl2br($this->db->last_query()));
         return $query->result_array();
     }
 
@@ -243,6 +278,8 @@ class Model_global extends CI_Model {
         $query	= $this->db->get();
         return $query->result_array();
     }
+
+    
 
 
 }

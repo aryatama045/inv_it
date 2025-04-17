@@ -107,6 +107,7 @@ class Model_mutasi_rusak extends CI_Model
 				'no_urut' 			=> $data['urut'][$x],
 				'kode_barang' 		=> $data['kd_brg'][$x],
 				'qty_in'	 		=> $data['qty'][$x],
+				'status_barang_old' => $data['status'][$x],
 				'keterangan_barang'	=> $data['ket'][$x],
 			);
 			array_push($log_detail, $detail);

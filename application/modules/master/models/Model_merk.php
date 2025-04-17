@@ -33,7 +33,7 @@ class Model_merk extends CI_Model
 
 		$this->db->select('*');
         $this->db->from($this->table);
-        $this->db->order_by('kode_merk', 'ASC');
+        $this->db->order_by('CAST(kode_merk AS UNSIGNED)', 'ASC');
 
         if($search_name !="")
 			$this->db->like('kode_merk',$search_name);

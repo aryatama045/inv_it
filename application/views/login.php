@@ -12,8 +12,8 @@
     <meta name="description" content="Login Page" />
 
     <!-- Favicon Tags Start -->
-    <link rel="shortcut icon" href="https://place-hold.it/100x100/127352/fff/fff?text=INV IT&fontsize=30&bold" type="image/x-icon" >
-    <link rel="icon" type="image/png" href="https://place-hold.it/128x128/127352/fff/fff?text=INV IT&fontsize=30&bold" sizes="128x128" />
+    <link rel="shortcut icon" href="https://place-hold.it/100x100/00362b/fff/fff?text=INV IT&fontsize=30&bold" type="image/x-icon" >
+    <link rel="icon" type="image/png" href="https://place-hold.it/128x128/00362b/fff/fff?text=INV IT&fontsize=30&bold" sizes="128x128" />
     <meta name="application-name" content="INV IT" />
     <meta name="msapplication-TileColor" content="#FFFFFF" />
     <!-- Favicon Tags End -->
@@ -53,7 +53,7 @@
             color: #7c7676;
         }
         .logo-default-login{
-            background-image: url("https://place-hold.it/150x75/127352/fff/fff?text=INV IT&fontsize=20&bold");
+            background-image: url("https://place-hold.it/150x75/00362b/fff/fff?text=INV IT&fontsize=20&bold");
             width: 150px;
             min-height: 75px;
             object-position: left;

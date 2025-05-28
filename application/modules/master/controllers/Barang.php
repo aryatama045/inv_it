@@ -435,7 +435,7 @@ class Barang extends Admin_Controller  {
 						$tgl_pembelian = '00-00-0000';
 					}
 
-					$cek_type = $this->db->like('nama',$kode_type)->get('mst_type')->row_array();
+					$cek_type = $this->db->like('kode_type',$kode_type)->get('mst_type')->row_array();
 					if($cek_type == NULL){
 						$get_type = $this->Model_global->getType();
 
@@ -453,7 +453,7 @@ class Barang extends Admin_Controller  {
 						];
 						$this->db->insert('mst_type', $data_type);
 					}else{
-						$data_kode_type = $cek_type['kode_type'];
+						$data_kode_type = $kode_type;
 					}
 
 					if($kode_kategori != ''){
@@ -493,6 +493,56 @@ class Barang extends Admin_Controller  {
 			$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
 			redirect('master/barang', 'refresh');
 		}
+	}
+
+
+	function import_excel_action()
+	{
+
+		$log_data 		= array();
+		$kd_brg			= $this->input->post('kode_barang');
+		$count_brg 		= count($this->input->post('kode_barang'));
+		for($i = 0; $i < $count_brg; $i++) {
+			$items = array(
+				'kode_barang' 		=> $kd_brg[$i],
+				'kode_kategori'		=> $this->input->post('kode_kategori')[$i],
+				'pic'				=> $this->session->userdata('nama_login'),
+				'tgl_input'	=> date('Y-m-d H:i:s'),
+			);
+			array_push($log_data, $items);
+			// if($this->input->post('upload_hpp_akhir')[$i] !== null){
+			// 	array_push($items);
+			// 	$insert = $this->db->insert('haverage.avg_nilai_adj',$items);
+			// }
+		}
+		tesx($log_data);
+		
+		
+	}
+
+	function getDataImport()
+	{
+		$output['data']		= array();
+
+	
+		$getData  = json_decode(trim(file_get_contents('php://input')), true);
+		// tesx($getData['kategori_id'],$getData );
+
+		$getKategori 	= $this->Model_global->getKategori($getData['kategori_id']);
+		$getType 		= $this->Model_global->getType($getData['type_id']);
+		$getMerk 		= $this->Model_global->getType($getData['merk_id']);
+
+		$output['data'] = array(
+			'kategori'	=> $getData['kategori_id'],
+			'kategori_nama' => $getKategori['nama'],
+			'type'	=> $getData['type_id'],
+			'type_nama' => $getType['nama'],
+			'merk'  => $getData['merk_id'],
+			'merk_nama' => $getMerk ['nama'],
+		);
+		
+		echo json_encode($output);
+
 	}
 
 }

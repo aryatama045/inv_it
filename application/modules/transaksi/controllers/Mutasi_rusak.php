@@ -19,7 +19,8 @@ class Mutasi_rusak extends Admin_Controller  {
 
 	public function starter()
 	{
-		$this->data['new_nomor_transaksi'] = $this->Model_mutasi_rusak->getNomorTransaksi();
+		$this->data['new_nomor_transaksi'] 		= $this->Model_mutasi_rusak->getNomorTransaksi();
+		$this->data['new_nomor_transaksi_jual'] = $this->Model_mutasi_rusak->getNomorTransaksiJual();
 	}
 
 	public function index()
@@ -131,6 +132,32 @@ class Mutasi_rusak extends Admin_Controller  {
 		}else{
 			$this->starter();
 			$this->render_template('mutasi_rusak/tambah',$this->data);
+		}
+
+	}
+
+	public function tambah_jual()
+	{
+
+		$this->form_validation->set_rules('upload_kode_barang[]', 'Kode Barang','required',
+				array(	'required' 	=> 'Kode Barang Tidak Boleh Kosong !!',
+		));
+
+        if ($this->form_validation->run() == TRUE) {
+
+			$create_form = $this->Model_mutasi_rusak->saveTambahJual();
+
+			if($create_form) {
+				$this->session->set_flashdata('success', 'Data Berhasil Disimpan !!');
+				redirect('transaksi/mutasi_rusak', 'refresh');
+			} else {
+				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
+				redirect('transaksi/mutasi_rusak/tambah_jual', 'refresh');
+			}
+
+		}else{
+			$this->starter();
+			$this->render_template('mutasi_rusak/tambah_jual',$this->data);
 		}
 
 	}

@@ -97,7 +97,7 @@
 
                         <div class="col-12 col-md-4">
                             <label class="form-label text-black"><strong>Serial Number<span style="color:red">*</span></strong></label>
-                            <input type="text" class="form-control" required name="serial_number" placeholder="Input Serial Number" />
+                            <input type="text" class="form-control" required id="serial_number" name="serial_number" placeholder="Input Serial Number" />
                         </div>
                     </div>
 
@@ -162,6 +162,7 @@
         <!-- Content End -->
     </div>
 </div>
+
 
 
 <script src="<?= base_url('assets/js/jquery-2.2.0.min.js') ?>"></script>

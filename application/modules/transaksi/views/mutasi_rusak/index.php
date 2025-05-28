@@ -29,7 +29,11 @@
 					<!-- Add New Button Start -->
 					<a href="<?= base_url($mod.'/'.$func.'/tambah') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
 						<i data-acorn-icon="plus"></i>
-						<span>Add New</span>
+						<span>Add Rusak</span>
+					</a>
+					<a href="<?= base_url($mod.'/'.$func.'/tambah_jual') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
+						<i data-acorn-icon="plus"></i>
+						<span>Add Rusak Terjual</span>
 					</a>
 					<!-- Add New Button End -->
 

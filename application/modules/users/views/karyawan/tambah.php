@@ -57,7 +57,7 @@
 
                     <div class="col-12 col-md-6">
                         <label class="form-label text-black"><strong>Store<span style="color:red">*</span></strong></label>
-                        <select class="form-control select2-single" name="store" required>
+                        <select class="form-control select2-single" name="kd_store" required>
                             <option value="" >-- Select Store --</option>
                             <?php foreach($store as $key => $val) { ?>
                             <option value="<?= $val['kd_store'] ?>">[<?= un_strip($val['kd_store']) ?>] <?= $val['nama'] ?></option>

@@ -108,12 +108,11 @@ class Karyawan extends Admin_Controller  {
 
 		if($this->data['karyawan']['nip']){
 			// $this->starter();
-			$this->data['karyawan'] = $this->Model_karyawan->detail($id);
 
 			$this->render_template('karyawan/detail',$this->data);
 		}else{
 			$this->session->set_flashdata('error', 'Tidak Terdaftar, Silahkan Cek kembali !!');
-			redirect('users/dosen', 'refresh');
+			redirect('users/karyawan', 'refresh');
 		}
 
 	}

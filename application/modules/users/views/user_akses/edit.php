@@ -56,6 +56,13 @@
                         </div>
                     </div>
 
+                    <div class="col-12 col-md-6">
+                        <label class="form-label text-black"><strong>Password <span style="color:red">*</span>  </strong></label>
+                        <div class="input-group">
+                            <input type="text" required name="password" class="form-control" value="<?= $user_akses['username'] ?>"  />
+                        </div>
+                    </div>
+
 
                     <div class="col-12 col-md-3">
                         <label class="form-label text-black"><strong>Roles<span style="color:red">*</span></strong></label>

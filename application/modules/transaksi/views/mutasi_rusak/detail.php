@@ -140,7 +140,7 @@
                 </table>
 
                 <div class="col-12 mt-5">
-                    <a  data-bs-toggle="modal" data-bs-target="#batalModal" onclick="batal_dokumen('<?= $header['nomor_transaksi'] ?>')"
+                    <a hidden data-bs-toggle="modal" data-bs-target="#batalModal" onclick="batal_dokumen('<?= $header['nomor_transaksi'] ?>')"
                         class="btn btn-danger btn-icon btn-icon-start w-100 w-md-auto  m-1">
                         <i class="fa fa-trash"></i>
                         <span>Batal Dokumen</span>

@@ -33,6 +33,7 @@ class Model_global extends CI_Model {
         if($id){
             $this->db->where('kode_kategori', $id);
             $query=$this->db->get();
+            // die(nl2br($this->db->last_query()));
             return $query->row_array();
         }else{
             if($id == '0'){

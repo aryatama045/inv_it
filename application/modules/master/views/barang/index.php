@@ -23,12 +23,18 @@
 
 				<!-- Top Buttons Start -->
 				<div class="col-12 col-md-5 d-flex align-items-start justify-content-end">
-					<a class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1"
+					<!-- <a class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1"
 						data-bs-effect="effect-super-scaled"
                         data-bs-toggle="modal" href="#modal_import">
 						<i class="fa fa-download"></i>
 						<span>Import</span>
-					</a>
+					</a> -->
+
+					<button class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1" 
+						onclick="modal_upload()">
+						<i class="fa fa-download"></i>
+						<span>Import</span>
+					</button>
 
 
 					<!-- Add New Button Start -->
@@ -227,24 +233,45 @@
 
 <!-- Modal Import -->
 <div class="modal fade" data-bs-backdrop="static" id="modal_import">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content modal-content-demo">
+            <form class="modal-dialog-scrollable" enctype='multipart/form-data'  action="<?= base_url($mod.'/'.$func.'/import_excel_action'); ?>" method="POST">
 
-            <div class="card-header">
-                <h2 class="card-title m-0">Import </h2>
-            </div>
-            <form class="modal-dialog-scrollable" enctype='multipart/form-data'  action="<?= base_url($mod.'/'.$func.'/import_excel'); ?>" method="POST">
-
+				<div class="card-header">
+					<h2 class="card-title m-0">Import </h2>
+				</div>
+				
                 <div class="card-body">
 
-                    <div class="form-group mb-2">
-                        <input name="fileExcel" class="form-control" type="file" />
+                    <div class="form-group mb-1">
+						<label class="form-label text-black"><strong>Template </strong></label>
+                        <a href="<?= base_url('upload/template/Template-Barang.xls')?>" download
+							class="btn btn-sm btn-success"><i class="far fa-save"></i> Download Template</a>
                     </div>
 
-                    <div class="form-group">
-                        <a href="<?= base_url('upload/template/Template-Barang.xls')?>" download
-							class="btn btn-sm btn-success mb-2"><i class="far fa-save"></i> Download Template</a>
+					<div class="form-group mb-2">
+						<label class="form-label text-black"><strong>Template </strong></label>
+						<input type="file" class="form-control" id="excel_upload" name='excel_upload' onchange="filePicked(event)">
                     </div>
+
+
+                    <table id="tableListPreview" class="table table-stripped stripe w-100" style="background:white;width:100%">
+                        <thead>
+                            <tr>
+								<th>No.</th>
+								<th class="text-center">Kode_Kategori</th>
+								<th class="text-center">Kode_Type</th>
+								<th class="text-center">Kode_Merk</th>
+								<th class="text-center">Kode_Barang</th>
+								<th class="text-left">Nama_Barang</th>
+								<th class="text-right">Harga_Beli</th>
+								<th class="text-center">Tanggal_Beli</th>
+								<th class="text-left">Keterangan_Acct</th>
+								<th class="text-left">Serial_Number</th>
+
+                            </tr>
+                        </thead>
+                    </table>
 
                 </div>
 
@@ -267,12 +294,294 @@
 </div>
 
 
-
 <script type="text/javascript">
 	window.base_url = '<?php echo base_url() ?>';
 	window.linkstore = '<?php echo $func.'/store' ?>';
     window.tableData = '<?= $table_data ?>'
 </script>
-<script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
 
-<?php echo $this->load->assets(to_strip(lowercase($pagetitle)), 'index', 'js');  ?>
+<script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="<?php echo base_url('assets/vendor/sheetjs/jszip.js') ?>"></script>
+<script src="<?php echo base_url('assets/vendor/sheetjs/xlsx.js') ?>"></script>
+
+<?php //echo $this->load->assets(to_strip(lowercase($pagetitle)), 'index', 'js');  ?>
+
+<script type="text/javascript">
+	var tables;
+
+	var search_name,kategori,merk ,type, stock,status, lokasi;
+
+	$(document).ready(function() {
+
+		$('.select2-single').select2({});
+
+
+		//# initialize the datatable
+		tables = $('#'+tableData).DataTable({
+			'processing': true,
+			'serverSide': true,
+			'paging' : true,
+			'autoWidth': false,
+			'destroy': true,
+			'responsive': false,
+			// 'fixedHeader': {
+			//     'header': true,
+			//     'footer': true
+			// },
+			'ajax': {
+				'url': linkstore,
+				'type': 'POST',
+				'data': function(data) {
+					data.search_name    = $('#search_name').val();
+					data.kategori       = $("#kategori").val();
+					data.merk           = $("#merk").val();
+					data.type           = $("#type").val();
+					data.stock          = $("#stock").val();
+					data.status         = $("#status").val();
+					data.lokasi         = $("#lokasi").val();
+				},
+			},
+			'order': [0, 'ASC'],
+			"columnDefs":[
+				{"orderData": 1, "targets": 2},
+				{targets: 0,width:'5%',className: 'text-center'},
+			]
+		});
+
+		$("#"+tableData+"_filter").css("display", "none");
+		// $("#tables_length").css("display", "none");
+
+		tables.columns.adjust().draw();
+
+		$('#search_name').on('keyup', function(event) { // for text boxes
+			tables.ajax.reload(); //just reload table
+		});
+
+		$("#kategori").on("change", function () { //button filter event click
+			tables.ajax.reload(); //just reload table
+		});
+
+		$("#merk").on("change", function () { //button filter event click
+			tables.ajax.reload(); //just reload table
+		});
+
+		$("#type").on("change", function () { //button filter event click
+			tables.ajax.reload(); //just reload table
+		});
+
+		$("#stock").on("change", function () { //button filter event click
+			tables.ajax.reload(); //just reload table
+		});
+
+		$("#status").on("change", function () { //button filter event click
+			tables.ajax.reload(); //just reload table
+		});
+
+		$("#lokasi").on("change", function () { //button filter event click
+			tables.ajax.reload(); //just reload table
+		});
+	});
+
+	var oFileIn,tableListPreview,url,hasil,hasil_get;
+
+	function modal_upload() {
+		$('input[type=search]').val('').change();
+		tableListPreview.clear().draw();
+		oFileIn.value = "";
+		$('#modal_import').modal('show');
+	}
+
+	$(function() {
+		oFileIn = document.getElementById('excel_upload');
+		/* if (oFileIn.addEventListener) {
+		console.log(oFileIn.addEventListenerx);
+		oFileIn.addEventListener('change', filePicked, true);
+		} */
+		tableListPreview = $('#tableListPreview').DataTable({
+			// 'retrieve'      : true,
+			'destroy'       : true,
+			'scrollY'       : '45vh',
+			// 'fixedColumns'  : false,
+			'ordering'      : false,
+			'paging'        : false,
+			'info'          : false,
+			'scrollX'		: true,
+			// 'autoWidth'		: true,
+			'columnDefs'    : [
+				{targets: 0,className: 'text-center'},
+				{targets: 1,className: 'text-center'},
+				{targets: 2,className: 'text-center'},
+				{targets: 3,className: 'text-center'},
+				{targets: 4,className: 'text-left'},
+				{targets: 5,className: 'text-left', width:'25%'},
+				{targets: 6,className: 'text-right'},
+				{targets: 7,className: 'text-left'},
+				{targets: 8,className: 'text-left'},
+				{targets: 9,className: 'text-left'},
+			]
+		});
+		$(".dataTables_filter").css("display","none");
+	});
+
+	function filePicked(oEvent) {
+		$('input[type=search]').val('').change();
+		tableListPreview.clear().draw();
+		// Get The File From The Input
+		var oFile = oEvent.target.files[0];
+		
+		if (typeof(oFile) != "undefined") {
+			// if (oFile.name == "Input-Nilai-Avg-Upload.xls") {
+			if (oFile.type == "application/vnd.ms-excel") {
+				var sFilename = oFile.name;
+				// Create A File Reader HTML5
+				var reader = new FileReader();
+
+				// Ready The Event For When A File Gets Selected
+				reader.onload = function(e) {
+					var data = e.target.result;
+					var cfb = XLS.CFB.read(data, {
+						type: 'binary'
+					});
+					var wb = XLS.parse_xlscfb(cfb);
+					// Loop Over Each Sheet
+					var error = [];
+					var check_merk = true;
+					var result_data = [];
+					tableListPreview.clear().draw();
+					wb.SheetNames.forEach(function(sheetName) {
+						// Obtain The Current Row As CSV
+						var sCSV = XLS.utils.make_csv(wb.Sheets[sheetName]);
+
+						var oJS = XLS.utils.sheet_to_row_object_array(wb.Sheets[sheetName]);
+						var row = 1;
+
+						if (oJS[0]) {
+							var header_excel = Object.keys(oJS[0]);
+							if (header_excel[0] != 'Kategori') {
+								dialog_warning('Notification', 'Pastikan Anda Tidak Merubah Baris Pertama dan data tidak kosong, Cek Kembali Header Kode Kategori Pada Colom A1');
+							} else if (header_excel[3] != 'Kode Barang') {
+								dialog_warning('Notification', 'Pastikan Anda Tidak Merubah Baris Ketiga dan data tidak kosong atau 0, Cek Kembali Header Kode Barang Pada Colom D1');
+							}  else {
+								oJS.forEach(function(data) {
+									if (data['Kode Barang'] == null) {
+										error.push(row + 1);
+									} else {
+											// if (!Number.isInteger(parseInt(data['HPP Akhir'])) && parseInt(data['HPP Akhir']) < 0) {
+											// 	error.push(row + 1);
+											// } else {
+												
+												// hasil_get = '';
+												
+												// if(data['Kategori']){
+												// 	hasil_get = getKategori(data['Kategori'],data['Type'],data['Merk']);
+												// }
+												
+												// console.log("Hasil dari PHP:", hasil_get);
+
+												row_data = [
+													row - error.length,
+													'<input type="hidden" class="form-control" name="kode_kategori[]" value="' + data['Kategori'] + '">' +  data['Kategori'],
+													'<input type="hidden" class="form-control" name="kode_type[]" value="' + data['Type'] + '">' + data['Type'],
+													'<input type="hidden" class="form-control" name="kode_merk[]" value="' + data['Merk'] + '">' + data['Merk'],
+													'<input type="hidden" class="form-control" name="kode_barang[]" value="' + data['Kode Barang'] + '">' + data['Kode Barang'],
+													'<input type="hidden" class="form-control" name="nama_barang[]" value="' + data['Nama Barang'] + '">' + data['Nama Barang'],
+													'<input type="hidden" class="form-control" name="harga_beli[]" value="' + data['Harga Beli'] + '">' + data['Harga Beli'],
+													'<input type="hidden" class="form-control" name="tanggal_pembelian[]" value="' + data['Tanggal Pembelian'] + '">' + data['Tanggal Pembelian'],
+													'<input type="hidden" class="form-control" name="keterangan_acct[]" value="' + data['Keterangan Accounting'] + '">' + data['Keterangan Accounting'],
+													'<input type="hidden" class="form-control" name="serial_number[]" value="' + data['Serial Number'] + '">' + data['Serial Number'],
+												];
+												result_data.push(row_data);
+											// }
+									}
+									row++;
+								});
+
+																
+							}
+						} else {
+							dialog_warning('Notification', 'Cek Kembali File Yang Anda Pilih !');
+						}
+					});
+					
+					if (error.length) {
+						dialog_warning('Notification', 'Pastikan Anda Tidak Merubah Baris Pertama, Cek Kembali data Pada Baris ( ' + error.join() +
+						' )');
+					} else {
+						tableListPreview.rows.add(result_data).draw();
+					}
+				};
+				// Tell JS To Start Reading The File.. You could delay this if desired
+				reader.readAsBinaryString(oFile);
+			} else {
+				dialog_warning('Notification', 'Pastikan anda mengunakan File yang telah di download dan tidak merubah nama file !');
+			}
+		}else{
+			dialog_warning('Notification', 'File Tidak Bisa Dibaca, Silahkan Refresh lagi !');
+		}
+
+
+	}
+
+
+	function sendData(kats,types,merks) {
+        const value = document.getElementById("myInput").value;
+
+        //Use jQuery for AJAX request
+        $.ajax({
+            url: "<?php echo base_url('controller/method'); ?>", // Replace with your controller and method
+            type: "POST", // Or "GET" depending on your needs
+            data: { data: value }, // Send the value as data
+            success: function(response) {
+                // Handle the response from the controller
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+               // Handle errors
+               console.error(error);
+            }
+        });
+    }
+
+	// Memanggil fungsi kirimData  async
+	async function getKategori(kats,types,merks) {
+		var data = {
+			kategori_id: kats,
+			type_id: types,
+			merk_id: merks,
+		};
+
+		var url = '<?php echo base_url()?>/master/barang/getDataImport'; // File PHP yang akan menerima data
+		try {
+			var hasil = await kirimData(data, url);
+
+			return hasil;
+		} catch (error) {
+			console.error("Terjadi kesalahan:", error);
+		}
+	}
+
+	function kirimData(data, url) {
+		return new Promise((resolve, reject) => {
+			fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then(data => {
+				resolve(data);
+			})
+			.catch(error => {
+				reject(error);
+			});
+		});
+	}
+
+</script>

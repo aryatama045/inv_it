@@ -37,8 +37,7 @@ class Model_karyawan extends CI_Model
 
 	public function detail($id)
 	{
-		$this->db->select("mst_personil.*");
-        $this->db->from('');
+        $this->db->from($this->table);
 		$this->db->where('nip',$id);
 		$query	= $this->db->get();
 		return $query->row_array();
@@ -68,6 +67,7 @@ class Model_karyawan extends CI_Model
 	function saveTambah()
 	{
 		$data = $_POST;
+
 		$insert = $this->db->insert($this->table, $data);
 		return ($insert)?TRUE:FALSE;
 	}

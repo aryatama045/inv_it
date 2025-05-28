@@ -24,7 +24,7 @@ class Tanda_terima extends Admin_Controller  {
 	public function index()
 	{
 		$this->starter();
-		$this->render_template('barang/index',$this->data);
+		$this->render_template('tanda_terima/index',$this->data);
 	}
 
 
@@ -40,145 +40,79 @@ class Tanda_terima extends Admin_Controller  {
         $output['data']	= array();
 		$search_kode_barang = '';
 		$search_name   	= $this->input->post('search_name');
-		$kategori   	= $this->input->post('kategori');
+		$jenis   		= $this->input->post('jenis');
 		$merk   		= $this->input->post('merk');
 		$type   		= $this->input->post('type');
 		$stock			= $this->input->post('stock');
 		$status			= $this->input->post('status');
 		$lokasi			= $this->input->post('lokasi');
 
-		$data           = $this->Model_barang_laporan->getDataStore('result',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock,$status,$lokasi,$length,$start,$column,$order);
-		$data_jum       = $this->Model_barang_laporan->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock,$status,$lokasi);
+		$tgl_awal		= $this->input->post('tgl_awal');
+		$tgl_akhir		= $this->input->post('tgl_akhir');
 
-		$data_report    = $this->Model_barang_laporan->getDataStore('report',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock,$status,$lokasi);
-		$this->session->set_flashdata('detail', $data_report);
+		$data           = $this->Model_barang_laporan->getDataTandaTerima('result',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir,$length,$start,$column,$order);
+		$data_jum       = $this->Model_barang_laporan->getDataTandaTerima('numrows',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir);
+
+		// $data_report    = $this->Model_barang_laporan->getDataTandaTerima('report',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir);
+		// $this->session->set_flashdata('detail', $data_report);
 
 		$output['draw'] = $draw;
 		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
 
-		if($search_name !=""  ){
-			$data_jum = $this->Model_barang_laporan->getDataStore('numrows',$search_kode_barang,$search_name,$kategori,$merk,$type,$stock,$status,$lokasi);
+		if($search_name !="" ){
+			$data_jum = $this->Model_barang_laporan->getDataTandaTerima('numrows',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir);
 			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
 		}
 
 		if($data){
 			foreach ($data as $key => $value)  {
 
-				$id		= $value['kode_barang'];
-
-				$btn 	= '';
-				$btn 	.= '<a href="'.base_url('master/'.$cn.'/show/'.$id).'" class="btn btn-sm btn-icon  btn-success mb-1">
-								<i class="fa fa-eye"></i> </a>
-							</a>
-							<a  href="'.base_url('master/'.$cn.'/edit/'.$id).'" class="btn btn-sm btn-icon  btn-warning mb-1">
-								<i class="fa fa-edit"></i> </a>
-							</a>';
-				$btn 	.= '<a hidden class="btn btn-sm btn-icon btn-icon-only btn-danger mb-1" onclick="';
-				$btn 	.= "remove('".$id."')";
-				$btn 	.= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
-						<i class="fa fa-trash"></i></a>';
-
-				$StatusBarang = $this->Model_global->getStatusBarang($value['status_barang']);
-
-				if($value['lokasi_terakhir']){
-					$getPerson = $this->Model_global->getPersonil($value['lokasi_terakhir']);
-
-					if($getPerson){
-						$LokasiAkhir = $getPerson['nip'].'-'.$getPerson['nama'];
+				if($value['pengirim']){
+					$getPengirim    = $this->Model_global->getPersonil($value['pengirim']);
+					if($getPengirim){
+						$pengirim       = $getPengirim['nip'].'<br>'.$getPengirim['nama'];
 					}else{
-						$LokasiAkhir = '-';
+						$pengirim       = '-';
 					}
-
 				}else{
-					$LokasiAkhir = '-';
+					$pengirim       = '-';
 				}
 
+				if($value['penerima']){
 
-                if($value['barang_stock'] == 'True'){
-                    $getstock = $this->Model_global->getStockBarang($value['kode_barang']);
-                    if($getstock != NULL){
-                        $stock = $getstock['saldo_awal'] + $getstock['in'] - $getstock['out'];
-                    }else{
-                        $stock = '0';
-                    }
-
-					$getstockR = $this->Model_global->getStockRusak($value['kode_barang']);
-					if($getstockR != NULL){
-                        $stockR = $getstockR['saldo_awal'] + $getstockR['in'] - $getstockR['out'];
-                    }else{
-                        $stockR = '0';
-                    }
-
-                    $Qty 		= $stock;
-					$QtyR 		= $stockR;
-					$Stock    	= '<span class="btn btn-sm btn-icon btn-success">Stock</span>';
-                }else{
-
-					$getHistory = $this->Model_global->getMutasiBarang($value['kode_barang']);
-
-					// tesx($getHistory);
-
-					if($getHistory){
-						$QtyR 	= '1';
+					$getPenerima    = $this->Model_global->getPersonil($value['penerima']);
+					if($getPenerima){
+						$penerima       = $getPenerima['nip'].' <br>'.$getPenerima['nama'];
 					}else{
-						$QtyR 	= '0';
+						$penerima       = '-';
 					}
-
-                    $Qty 		= '1';
-					$Stock    	= '<span class="btn btn-sm btn-icon btn-info">Tidak</span>';
-                }
-
-
-				$Kategori = $this->Model_global->getKategori($value['kode_kategori']);
-				if($Kategori == NULL){
-					$Kategori['nama'] = '-';
 				}else{
-					$Kategori['nama'] = $Kategori['nama'];
+					$penerima       = '-';
 				}
 
-				$Merk     = $this->Model_global->getMerk($value['kode_merk']);
-				if($Merk == NULL){
-					$Merk['nama'] = '-';
+				if($value['tujuan']){
+					$getTujuan    	= $this->Model_global->getPersonil($value['tujuan']);
+					if($getTujuan){
+						$tujuan       	= $getTujuan['nip'].'<br>'.$getTujuan['nama'];
+					}else{
+						$tujuan       	= '-';
+					}
 				}else{
-					$Merk['nama'] = $Merk['nama'];
+					$tujuan       	= '-';
 				}
-
-				$Type     = $this->Model_global->getType($value['kode_type']);
-				if($Type == NULL){
-					$Type['nama'] = '-';
-				}else{
-					$Type['nama'] = $Type['nama'];
-				}
-
-				$Keterangan 	= ($value['keterangan'] == NULL)? '-' : $value['keterangan'];
-				$KeteranganAcct = ($value['keterangan_acct'] == NULL)? '-' : $value['keterangan_acct'];
-				$SerialNumber 	= ($value['serial_number'] == NULL)? '-' : $value['serial_number'];
-
-				$TglBeli		= ($value['tanggal_pembelian'] == NULL || $value['tanggal_pembelian'] == '00-00-0000')? '00-00-0000' : date('d-m-Y', strtotime($value['tanggal_pembelian']));
-				$TglAkhir		= ($value['tanggal_lokasi_akhir'] == NULL || $value['tanggal_lokasi_akhir'] == '00-00-0000' || $value['tanggal_lokasi_akhir'] == ' 00-00-0000')? '00-00-0000' : date('d-m-Y', strtotime($value['tanggal_lokasi_akhir']));
 
 				$output['data'][$key] = array(
-					// $key+$start+1,
-					$value['kode_barang'], //.'<br><small>S/N:'.$value['serial_number'].'</small>'
-					uppercase(lowercase($value['nama_barang'])),
-					$value['kode_kategori'].'<br><small> '.$Kategori['nama'].'</small>',
-					$value['kode_merk'].'<br><small> '.$Merk['nama'].'</small>',
-					$value['kode_type'].'<br><small> '.$Type['nama'].'</small>',
-					$TglBeli,
-					nominal($value['harga_beli']),
-					$Keterangan,
-					$KeteranganAcct,
-					$StatusBarang['full_name'],
-                    $TglAkhir,
-					$LokasiAkhir,
-					$SerialNumber,
-					$Qty,
-					$QtyR,
-					$Stock,
-					$value['opname'],
+					'<b>'.$value['nomor_transaksi'].'</b>',
+					$value['kode_dokumen'],
+					date('d-m-Y',strtotime($value['tanggal'])),
+					$pengirim,
+					$penerima,
+					$tujuan,
+					$value['kode_barang'],
+					$value['nama_barang'],
+					$value['qty'],
+					$value['nama_status'],
 				);
-
-				$key++;
 
 			}
 
@@ -190,10 +124,19 @@ class Tanda_terima extends Admin_Controller  {
 
     public function export($type = NULL)
     {
-		$data_post = $_POST;
-        // $data = $this->session->flashdata('detail');
+		$data = $_POST;
+		
+		$search_name		= $data['search_name'];
+		$jenis				= $data['jenis'];
+		$type				= $data['type'];
+		$tgl_awal			= $data['tgl_awal'];
+		$tgl_akhir			= $data['tgl_akhir'];
 
-        tesx($type,$data_post );
+		$detail = $this->Model_barang_laporan->getDataTandaTerima('report','',$search_name,$jenis,'',$type,'','','',$tgl_awal,$tgl_akhir,'','','','');
+
+		$output['data']['detail'] = $detail;
+		$export = $this->Model_barang_laporan->exportExcel($output['data']);
+
     }
 
 }

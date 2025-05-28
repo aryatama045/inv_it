@@ -359,7 +359,7 @@ $(document).ready(function() {
                         "<input type='hidden' name='kd_brg[]' id='"+rowData[0]+"' class='form-control' style='width:100%' value='"+rowData[0]+"' />" +
                         "<input type='hidden' name='qty[]' id='qty' class='form-control' style='width:100%' value='"+rowData[3]+"' data-barang='"+rowData[0]+"' data-max-qty='"+rowData[3]+"' maxlength='5'/>" + rowData[3],
                         '<select class="form-select" name="status[]" required>' +
-                            '<option value=""> -- Select Status --</option>' +
+                            '<option value="U"> U-USED</option>' +
                             <?php $status = $this->Model_global->getStatusBarang('', 'tt_out');
                             foreach ($status as $key => $val) { ?>
                             '<option value="<?= $val['status_barang'] ?>"><?= $val['status_barang']." - ".trim($val['nama']) ?></option>' +
@@ -391,7 +391,7 @@ $(document).ready(function() {
                         "<input type='hidden' name='qty[]' id='qty' class='form-control' style='width:100%' value='"+rowData[3]+"' data-barang='"+rowData[0]+"' data-max-qty='"+rowData[3]+"' maxlength='5'/>" + rowData[3],
                         // "<input type='text' name='status[]'  class='form-control' value='"+rowData[5]+"' style='width:100%;text-align:center;' readonly  />",
                         '<select class="form-select" name="status[]" required>' +
-                            '<option value=""> -- Select Status --</option>' +
+                            '<option value="S"> S-STOCK </option>' +
                             <?php $status = $this->Model_global->getStatusBarang('', 'tt_in');
                             foreach ($status as $key => $val) { ?>
                             '<option value="<?= $val['status_barang'] ?>"><?= $val['status_barang']." - ".trim($val['nama']) ?></option>' +

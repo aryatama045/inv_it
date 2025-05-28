@@ -1,6 +1,6 @@
 var tables;
 
-var search_name,kategori,merk ,type, stock,status, lokasi;
+var search_name,jenis,merk ,type, stock,status, lokasi, tgl_awal, tgl_akhir;
 $(document).ready(function() {
 
     $('.select2-single').select2({});
@@ -25,34 +25,29 @@ $(document).ready(function() {
             'type': 'POST',
             'data': function(data) {
                 data.search_name    = $('#search_name').val();
-                data.kategori       = $("#kategori").val();
-                data.merk           = $("#merk").val();
+                data.jenis          = $("#jenis").val();
                 data.type           = $("#type").val();
                 data.stock          = $("#stock").val();
                 data.status         = $("#status").val();
                 data.lokasi         = $("#lokasi").val();
+                data.tgl_awal       = $("#selectTanggalAwal").val();
+                data.tgl_akhir      = $("#selectTanggalAkhir").val();
+
             },
         },
-        'order'     : [5, 'ASC'],
+        'order'     : [0, 'ASC'],
         'columnDefs':[
             {"orderData": 5, "targets": 2},
             {targets: 0, className: 'text-center'},
-            {targets: 1,className: 'text-left'},
+            {targets: 1,className: 'text-center'},
             {targets: 2,className: 'text-center'},
             {targets: 3,className: 'text-center'},
             {targets: 4,className: 'text-center'},
             {targets: 5,className: 'text-center'},
-            {targets: 6,className: 'text-right'},
+            {targets: 6,className: 'text-center'},
             {targets: 7,className: 'text-left'},
             {targets: 8,className: 'text-center'},
             {targets: 9,className: 'text-center'},
-            {targets: 10,className: 'text-center'},
-            {targets: 11,className: 'text-center'},
-            {targets: 12,className: 'text-center'},
-            {targets: 13,className: 'text-center'},
-            {targets: 14,className: 'text-center'},
-            {targets: 15,className: 'text-center'},
-            {targets: 16,className: 'text-center'},
         ]
     });
 
@@ -67,7 +62,7 @@ $(document).ready(function() {
         tables.ajax.reload(); //just reload table
     });
 
-    $("#kategori").on("change", function () { //button filter event click
+    $("#jenis").on("change", function () { //button filter event click
         tables.ajax.reload(); //just reload table
     });
 
@@ -88,6 +83,14 @@ $(document).ready(function() {
     });
 
     $("#lokasi").on("change", function () { //button filter event click
+        tables.ajax.reload(); //just reload table
+    });
+    
+    $("#selectTanggalAwal").on("change", function () { //button filter event click
+        tables.ajax.reload(); //just reload table
+    });
+
+    $("#selectTanggalAkhir").on("change", function () { //button filter event click
         tables.ajax.reload(); //just reload table
     });
 });

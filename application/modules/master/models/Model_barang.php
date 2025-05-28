@@ -14,8 +14,12 @@ class Model_barang extends CI_Model
 
 		$str_cat = strlen($id);
 
-		$getKode = $this->db->query("SELECT RIGHT(kode_barang,$str_cat)+1 as gencode FROM mst_barang
-		WHERE kode_kategori ='$id' ORDER BY kode_barang DESC LIMIT 1")->row_array();
+		// $getKode = $this->db->query("SELECT RIGHT(kode_barang,$str_cat)+1 as gencode FROM mst_barang
+		// WHERE kode_kategori ='$id' ORDER BY kode_barang DESC LIMIT 1")->row_array();
+
+		$getKode = $this->db->query("SELECT CAST((SUBSTR(kode_barang,LENGTH(kode_kategori)+1,7)) AS SIGNED INTEGER)+1 as gencode FROM mst_barang
+		WHERE kode_kategori ='$id' ORDER BY gencode DESC LIMIT 1")->row_array();
+		 
 
 		$code    = uppercase($id);
 		if($getKode){
@@ -36,6 +40,7 @@ class Model_barang extends CI_Model
 				$urut = $urut;
 			}
 
+
 			return $code.$urut;
 
 		}else{
@@ -49,6 +54,7 @@ class Model_barang extends CI_Model
 
 		$this->db->select('*');
         $this->db->from($this->table);
+		$this->db->where('status_terjual', NULL);
         $this->db->order_by('kode_barang', 'ASC');
 
         if($search_name !="")
@@ -116,6 +122,7 @@ class Model_barang extends CI_Model
 
 		$this->db->select('*');
         $this->db->from('mst_barang');
+		$this->db->where('status_terjual', NULL);
         $this->db->order_by('kode_barang', 'ASC');
 
         if($search_name !="")
@@ -155,6 +162,8 @@ class Model_barang extends CI_Model
 		{
 			$this->db->where_in('status_barang', ['S', 'QTY', 'N'] );
 			// $this->db->where_not_in('status_barang', ['R', 'H'] );
+		} else if($jenis == "JUAL") {
+			$this->db->where_in('status_barang', ['R', 'RJ1','RJ2', 'W', 'WJ2'] );
 		}
 
 		if($result == 'result'){

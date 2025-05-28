@@ -207,8 +207,9 @@ class Model_tanda_terima extends CI_Model
 				$kode_barang 	= $data['kd_brg'][$x];
 				$where 		 	= array('kode_barang' => $kode_barang);
 				$update_status 	= array(
-									'status_barang' => $status_barang,
-									'lokasi_terakhir' => $data['tujuan']
+									'status_barang' 			=> $status_barang,
+									'lokasi_terakhir' 			=> $data['tujuan'],
+									'tanggal_lokasi_akhir'		=> date('Y-m-d'),
 								);
 				$this->db->where($where)->update('mst_barang', $update_status);
 			// Update Status Barang

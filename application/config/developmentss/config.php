@@ -26,7 +26,8 @@ date_default_timezone_set('Asia/Jakarta');
 // $root = "http://".$_SERVER['HTTP_HOST'];
 // $root .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
 // $config['base_url']    = "$root";
-$config['base_url'] = 'http://inv_it.test/';
+
+$config['base_url'] = 'https://inventori.sunglassplanet.co.id/';
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -228,7 +229,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 1;
+$config['log_threshold'] = 4;
 
 /*
 |--------------------------------------------------------------------------
@@ -383,21 +384,33 @@ $config['encryption_key'] = '23uhf92f9238jfasdb@berryrury90c43f62b121c66b1';
 |
 */
 
-// $config['sess_driver']              = 'database';
-// $config['sess_cookie_name']		    = 'hrd_all';
-// $config['sess_expiration']		    = 7200;
-// $config['sess_save_path']           = 'sessions';
-// $config['sess_match_ip']            = FALSE;
-// $config['sess_time_to_update']      = 30000;
-// $config['sess_regenerate_destroy']  = FALSE;
 
+
+
+ //$config['sess_driver'] = 'database';
+//$config['sess_cookie_name'] = 'inv_web_it';
 $config['sess_driver']              = 'files';
-$config['sess_cookie_name']         = 'ci_session';
-$config['sess_expiration']          = 7200;
-$config['sess_save_path']           = null;
-$config['sess_match_ip']            = false;
-$config['sess_time_to_update']      = 300;
-$config['sess_regenerate_destroy']  = false;
+$config['sess_cookie_name']         = 'session';
+$config['sess_expiration'] = 72000;
+$config['sess_save_path'] = 'session';
+$config['sess_save_path'] = APPPATH . 'cache/session/';
+$config['sess_match_ip'] = TRUE;
+$config['sess_time_to_update'] = 30000;
+$config['sess_regenerate_destroy'] = FALSE;
+
+
+// $config['sess_expire_on_close'] = TRUE;
+
+// $config['sess_driver']              = 'files';
+// $config['sess_cookie_name']         = 'ci_session';
+// $config['sess_expiration']          = 7200;
+// // $config['sess_save_path']           = null;
+// // $config['sess_save_path'] = 'session';
+// $config['sess_save_path'] = APPPATH . 'cache/session/';
+// $config['sess_match_ip']            = false;
+// $config['sess_time_to_update']      = 300;
+// $config['sess_regenerate_destroy']  = false;
+
 
 /*
 |--------------------------------------------------------------------------

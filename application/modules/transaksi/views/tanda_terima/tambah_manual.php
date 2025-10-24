@@ -163,7 +163,11 @@
         <!-- Content End -->
     </div>
 </div>
-
+<style>
+    .select2-container{
+            width: 280px !important;
+        }
+</style>
 
 <script src="<?= base_url('assets/js/jquery-2.2.0.min.js') ?>"></script>
 <script type="text/javascript">

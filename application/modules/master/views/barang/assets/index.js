@@ -9,16 +9,13 @@ $(document).ready(function() {
 
     //# initialize the datatable
     tables = $('#'+tableData).DataTable({
-        'processing': true,
-        'serverSide': true,
-        'paging' : true,
-        'autoWidth': false,
-        'destroy': true,
-        'responsive': false,
-        // 'fixedHeader': {
-        //     'header': true,
-        //     'footer': true
-        // },
+        'processing'    : true,
+        'serverSide'    : true,
+        'paging'        : true,
+        'autoWidth'     : false,
+        'destroy'       : true,
+        'responsive'    : true,
+        'ordering'      : false,
         'ajax': {
             'url': linkstore,
             'type': 'POST',
@@ -40,9 +37,6 @@ $(document).ready(function() {
     });
 
     $("#"+tableData+"_filter").css("display", "none");
-    // $("#tables_length").css("display", "none");
-
-    tables.columns.adjust().draw();
 
     $('#search_name').on('keyup', function(event) { // for text boxes
         tables.ajax.reload(); //just reload table

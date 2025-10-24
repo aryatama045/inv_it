@@ -13,8 +13,8 @@
     <meta name="description" content="<?= $pagetitle; ?>" />
 
     <!-- Favicon Tags Start -->
-    <link rel="shortcut icon" href="https://place-hold.it/100x100/00362b/fff/fff?text=INV-IT&fontsize=35&bold" type="image/x-icon" >
-    <link rel="icon" type="image/png" href="https://place-hold.it/128x128/00362b/fff/fff?text=INV-IT&fontsize=35&bold" sizes="128x128" />
+    <link rel="shortcut icon" href="<?= base_url('assets/icon-inv-it.gif'); ?>" type="image/x-icon" >
+    <link rel="icon" type="image/png" href="<?= base_url('assets/icon-inv-it.gif'); ?>" sizes="128x128" />
     <meta name="application-name" content="INV IT" />
     <meta name="msapplication-TileColor" content="#FFFFFF" />
     <!-- Favicon Tags End -->
@@ -25,6 +25,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css" />
+    
+    <link rel="stylesheet" href="<?= base_url('assets/') ?>css/all.min.css">
+    <link rel="stylesheet" href="<?= base_url('assets/') ?>css/bootstrap-icons.css" />
+
     <link rel="stylesheet" href="<?= base_url('assets/') ?>font/CS-Interface/style.css" />
     <!-- Font Tags End -->
 
@@ -108,6 +112,19 @@
         span.select2-selection.select2-selection--single {
             height: 100% !important;
         }
+
+        span.select2.select2-container.select2-container--default {
+            width: auto !important;
+        }
+
+        .select2-container--bootstrap4 .select2-results__option--highlighted, .select2-container--bootstrap4 .select2-results__option--highlighted.select2-results__option[aria-selected=true]
+        {
+            color : black !important;
+        }
+
+        /* .select2-container{
+            width: 280px !important;
+        } */
     </style>
 </head>
 
@@ -116,12 +133,12 @@
 
     <div id="root">
     <!-- Loading -->
-    <div class="load-wrapper">
+    <!-- <div class="load-wrapper">
         <div class="loader">
         </div>
     </div>
 
-    <div class="content-loader">
+    <div class="content-loader"> -->
     <!-- END Loadning -->
 
         <?php $this->load->view('templates/side_menubar'); ?>

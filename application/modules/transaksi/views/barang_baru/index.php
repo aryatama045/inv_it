@@ -31,12 +31,12 @@
 					<!-- Add New Button Start -->
 					<a href="<?= base_url($mod.'/'.$func.'/tambah') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
 						<i data-acorn-icon="plus"></i>
-						<span>Add New</span>
+						<span>Add New Stock</span>
 					</a>
 
 					<a href="<?= base_url($mod.'/'.$func.'/tambah_manual') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
 						<i data-acorn-icon="plus"></i>
-						<span>Add Manual New</span>
+						<span>Add New Qty</span>
 					</a>
 					<!-- Add New Button End -->
 
@@ -72,10 +72,10 @@
 								<!-- Jenis -->
 								<div class="col-2 text-center">
 									<div class="form-group ">
-										<select class="form-control select2-single" name="jenis" id="jenis">
+										<select class="form-control select2-single" disabled name="jenis" id="jenis">
 											<option value="" >-- Jenis --</option>
 											<option value="">All</option>
-											<option value="IN">IN</option>
+											<option value="IN" selected>IN</option>
 											<option value="OUT">OUT</option>
 										</select>
 									</div>
@@ -183,71 +183,6 @@
 	</div>
 </div>
 
-<!-- Modal Import -->
-<div class="modal fade" data-bs-backdrop="static" id="modal_import">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content modal-content-demo">
-
-            <div class="card-header">
-                <h2 class="card-title m-0">Import </h2>
-            </div>
-            <form class="modal-dialog-scrollable" enctype='multipart/form-data'  action="<?= base_url($mod.'/'.$func.'/import_excel'); ?>" method="POST">
-
-                <div class="card-body">
-
-                    <div class="form-group mb-2">
-                        <input name="fileExcel" class="form-control" type="file" />
-                    </div>
-
-                    <div class="form-group">
-                        <a href="<?= base_url('upload/template/template-tanda-terima.xls')?>" download
-							class="btn btn-sm btn-success mb-2"><i class="far fa-save"></i> Download Template</a>
-                    </div>
-
-                </div>
-
-                <div class="card-footer ">
-					<div class="row">
-						<div class="col-md-6">
-							<button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
-						</div>
-						<div class="col-md-6">
-							<div class="d-flex align-items-start justify-content-end">
-								<button type="submit" class="btn btn-primary  float-right"><i class="fa fa-save"></i> Submit</button>
-							</div>
-						</div>
-					</div>
-
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- remove modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
-	<div class="modal-dialog modal-sm" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Modal title</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-
-			<form role="form" action="<?= base_url($mod.'/'.$func.'/delete') ?>" method="post" id="removeForm">
-				<div id="id" class="modal-body">
-					<p>Yakin <span></span> ?</p>
-				</div>
-
-				<div id="messages_modal_remove"></div>
-
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary" id='btn-delete'> Remove</button>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
 
 <!-- Direct to page with POST Paramaeter -->
 <div id='containerFormRedirect'>

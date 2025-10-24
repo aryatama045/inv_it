@@ -13,13 +13,13 @@ class Barang_baru extends Admin_Controller  {
 		$this->data['function'] = capital($f);
 
 		$this->load->model('Model_tanda_terima');
+		$this->load->model('Model_barang_baru');
 
 	}
 
 	public function starter()
 	{
 		$this->data['new_nomor_transaksi'] = $this->Model_tanda_terima->getNomorTransaksi();
-		$this->data['new_nomor_transaksi_manual'] = $this->Model_tanda_terima->getNomorTransaksiManual();
 	}
 
 	public function index()
@@ -50,7 +50,7 @@ class Barang_baru extends Admin_Controller  {
 		$data           = $this->Model_tanda_terima->getDataStore('result',$search_name,$jenis,$pengirim,$penerima,$tujuan,$length,$start,$column,$order);
 		$data_jum       = $this->Model_tanda_terima->getDataStore('numrows',$search_name,$jenis,$pengirim,$penerima,$tujuan);
 
-		$output=array();
+		$output			= array();
 		$output['draw'] = $draw;
 		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
 
@@ -121,21 +121,22 @@ class Barang_baru extends Admin_Controller  {
 
 	public function tambah()
 	{
-		$this->form_validation->set_rules('kd_brg[]', 'Kode Barang','required',
-				array(	'required' 	=> 'Kode Barang Tidak Boleh Kosong !!',
+		$this->form_validation->set_rules('kode_kategori[]', 'Kode Kategori','required',
+				array('required' 	=> 'Kode Kategori Tidak Boleh Kosong !!',
 		));
 
         if ($this->form_validation->run() == TRUE) {
 
-			$create_form = $this->Model_tanda_terima->saveTambah();
+			$create_form = $this->Model_barang_baru->saveTambah();
 
-			if($create_form) {
-				$this->session->set_flashdata('success', 'Berhasil Disimpan !!');
-				redirect('transaksi/tanda_terima', 'refresh');
-			} else {
-				$this->session->set_flashdata('error', 'Silahkan Cek kembali data yang di input !!');
+			if($create_form['status'] === 'FALSE') {
+				$this->session->set_flashdata('error', $create_form['message'].' </br> Silahkan Cek kembali data yang di input !!');
 				redirect('transaksi/barang_baru/tambah', 'refresh');
+			} else {
+				$this->session->set_flashdata('success', 'Berhasil Disimpan !!');
+				redirect('transaksi/barang_baru', 'refresh');
 			}
+
 
 		}else{
 			$this->starter();

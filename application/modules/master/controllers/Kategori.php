@@ -103,11 +103,36 @@ class Kategori extends Admin_Controller  {
 	public function tambah()
 	{
 
-		$this->form_validation->set_rules('kode_kategori' ,'Kode ' , 'required');
+		$this->form_validation->set_rules('nama' ,'Nama Kategori ' , 'required');
 
         if ($this->form_validation->run() == TRUE) {
 
-			$create_form = $this->Model_kategori->saveTambah();
+			
+			$nama = $_POST['nama'];
+
+			
+			// Validasi nama tidak boleh kosong
+            if (empty($nama)) {
+				$this->session->set_flashdata('error', 'Nama kategori tidak boleh kosong');
+				redirect('master/kategori/tambah', 'refresh');
+            }
+            // Cek apakah nama sudah ada
+            if ($this->is_name_exists($nama)) {
+				$this->session->set_flashdata('error', 'Nama kategori "' . $nama . '" sudah ada, silakan gunakan nama lain');
+				redirect('master/kategori/tambah', 'refresh');
+            }
+			
+			// Generate kode unik
+			$code = $this->generate_unique_code($nama);
+
+            $data_kat = [
+                'kode_kategori' => $code,
+                'nama'          => $nama,
+            ];
+
+            tesx($data_kat);
+
+			$create_form = $this->Model_kategori->saveTambah($data_kat);
 
 			if($create_form) {
 				$this->session->set_flashdata('success', ' Berhasil Disimpan !!');
@@ -177,6 +202,130 @@ class Kategori extends Admin_Controller  {
 
 		echo json_encode($response);
 	}
+
+
+    /**
+     * Cek apakah nama kategori sudah ada di database
+     * 
+     * @param string $name Nama kategori
+     * @param int $exclude_id ID yang dikecualikan (untuk update)
+     * @return boolean True jika sudah ada, False jika belum
+     */
+    private function is_name_exists($name) {
+        return $this->Model_kategori->check_name_exists($name);
+    }
+
+    /**
+     * Cek apakah kode kategori sudah ada di database
+     * 
+     * @param string $code Kode yang akan dicek
+     * @return boolean True jika sudah ada, False jika belum
+     */
+    private function is_code_exists($code) {
+        return $this->Model_kategori->check_code_exists($code);
+    }
+
+    /**
+     * Generate kode kategori unik dari nama
+     * 
+     * @param string $name Nama kategori
+     * @return string Kode kategori yang unik
+     */
+    public function generate_unique_code($name) {
+        // Generate kode dasar dari nama
+        $base_code = generate_category_code($name);
+        
+        // Ambil semua kode yang sudah ada di database
+        $existing_codes = $this->get_all_existing_codes();
+        
+        // Generate kode unik
+        $unique_code = generate_unique_category_code($base_code, $existing_codes);
+        
+        return $unique_code;
+    }
+
+    /**
+     * Ambil semua kode kategori yang sudah ada di database
+     * 
+     * @return array Array berisi semua kode kategori
+     */
+    private function get_all_existing_codes() {
+        $categories = $this->Model_kategori->get_all_codes();
+        $codes = array();
+        
+        foreach ($categories as $category) {
+            $codes[] = $category->kode_kategori; // Sesuaikan dengan nama field di tabel
+        }
+        
+        return $codes;
+    }
+
+
+	/**
+     * Validasi nama kategori via AJAX
+     */
+    public function check_name() {
+        if ($this->input->is_ajax_request()) {
+            $name = trim($this->input->post('name'));
+            $id = $this->input->post('id'); // untuk update
+            
+            if (empty($name)) {
+                $response = array(
+                    'status' => 'error',
+                    'message' => 'Nama kategori tidak boleh kosong'
+                );
+            } elseif ($this->is_name_exists($name, $id)) {
+                $response = array(
+                    'status' => 'error',
+                    'message' => 'Nama kategori "' . $name . '" sudah ada'
+                );
+            } else {
+                $response = array(
+                    'status' => 'success',
+                    'message' => 'Nama kategori tersedia'
+                );
+            }
+            
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($response));
+        }
+    }
+
+    public function preview_code() {
+        if ($this->input->is_ajax_request()) {
+            $name = $this->input->post('name');
+            
+            if (!empty($name)) {
+                $code = $this->generate_unique_code($name);
+                
+                $response = array(
+                    'status' => 'success',
+                    'code' => $code
+                );
+            } else {
+                $response = array(
+                    'status' => 'error',
+                    'message' => 'Nama kategori tidak boleh kosong'
+                );
+            }
+            
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($response));
+        }
+    }
+
+    /**
+     * Validasi kode kategori (untuk update data)
+     * 
+     * @param string $code Kode yang akan divalidasi
+     * @param int $id ID kategori (untuk exclude saat update)
+     * @return boolean
+     */
+    public function validate_code($code, $id = null) {
+        return $this->Model_kategori->validate_code($code, $id);
+    }
 
 
 }

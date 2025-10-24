@@ -14,6 +14,7 @@ class Tanda_terima extends Admin_Controller  {
 
 		$this->load->model('master/Model_barang');
 		$this->load->model('Model_barang_laporan');
+		$this->load->model('Model_tanda_terima_laporan');
 		$this->load->model('Model_global');
 
 	}
@@ -50,17 +51,17 @@ class Tanda_terima extends Admin_Controller  {
 		$tgl_awal		= $this->input->post('tgl_awal');
 		$tgl_akhir		= $this->input->post('tgl_akhir');
 
-		$data           = $this->Model_barang_laporan->getDataTandaTerima('result',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir,$length,$start,$column,$order);
-		$data_jum       = $this->Model_barang_laporan->getDataTandaTerima('numrows',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir);
+		$data           = $this->Model_tanda_terima_laporan->getDataTandaTerima('result',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir,$length,$start,$column,$order);
+		$data_jum       = $this->Model_tanda_terima_laporan->getDataTandaTerima('numrows',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir);
 
-		// $data_report    = $this->Model_barang_laporan->getDataTandaTerima('report',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir);
+		// $data_report    = $this->Model_tanda_terima_laporan->getDataTandaTerima('report',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir);
 		// $this->session->set_flashdata('detail', $data_report);
 
 		$output['draw'] = $draw;
 		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;
 
 		if($search_name !="" ){
-			$data_jum = $this->Model_barang_laporan->getDataTandaTerima('numrows',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir);
+			$data_jum = $this->Model_tanda_terima_laporan->getDataTandaTerima('numrows',$search_kode_barang,$search_name,$jenis,$merk,$type,$stock,$status,$lokasi,$tgl_awal,$tgl_akhir);
 			$output['recordsTotal']=$output['recordsFiltered']=$data_jum;
 		}
 
@@ -132,10 +133,10 @@ class Tanda_terima extends Admin_Controller  {
 		$tgl_awal			= $data['tgl_awal'];
 		$tgl_akhir			= $data['tgl_akhir'];
 
-		$detail = $this->Model_barang_laporan->getDataTandaTerima('report','',$search_name,$jenis,'',$type,'','','',$tgl_awal,$tgl_akhir,'','','','');
+		$detail = $this->Model_tanda_terima_laporan->getDataTandaTerima('report','',$search_name,$jenis,'',$type,'','','',$tgl_awal,$tgl_akhir,'','','','');
 
 		$output['data']['detail'] = $detail;
-		$export = $this->Model_barang_laporan->exportExcel($output['data']);
+		$export = $this->Model_tanda_terima_laporan->exportExcel($output['data']);
 
     }
 

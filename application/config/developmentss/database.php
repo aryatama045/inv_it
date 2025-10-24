@@ -7,7 +7,7 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
 
-	'hostname' => '192.168.10.84',
+	'hostname' => '192.168.11.218',
 	'username' => 'sa',
 	'password' => 'dualcore',
 

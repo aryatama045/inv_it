@@ -44,10 +44,16 @@
                 <hr class="mb-2">
 
                 <form class="row g-3" action="<?= base_url($mod.'/'.$func.'/tambah'); ?>" method="POST">
+                    <div hidden class="col-12 col-md-6" >
+                        <label class="form-label text-black"><strong>Kode Store<span style="color:red">*</span></strong></label>
+                        <input type="text" class="form-control" required name="nip" value="0"/>
+                    </div>
+
                     <div class="col-12 col-md-6" >
                         <label class="form-label text-black"><strong>Kode Store<span style="color:red">*</span></strong></label>
-                        <input type="text" class="form-control" required name="nip" placeholder="Input Kode Store"/>
+                        <input type="text" class="form-control" required name="kd_store" placeholder="Input Kode Store"/>
                     </div>
+
                     <div class="col-12 col-md-6" >
                         <label class="form-label text-black"><strong>Nama Store <span style="color:red">*</span>  </strong></label>
                         <div class="input-group">

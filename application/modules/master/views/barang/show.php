@@ -182,7 +182,13 @@
                                     <tbody>
                                         <tr>
                                             <td width="40%">Created By</td>
-                                            <td class="font-weight-bold"> : <?= capital(lowercase($barang['user_input'])) ?></td>
+                                            <td class="font-weight-bold"> : 
+                                                <?php
+                                                    $getUserInput    = $this->Model_global->getPersonil($barang['user_input']);
+                                                    $UserInput       = $getUserInput['nip'].'-'.capital(lowercase($getUserInput['nama']));
+                                                ?>
+                                                <?= $UserInput ?>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Created Date</td>

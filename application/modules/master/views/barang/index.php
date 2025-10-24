@@ -30,23 +30,19 @@
 						<span>Import</span>
 					</a> -->
 
-					<button class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1" 
+					<!-- <button class="btn btn-outline-info btn-icon btn-icon-start w-100 w-md-auto m-1" 
 						onclick="modal_upload()">
 						<i class="fa fa-download"></i>
 						<span>Import</span>
-					</button>
+					</button> -->
 
 
 					<!-- Add New Button Start -->
-					<a href="<?= base_url($mod.'/'.$func.'/tambah') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
+					<a href="<?= base_url($mod.'/'.$func.'/tambah_baru') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
 						<i data-acorn-icon="plus"></i>
 						<span>Add New</span>
 					</a>
 
-					<a href="<?= base_url($mod.'/'.$func.'/tambah_bulk') ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1">
-						<i data-acorn-icon="plus"></i>
-						<span>Add New Bulk</span>
-					</a>
 					<!-- Add New Button End -->
 				</div>
 				<!-- Top Buttons End -->
@@ -351,7 +347,7 @@
 		$("#"+tableData+"_filter").css("display", "none");
 		// $("#tables_length").css("display", "none");
 
-		tables.columns.adjust().draw();
+		// tables.columns.adjust().draw();
 
 		$('#search_name').on('keyup', function(event) { // for text boxes
 			tables.ajax.reload(); //just reload table

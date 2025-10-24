@@ -27,7 +27,7 @@
 				<!-- Top Buttons Start -->
 				<div class="col-12 col-md-5 d-flex align-items-start justify-content-end">
 					<!-- Dropdown Button Start -->
-                    <div class="ms-1">
+                    <div hidden class="ms-1">
 
                         <button type="button" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto m-1"
                             data-bs-offset="0,3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-submenu >
@@ -38,7 +38,7 @@
 								<button type="button"  class="dropdown-item" id='btn-pdf-action' title="Print PDF"><i class="fas fa-print"></i> PDF</button>
 								<button type="button"  class="dropdown-item" id='btn-excel-action' title="Export Excel"><i class="fas fa-file-excel"></i> Excel</button>
 
-								<!-- <a href="<?= base_url($mod.'/'.$func.'/export/excel') ?>" class="dropdown-item" ><i class="fas fa-file-excel"></i> Excel</a>
+								<a href="<?= base_url($mod.'/'.$func.'/export/excel') ?>" class="dropdown-item" ><i class="fas fa-file-excel"></i> Excel</a>
 								<a href="<?= base_url($mod.'/'.$func.'/export/pdf') ?>" class="dropdown-item" ><i class="fas fa-print"></i> PDF</a> -->
 
                         </div>
@@ -93,14 +93,14 @@
             </div>
 
 			<div class="card-body">
-
 				<h3 class="mb-1">Filter Search</h3> <hr class="g-0">
-
-                <!-- Controls Start -->
-                <div class="row">
+				
+				<form action="<?= base_url($mod.'/'.$func.'/export') ?>" method="POST">
+				<!-- Controls Start -->
+				<div class="row">
 					<!-- Filter -->
-                    <div class="col-sm-12 col-md-5 col-lg-9 col-xxl-9 mb-1">
-                        <div class="d-inline-block float-md-start me-1  w-100">
+					<div class="col-sm-12 col-md-5 col-lg-9 col-xxl-9 mb-1">
+						<div class="d-inline-block float-md-start me-1  w-100">
 							<div class="row g-2">
 
 								<div class="col-2 text-center">
@@ -179,35 +179,44 @@
 										</select>
 									</div>
 								</div>
-
 							</div>
-                        </div>
-                    </div>
-
+						</div>
+					</div>
+					
 					<!-- Search -->
-                    <div class="col-sm-12 col-md-5 col-lg-3 col-xxl-3 text-end mb-1">
-                        <div class="d-inline-block me-0 me-sm-3 float-start float-md-none search-input-container w-100 shadow bg-outline-muted">
-                            <input class="form-control" placeholder="Search" type="text" name="search_name" id="search_name" />
-                            <span class="search-magnifier-icon">
-                                <i data-acorn-icon="search"></i>
-                            </span>
-                            <span class="search-delete-icon d-none">
-                                <i data-acorn-icon="close"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Controls End -->
+					<div class="col-sm-12 col-md-5 col-lg-3 col-xxl-3 text-end mb-1">
+						<div class="d-inline-block me-0 me-sm-3 float-start float-md-none search-input-container w-100 shadow bg-outline-muted">
+							<input class="form-control" placeholder="Search" type="text" name="search_name" id="search_name" />
+							<span class="search-magnifier-icon">
+								<i data-acorn-icon="search"></i>
+							</span>
+							<span class="search-delete-icon d-none">
+								<i data-acorn-icon="close"></i>
+							</span>
 
-				<div class="row mb-2">
-					<div class="col-12 col-md-5 d-flex align-items-start ">
-						<!-- Add New Button Start -->
-						<a href="<?= base_url($mod.'/'.$func) ?>" class="btn btn-outline-primary btn-icon btn-icon-start w-100 w-md-auto ">
-							<span>Reset</span>
-						</a>
-						<!-- Add New Button End -->
+						</div>
+					</div>
+
+					<div class="row mb-2">
+						<div class="col-12 col-md-5 d-flex align-items-start ">
+							<!-- Add New Button Start -->
+							<a href="<?= base_url($mod.'/'.$func) ?>" class="btn btn-outline-primary btn-icon btn-icon-start mr-2 w-100 w-md-auto ">
+								<span>Reset</span>
+							</a>
+							<!-- Add New Button End -->
+
+							<!-- Add New Button Start -->
+							<button type="submit"  class="btn btn-outline-primary btn-icon btn-icon-end w-100 w-md-auto ">
+								<span><i class="fas fa-file-excel"></i>Export Excel</span>
+							</button>
+							<!-- Add New Button End -->
+						</div>
 					</div>
 				</div>
+				<!-- Controls End -->
+				</form>
+
+					
 
 				<table id="<?= $table_data ?>"  class="table table-stripped stripe w-100" style="background:white;width:100%">
 					<thead class="mt-4">

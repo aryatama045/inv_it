@@ -53,7 +53,7 @@
             color: #7c7676;
         }
         .logo-default-login{
-            background-image: url("https://place-hold.it/150x75/00362b/fff/fff?text=INV IT&fontsize=20&bold");
+            background-image: url("<?= base_url('assets/logo-inv-it.gif'); ?>");
             width: 150px;
             min-height: 75px;
             object-position: left;

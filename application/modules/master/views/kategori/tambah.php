@@ -44,12 +44,12 @@
                 <form class="row g-3" action="<?= base_url($mod.'/'.$func.'/tambah'); ?>" method="POST">
                     <div class="col-12 col-md-6">
                         <label class="form-label text-black-50"><strong>Kode Kategori<span style="color:red">*</span></strong></label>
-                        <input type="text" class="form-control" required name="kode_kategori" placeholder="Input Kode Kategori" />
+                        <span id="kode_kategori"><input type="text" class="form-control" required  readonly name="kode_kategori" placeholder="Kode Kategori" /></span>
                     </div>
 
                     <div class="col-12 col-md-6">
                         <label class="form-label text-black-50"><strong>Nama Kategori<span style="color:red">*</span></strong></label>
-                        <input type="text" class="form-control" required name="nama" placeholder="Input Nama Kategori" />
+                        <input type="text" class="form-control" required id="nama" name="nama" placeholder="Input Nama Kategori" />
                     </div>
 
                     <div class="col-12">
@@ -65,3 +65,39 @@
         <!-- Content End -->
     </div>
 </div>
+
+<script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
+<script>
+var base_url  = '<?php echo base_url()?>';
+$(document).ready(function() {
+
+    $('#nama').on('blur', function() {
+        var name = $(this).val();
+        var id = ''; // untuk update
+        var html = '';
+        $.post(base_url+'master/kategori/check_name', {
+            name: name,
+            id: id
+        }, function(response) {
+            if (response.status == 'error') {
+                // Tampilkan pesan error
+                dialog_warning('Notification', response.message);
+                return false;
+            } 
+        }, 'json');
+
+        $.post(base_url+'master/kategori/preview_code', {
+            name: name
+        }, function(response) {
+            if (response.status == 'success') {
+                html += "<input disabled value=" + response.code + ' name="kode_kategori" class="form-control" >';
+                $("#kode_kategori").html(html);
+            } 
+        }, 'json');
+
+    });
+
+});
+
+
+</script>

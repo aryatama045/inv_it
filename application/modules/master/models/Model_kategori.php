@@ -10,7 +10,7 @@ class Model_kategori extends CI_Model
 		$this->table = 'mst_kategori';
 	}
 
-	function sortByGrade($a, $b) {
+	public function sortByGrade($a, $b) {
 		if ($a == $b) return 0;
 		return ($a < $b) ? -1 : 1;
 	}
@@ -48,31 +48,112 @@ class Model_kategori extends CI_Model
 		}
 	}
 
+
 	// ---- Action Start
-	function saveTambah()
-	{
-		$data = $_POST;
-		$insert = $this->db->insert($this->table, $data);
+		function saveTambah($data_kat)
+		{
 
-		return ($insert)?TRUE:FALSE;
-	}
+			$insert = $this->db->insert($this->table, $data_kat);
 
-	function saveEdit()
-	{
-		$data = $_POST;
-		$this->db->where(['kode_kategori' => $data['kode_kategori']]);
-		$update = $this->db->update($this->table, $data);
+			return ($insert)?TRUE:FALSE;
+		}
 
-		return ($update)?TRUE:FALSE;
-	}
+		function saveEdit()
+		{
+			$data = $_POST;
+			$this->db->where(['kode_kategori' => $data['kode_kategori']]);
+			$update = $this->db->update($this->table, $data);
 
-	function saveDelete($id)
-	{
-		$this->db->where(['kode_kategori' => $id]);
-		$delete = $this->db->delete($this->table);
+			return ($update)?TRUE:FALSE;
+		}
 
-		return ($delete)?TRUE:FALSE;
-	}
+		function saveDelete($id)
+		{
+			$this->db->where(['kode_kategori' => $id]);
+			$delete = $this->db->delete($this->table);
+
+			return ($delete)?TRUE:FALSE;
+		}
 	// ---- Action END
+
+
+
+	/**
+     * Cek apakah nama kategori sudah ada
+     * 
+     * @param string $name Nama kategori
+     * @param int $exclude_id ID yang dikecualikan (untuk update)
+     * @return boolean
+     */
+    public function check_name_exists($name) {
+        $this->db->where('REPLACE(REPLACE(nama, "\\r", ""), "\\n", "") =', strtoupper(trim($name)));
+        $query = $this->db->get($this->table);
+        return $query->num_rows() > 0;
+    }
+
+	/**
+     * 
+     * @param string $code Kode kategori
+     * @return boolean
+     */
+    public function check_code_exists($code) {
+        $this->db->where('kode_kategori', $code);
+        $query = $this->db->get($this->table);
+        return $query->num_rows() > 0;
+    }
+
+
+	 /**
+     * Ambil semua kode kategori yang ada
+     * 
+     * @return array
+     */
+    public function get_all_codes() {
+        $this->db->select('kode_kategori');
+        $query = $this->db->get($this->table);
+        return $query->result();
+    }
+
+	/**
+     * Ambil semua kategori
+     * 
+     * @return array
+     */
+    public function get_all() {
+        $query = $this->db->get($this->table);
+        return $query->result();
+    }
+
+
+    /**
+     * Validasi kode kategori untuk update
+     * 
+     * @param string $code Kode kategori
+     * @param int $id ID kategori (untuk exclude)
+     * @return boolean
+     */
+    public function validate_code($code, $id = null) {
+        $this->db->where('kode_kategori', $code);
+        // if ($id) {
+        //     $this->db->where('id !=', $id);
+        // }
+        $query = $this->db->get($this->table);
+        return $query->num_rows() == 0;
+    }
+
+    /**
+     * Ambil kategori berdasarkan ID
+     * 
+     * @param int $id ID kategori
+     * @return object
+     */
+    public function get_by_id($id) {
+        $this->db->where('id', $id);
+        $query = $this->db->get($this->table);
+        return $query->row();
+    }
+
+
+
 
 }

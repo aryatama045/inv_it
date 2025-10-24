@@ -15,6 +15,7 @@ class Barang extends Admin_Controller  {
 		$this->load->model('Model_barang');
 		$this->load->model('Model_kategori');
 		$this->load->model('Model_global');
+		$this->load->model('transaksi/Model_tanda_terima');
 
 	}
 
@@ -38,6 +39,32 @@ class Barang extends Admin_Controller  {
 		}else{
 			$this->session->set_flashdata('error', 'Silahkan Cek kembali data !!');
 			redirect('master/barang', 'refresh');
+		}
+
+	}
+
+	public function tambah_baru()
+	{
+		$this->form_validation->set_rules('kode_kategori[]', 'Kode Kategori','required',
+				array('required' 	=> 'Kode Kategori Tidak Boleh Kosong !!',
+		));
+
+        if ($this->form_validation->run() == TRUE) {
+
+			$create_form = $this->Model_barang->saveTambahBaru();
+
+			if($create_form['status'] === 'FALSE') {
+				$this->session->set_flashdata('error', $create_form['message'].' </br> Silahkan Cek kembali data yang di input !!');
+				redirect('master/barang/tambah_baru', 'refresh');
+			} else {
+				$this->session->set_flashdata('success', 'Berhasil Disimpan !!');
+				redirect('transaksi/tanda_terima', 'refresh');
+			}
+
+
+		}else{
+			$this->data['new_nomor_transaksi'] = $this->Model_tanda_terima->getNomorTransaksi();
+			$this->render_template('barang/tambah_baru',$this->data);
 		}
 
 	}
@@ -168,6 +195,77 @@ class Barang extends Admin_Controller  {
 		echo json_encode($output);
 	}
 
+	/**
+	 * AJAX: Generate daftar kode barang tanpa melakukan update ke database.
+	 * Input POST: kategori (kode_kategori), jenis_stock (S|QTY), qty (int)
+	 * Output JSON: { success: bool, codes: ["KAT001", ...], message: string }
+	 */
+	public function generate_kode_batch()
+	{
+		$kategori      = $this->input->post('kategori');
+		$jenis_stock   = $this->input->post('jenis_stock');
+		$qty           = (int)$this->input->post('qty');
+		$existing_max  = $this->input->post('existing_max'); // optional: max suffix yang sudah ada di tabel (belum tersimpan DB)
+		$existing_max  = is_numeric($existing_max) ? (int)$existing_max : 0;
+
+		$response = [ 'success' => false, 'codes' => [], 'message' => '' ];
+
+		if (empty($kategori) || empty($jenis_stock) || $qty <= 0) {
+			$response['message'] = 'Parameter tidak lengkap.';
+			echo json_encode($response);
+			return;
+		}
+
+		$kategori = strtoupper(trim($kategori));
+
+		if ($jenis_stock === 'QTY') {
+			// Untuk QTY hanya gunakan kode_kategori + '001'
+			$response['success'] = true;
+			$response['codes']   = [ $kategori . '001' ];
+			echo json_encode($response);
+			return;
+		}
+
+		if ($jenis_stock === 'S') {
+			// Ambil kode berikutnya dari model, lalu generate berurutan sejumlah qty
+			$firstCode = $this->Model_barang->getKodeBarang($kategori);
+			if (!$firstCode) {
+				$response['message'] = 'Gagal mendapatkan kode awal.';
+				echo json_encode($response);
+				return;
+			}
+
+			// Ekstrak angka suffix dari kode pertama untuk penomoran selanjutnya
+			$prefixLen = strlen($kategori);
+			$suffix    = substr($firstCode, $prefixLen); // contoh: 001, 123, 1000
+			$startNum  = (int)ltrim($suffix, '0');
+			if ($startNum === 0) { $startNum = (int)$suffix; }
+
+			// Jika sudah ada kode sementara di tabel (belum tersimpan DB), mulai setelah yang terbesar
+			if ($existing_max > 0 && $existing_max >= $startNum) {
+				$startNum = $existing_max + 1;
+			}
+
+			// Tentukan lebar padding minimal 3 digit, mengikuti panjang suffix pertama
+			$padWidth = max(3, strlen($suffix), strlen((string)$startNum));
+
+			$codes = [];
+			for ($i = 0; $i < $qty; $i++) {
+				$currentNum = $startNum + $i;
+				$currentSuffix = str_pad((string)$currentNum, $padWidth, '0', STR_PAD_LEFT);
+				$codes[] = $kategori . $currentSuffix;
+			}
+
+			$response['success'] = true;
+			$response['codes']   = $codes;
+			echo json_encode($response);
+			return;
+		}
+
+		$response['message'] = 'Jenis stock tidak dikenal.';
+		echo json_encode($response);
+	}
+
 	public function store()
 	{
 		$cn 			= $this->router->fetch_class(); // Controller
@@ -216,7 +314,11 @@ class Barang extends Admin_Controller  {
 				$btn 	.= '" data-bs-toggle="modal" data-bs-target="#removeModal" >
 						<i class="fa fa-trash"></i></a>';
 
-				$StatusBarang = $this->Model_global->getStatusBarang($value['status_barang']);
+				if($value['status_barang']){
+					$StatusBarang = $this->Model_global->getStatusBarang($value['status_barang'])['full_name'];
+				} else{
+					$StatusBarang = '-';
+				}
 
 				if($value['lokasi_terakhir']){
 					$getPerson = $this->Model_global->getPersonil($value['lokasi_terakhir']);
@@ -249,7 +351,7 @@ class Barang extends Admin_Controller  {
 					$key+$start+1,
 					$value['kode_barang'].'<br><small>S/N : '.$value['serial_number'].'</small>',
 					uppercase(lowercase($value['nama_barang'])),
-					$StatusBarang['full_name'],
+					$StatusBarang,
 					$Qty,
 					$LokasiAkhir,
 					$btn,

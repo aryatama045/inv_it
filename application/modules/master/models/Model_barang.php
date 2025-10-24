@@ -7,6 +7,8 @@ class Model_barang extends CI_Model
 	{
 		parent::__construct();
 		$this->table = 'mst_barang';
+
+		$this->load->model('transaksi/Model_tanda_terima');
 	}
 
 	function getKodeBarang($id = NULL)
@@ -47,6 +49,7 @@ class Model_barang extends CI_Model
 			return $code."001";
         }
 	}
+
 
 	// ---- Datatables Start
 	function getDataStore($result,$search_kd_barang="", $search_name = "", $kategori = "", $merk = "", $type ="", $stock ="", $status ="", $lokasi ="", $length = "", $start = "", $column = "", $order = "")
@@ -135,7 +138,11 @@ class Model_barang extends CI_Model
 
 		if($search_kd_barang !="")
 		{
-			$this->db->like('kode_barang', $search_kd_barang);
+			$this->db->group_start();
+				$this->db->like('kode_barang', $search_kd_barang);
+                $this->db->or_like('serial_number', $search_kd_barang);
+			$this->db->group_end();
+			// $this->db->like('kode_barang', $search_kd_barang);
 		}
 
 		if($kategori !="")
@@ -160,11 +167,15 @@ class Model_barang extends CI_Model
 
 		if($jenis == "OUT")
 		{
-			$this->db->where_in('status_barang', ['S', 'QTY', 'N'] );
+			$this->db->where_in('status_barang', ['S', 'QTY', 'N', 'PG'] );
 			// $this->db->where_not_in('status_barang', ['R', 'H'] );
+		} else if($jenis == "IN") {
+
+			$this->db->where_in('status_barang', ['U', 'QTY', 'N'] );
+
 		} else if($jenis == "JUAL") {
 			$this->db->where_in('status_barang', ['R', 'RJ1','RJ2', 'W', 'WJ2'] );
-		}
+		} 
 
 		if($result == 'result'){
 			$this->db->limit($length,$start);
@@ -253,6 +264,117 @@ class Model_barang extends CI_Model
 		$delete = $this->db->delete($this->table);
 
 		return ($delete)?TRUE:FALSE;
+	}
+
+	function saveTambahBaru()
+	{
+		// Start transaction
+		$this->db->trans_start();
+		
+		$error		= [];
+		$error_new 	= '';
+		$data		= $_POST;
+
+		// Generate Item Barang sesuai Qty
+		$log_item_brg 		= array();
+		for ($x=0; $x < count($data['kode_kategori']); $x++) {
+
+			// Simpan kode yang sudah di-generate untuk kategori ini
+			if($data['barang_stock'][$x] == 'True'){
+				$kode_barang = $data['kode_kategori'][$x].'001';
+				$status_barang = 'QTY';
+			}else{
+				$kode_barang = $this->getKodeBarang($data['kode_kategori'][$x]);
+				$status_barang = 'S';
+			}
+			
+			// Master Barang Item
+			$item_data = [
+				'kode_barang' 		=> $data['kode_barang'][$x],
+				'serial_number' 	=> isset($data['serial_number'][$x]) ? $data['serial_number'][$x] : '-',
+				'nama_barang' 		=> $data['nama_barang'][$x],
+				'keterangan'		=> $data['keterangan'][$x],
+				'keterangan_acct'	=> $data['nomor_pembelian'][$x],
+				'kode_kategori' 	=> $data['kode_kategori'][$x],
+				'kode_merk'     	=> $data['kode_merk'][$x],
+				'kode_type'     	=> $data['kode_type'][$x],
+				'harga_beli'		=> $data['harga_beli'][$x],
+				'harga_asuransi'	=> 0,
+				'lokasi_terakhir'	=> 'HO_IT',
+				'status_barang'		=> $status_barang,
+				'barang_stock'		=> $data['barang_stock'][$x],
+				'user_input'		=> $this->session->userdata('username'),
+				'tanggal_input'		=> date('d-m-Y'),
+				'tanggal_pembelian'	=> date('d-m-Y', strtotime($data['tanggal_beli'][$x])),
+			];
+			$this->db->insert('mst_barang', $item_data);
+			$error = $this->db->error();
+			$error_new .= cekError($error);
+			array_push($log_item_brg,$item_data);
+
+		}
+		
+		// Header Dokumen Tanda Terima IN
+		$count_d 	= count($data['urut']);
+		$header = array(
+			'nomor_transaksi' 	=> $this->Model_tanda_terima->getNomorTransaksi(),
+			'kode_dokumen' 		=> $data['kd_dokumen'],
+			'keterangan'		=> $data['keterangan_header'],
+			'pengirim'			=> $data['pengirim'],
+			'penerima'			=> $data['penerima'],
+			'tujuan'			=> 'HO_IT',
+			'jumlah_detail'		=> $count_d,
+			'user_input'		=> $this->session->userdata('username'),
+			'manual'			=> "False",
+			'tanggal'			=> date('Y-m-d'),
+			'tanggal_input'		=> date('Y-m-d'),
+			'tanggal_pengiriman'=> date('Y-m-d'),
+			'tgl_terima_it'		=> date('Y-m-d', strtotime($data['tanggal_pengiriman'])),
+		);
+		$this->db->insert('tanda_terima_h', $header);
+		$error 			= $this->db->error();
+		$error_new 	   .= cekError($error);
+
+		//// Detail Dokumen Tanda Terima IN
+		$log_detail = array();
+		foreach ($log_item_brg as $key => $val) {
+
+			if($data['barang_stock'][$key] == 'True'){
+				$status_barang = 'QTY';
+			}else{
+				$status_barang = 'S';
+			}
+
+			//// Detail Dokumen
+			$detail = [
+				'nomor_transaksi' 	=> $header['nomor_transaksi'],
+				'no_urut' 			=> $key+1,
+				'kode_barang' 		=> $val['kode_barang'],
+				'qty'		 		=> $data['qty_detail'][$key],
+				'status_barang_old'	=> 'N',
+				'status_barang'		=> $status_barang,
+				'harga_asuransi'	=> '0',
+				'keterangan_barang'	=> $val['keterangan'],
+			];
+			$this->db->insert('tanda_terima_d', $detail);
+			$error 			= $this->db->error();
+			$error_new 	   .= cekError($error);
+			array_push($log_detail, $detail);
+		}
+
+		$this->db->trans_complete(); 	// Complete transaction
+		if ($this->db->trans_status() === FALSE) { 	// Check transaction status
+			return [
+				'status' 	=> 'FALSE',
+				'message' 	=> $error_new,
+			];
+		} else {
+			return [
+				'status' 	=> 'TRUE',
+				'message' 	=> 'Transaksi berhasil.',
+			];
+		}
+
 	}
 	// ---- Action END
 

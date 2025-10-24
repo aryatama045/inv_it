@@ -62,7 +62,7 @@ class Model_tanda_terima extends CI_Model
 
 		$this->db->select("a.* ");
         $this->db->from('tanda_terima_h a');
-        $this->db->order_by('a.tanggal_input, a.nomor_transaksi', 'DESC');
+        $this->db->order_by('a.tanggal_input', 'DESC');
 
         if($search_name !=""){
 			$this->db->group_start();
@@ -248,7 +248,7 @@ class Model_tanda_terima extends CI_Model
 			'user_input'		=> $this->session->userdata('name'),
 			'manual'			=> "True",
 			'tanggal'			=> date('Y-m-d'),
-			'tanggal_input'		=> date('Y-m-d'),
+			'tanggal_input'		=> date('Y-m-d H:i:s'),
 			'tanggal_pengiriman'=> $tgl_pengiriman,
 			'tgl_terima_it'		=> $tgl_terima_it,
 		);

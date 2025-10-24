@@ -38,7 +38,7 @@ $(document).ready(function() {
     $("#"+tableData+"_filter").css("display", "none");
     // $("#tables_length").css("display", "none");
 
-    tables.columns.adjust().draw();
+    // tables.columns.adjust().draw();
 
     $('#search_name').on('keyup', function(event) { // for text boxes
         tables.ajax.reload(); //just reload table

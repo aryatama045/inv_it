@@ -188,12 +188,23 @@ class Barang extends Admin_Controller  {
 		echo json_encode($output);
 	}
 
-    public function export($type = NULL)
+    public function export()
     {
-		$data_post = $_POST;
-        // $data = $this->session->flashdata('detail');
+		$data = $_POST;
+		
+		$search_name		= $data['search_name'];
+		$kategori			= $data['kategori'];
+		$merk				= $data['merk'];
+		$type				= $data['type'];
+		$stock				= $data['stock'];
+		$status				= $data['status'];
+		$lokasi				= $data['lokasi'];
+		
+		$detail = $this->Model_barang_laporan->getDataExport($search_name,$kategori,$merk,$type,$stock,$status,$lokasi);
 
-        tesx($type,$data_post );
+		$output['data']['detail'] = $detail;
+		$export = $this->Model_barang_laporan->exportExcel($output['data']);
+
     }
 
 }

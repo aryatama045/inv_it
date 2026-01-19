@@ -43,7 +43,7 @@
                 <h3 class="pb-0">Form  <?= $function ?> </h3>
                 <hr class="mb-2">
 
-                <form id="formTambah" class="row g-3" action="<?= base_url($mod.'/'.$func.'/tambah'); ?>" method="POST">
+                <form id="formTambah" class="row g-3" action="<?= base_url($mod.'/'.$func.'/tambah'); ?>" method="POST" enctype="multipart/form-data">
                     <div class="row p-2 m-2">
                         <div class="col-12 col-md-6" >
                             <label class="form-label text-black"><strong>Nomor Dokumen</strong></label>
@@ -99,7 +99,7 @@
                         <div class="col-12 col-md-4" >
                             <label class="form-label text-black"><strong>Penerima<span style="color:red">*</span></strong></label>
                             <select class="form-select select2-single" name="penerima" id="penerima" required>
-                                <option value=""> -- Select Tujuan --</option>
+                                <option value=""> -- Select Penerima --</option>
                                 <?php $Personil2 = $this->Model_global->getPersonil();
                                 foreach ($Personil2 as $key => $val) { ?>
                                     <?php if($val['nip'] == 0){ ?>
@@ -115,8 +115,8 @@
                             <label class="form-label text-black"><strong>Tujuan<span style="color:red">*</span></strong></label>
                             <select class="form-select select2-single" name="tujuan" id="tujuan" required>
                                 <option value=""> -- Select Tujuan --</option>
-                                <?php $Personil3 = $this->Model_global->getPersonil();
-                                foreach ($Personil3 as $key => $val) { ?>
+                                <?php $Personil2 = $this->Model_global->getPersonil();
+                                foreach ($Personil2 as $key => $val) { ?>
                                     <?php if($val['nip'] == 0){ ?>
                                         <option value="<?= $val['kd_store'] ?>" ><?= $val['kd_store'].'-'.$val['nama'] ?></option>
                                     <?php } else { ?>
@@ -127,11 +127,33 @@
                         </div>
                     </div>
 
-                    <div class="row p-2 m-2">
-                        <div class="col-12 col-md-12 mb-5">
+                    <div class="row p-2 m-2 mb-5">
+                        <div class="col-6 col-md-6 ">
                             <label class="form-label text-black"><strong> Keterangan</strong></label>
                             <textarea name="keterangan_header" row="3" class="form-control" placeholder="Input Keterangan"></textarea>
                         </div>
+
+                        <!-- Untuk Upload foto -->
+                        <div class="col-6 col-md-6 ">
+                            <label class="form-label text-black"><strong> Foto Tanda Terima </strong></label><br>
+                            <div class="btn-group mb-3" role="group">
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="triggerFileInput()">
+                                    <i class="fa fa-upload"></i> Upload Foto
+                                </button>
+                                <button type="button" class="btn btn-outline-success btn-sm" onclick="openCameraModal()">
+                                    <i class="fa fa-camera"></i> Ambil Foto
+                                </button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" id="deletePhotoBtn" onclick="deletePhoto()" style="display: none;">
+                                    <i class="fa fa-trash"></i> Hapus Foto
+                                </button>
+                            </div>
+                            <input type="file" id="filePhotoInput" name="foto[]" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                            
+                            <div id="photoPreviewContainer" class="mt-3">
+                                <img id="photoPreview" src="" alt="Photo Preview" style="display: none; max-width: 100px; max-height: 100px; cursor: pointer; border: 2px solid #ddd; border-radius: 4px;" onclick="openPhotoPreviewModal()">
+                            </div>
+                        </div>
+
                     </div>
 
                     <h3 class="pb-0"> Data Barang</h3> <hr class="g-0">
@@ -208,11 +230,51 @@
 </div>
 <!-- modal datatable item list -->
 
-<style>
-    .select2-container{
-            width: 280px !important;
-        }
-</style>
+
+<!-- Modal Camera -->
+<div class="modal fade" id="cameraModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ambil Foto dengan Kamera</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="closeCamera()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <video id="cameraVideo" width="100%" style="max-width: 500px; border-radius: 8px; background: #000;"></video>
+                    <canvas id="cameraCanvas" width="1280" height="720" style="display: none;"></canvas>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeCamera()">Batal</button>
+                <button type="button" class="btn btn-primary" onclick="capturePhoto()">
+                    <i class="fa fa-camera"></i> Ambil Foto
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Photo Preview -->
+<div class="modal fade" id="photoPreviewModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Preview Foto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalPhotoPreviewImg" src="" alt="Photo Preview" style="max-width: 100%; max-height: 600px; border-radius: 8px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <script src="<?= base_url('assets/js/jquery-2.2.0.min.js') ?>"></script>
 
 
@@ -363,12 +425,12 @@ $(document).ready(function() {
                         "<input type='hidden' name='kd_brg[]' id='"+rowData[0]+"' class='form-control' style='width:100%' value='"+rowData[0]+"' />" +
                         "<input type='hidden' name='qty[]' id='qty' class='form-control' style='width:100%' value='"+rowData[3]+"' data-barang='"+rowData[0]+"' data-max-qty='"+rowData[3]+"' maxlength='5'/>" + rowData[3],
                         '<select class="form-select" name="status[]" required>' +
-                            '<option value="U"> U-USED</option>' +
+                            '<option value="U"> U - USED </option>' +
                             <?php $status = $this->Model_global->getStatusBarang('', 'tt_out');
                             foreach ($status as $key => $val) { ?>
                             '<option value="<?= $val['status_barang'] ?>"><?= $val['status_barang']." - ".trim($val['nama']) ?></option>' +
                             <?php } ?>
-                        '</select>',
+                        '</select>' ,
                         "<input type='text' name='ket[]' required class='form-control' style='width:100%' placeholder='Input Keterangan' />",
                         '<button type="button" class="btn btn-danger" onclick="deleteRow(\''+urut+'\',\''+rowData[0]+'\')"><i class="fa fa-trash"></i></button>',
                     ] ).draw( false );
@@ -395,7 +457,7 @@ $(document).ready(function() {
                         "<input type='hidden' name='qty[]' id='qty' class='form-control' style='width:100%' value='"+rowData[3]+"' data-barang='"+rowData[0]+"' data-max-qty='"+rowData[3]+"' maxlength='5'/>" + rowData[3],
                         // "<input type='text' name='status[]'  class='form-control' value='"+rowData[5]+"' style='width:100%;text-align:center;' readonly  />",
                         '<select class="form-select" name="status[]" required>' +
-                            '<option value="S"> S-STOCK </option>' +
+                            '<option value="S"> S - STOCK </option>' +
                             <?php $status = $this->Model_global->getStatusBarang('', 'tt_in');
                             foreach ($status as $key => $val) { ?>
                             '<option value="<?= $val['status_barang'] ?>"><?= $val['status_barang']." - ".trim($val['nama']) ?></option>' +
@@ -456,9 +518,13 @@ $(document).ready(function() {
     });
     /* End Event On tr Table Browse Item */
 
-
     /* Action Form Submit */
     $("#formTambah").unbind('submit').on('submit', function() {
+        // Validate photo is required
+        if(!validasi_foto()) {
+            return false;
+        }
+        
         dialog_submit('Notification',"Simpan !!");
 
         $('#btn-submit').click(function() {
@@ -468,8 +534,8 @@ $(document).ready(function() {
         return false;
     });
 
-});
 
+});
 
 
 /* Action Button Add (+) Clicked*/
@@ -482,7 +548,6 @@ function addRow(){
     }
 }
 /* End Action Button Add (+) Clicked*/
-
 
 /* Validation Before addRow() */
 function validasi_add_item(){
@@ -513,6 +578,25 @@ function validasi_add_item(){
 }
 /* End Validation Before addRow() */
 
+/* Validation Foto Required */
+function validasi_foto(){
+    const photoPreview = document.getElementById('photoPreview');
+    const fileInput = document.getElementById('filePhotoInput');
+    const kd_dokumen = $('.kd_dokumen').val();
+    
+    // Foto hanya required jika jenis dokumen adalah "IN"
+    if(kd_dokumen === 'IN') {
+        // Check if photo preview is visible (has been selected)
+        if(photoPreview.style.display === 'none' || !photoPreview.src) {
+            dialog_warning('Notification',"Foto Tanda Terima Wajib Diisi untuk Jenis Dokumen IN!");
+            return false;
+        }
+    }
+    
+    return true;
+}
+/* End Validation Foto Required */
+
 /* Action Saat tombol delete di click */
 function deleteRow(no_urut,kd_brg){
     var data = tableListBKB.rows().data();
@@ -535,5 +619,116 @@ function deleteRow(no_urut,kd_brg){
 }
 /* End Action Saat tombol delete di click */
 
+/* ===== PHOTO UPLOAD FUNCTIONS ===== */
+// Trigger file input
+function triggerFileInput() {
+    document.getElementById('filePhotoInput').click();
+}
+
+// Handle file select
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const photoPreview = document.getElementById('photoPreview');
+            photoPreview.src = e.target.result;
+            photoPreview.style.display = 'block';
+            document.getElementById('deletePhotoBtn').style.display = 'inline-block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        alert('Pilih file gambar yang valid!');
+    }
+}
+
+// Delete photo
+function deletePhoto() {
+    document.getElementById('filePhotoInput').value = '';
+    const photoPreview = document.getElementById('photoPreview');
+    photoPreview.src = '';
+    photoPreview.style.display = 'none';
+    document.getElementById('deletePhotoBtn').style.display = 'none';
+}
+
+// Open camera modal
+function openCameraModal() {
+    $('#cameraModal').modal('show');
+    startCamera();
+}
+
+// Start camera
+function startCamera() {
+    const video = document.getElementById('cameraVideo');
+    const canvas = document.getElementById('cameraCanvas');
+    
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                facingMode: 'environment',
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            } 
+        })
+        .then(stream => {
+            video.srcObject = stream;
+            video.play();
+            window.cameraStream = stream;
+        })
+        .catch(err => {
+            console.error('Error accessing camera:', err);
+            alert('Tidak dapat mengakses kamera. Pastikan browser memiliki izin akses kamera.');
+        });
+    }
+}
+
+// Capture photo from camera
+function capturePhoto() {
+    const video = document.getElementById('cameraVideo');
+    const canvas = document.getElementById('cameraCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Convert canvas to blob and set as file
+    canvas.toBlob(blob => {
+        const file = new File([blob], 'camera_photo.jpg', { type: 'image/jpeg' });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        document.getElementById('filePhotoInput').files = dataTransfer.files;
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const photoPreview = document.getElementById('photoPreview');
+            photoPreview.src = e.target.result;
+            photoPreview.style.display = 'block';
+            document.getElementById('deletePhotoBtn').style.display = 'inline-block';
+        };
+        reader.readAsDataURL(blob);
+    }, 'image/jpeg', 0.95);
+    
+    closeCamera();
+    $('#cameraModal').modal('hide');
+}
+
+// Close camera
+function closeCamera() {
+    if (window.cameraStream) {
+        window.cameraStream.getTracks().forEach(track => track.stop());
+        window.cameraStream = null;
+    }
+}
+
+// Open photo preview modal
+function openPhotoPreviewModal() {
+    const photoPreview = document.getElementById('photoPreview');
+    if (photoPreview.src && photoPreview.style.display !== 'none') {
+        document.getElementById('modalPhotoPreviewImg').src = photoPreview.src;
+        $('#photoPreviewModal').modal('show');
+    }
+}
+
+/* ===== END PHOTO UPLOAD FUNCTIONS ===== */
 
 </script>

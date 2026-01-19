@@ -758,9 +758,7 @@ function generateToTable() {
                         "<input type='hidden' name='kode_kategori[]' id='kode_kategori_"+rowCount+"' value='"+kategori+"' />" +
                         "<input type='hidden' name='kode_merk[]' id='kode_merk_"+rowCount+"' value='"+merk+"' />" +
                         "<input type='hidden' name='kode_type[]' id='kode_type_"+rowCount+"' value='"+type+"' />" + 
-                        "<input type='hidden' name='harga_beli[]' id='harga_beli_"+rowCount+"' value='"+harga_beli+"' />" +
                         "<input type='hidden' name='tanggal_beli[]' id='tanggal_beli_"+rowCount+"' value='"+tanggal_pembelian+"' />" +
-                        "<input type='hidden' name='nomor_pembelian[]' id='nomor_pembelian_"+rowCount+"' value='"+nomor_pembelian+"' />" +
                         "<input type='hidden' name='barang_stock[]' id='barang_stock_"+rowCount+"' value='False' />" +
                         "<input type='hidden' name='qty_detail[]' id='qty_detail_"+rowCount+"' value='1' />" +
                         "<input type='hidden' name='kode_barang[]' id='kode_barang_"+rowCount+"' value='"+kode_barang+"' />" +
@@ -769,9 +767,11 @@ function generateToTable() {
                         "<b>Kategori</b> : " + kategori_text + "<br>" +
                         "<b>Merk</b> : " + merk_text + "<br>" +
                         "<b>Type</b> : " + type_text + "<br>" +
-                        "<b>No. Pembelian</b> : " + nomor_pembelian + "<br>" +
-                        "<b>Harga</b> : " + harga_beli + "<br>" +
                         "<b>Tanggal Beli</b> : " + tanggal_pembelian + "<br>" +
+                        "<b>No. Pembelian</b> :  <br>" +
+                        "<input class='form-control' type='text' name='nomor_pembelian[]' id='nomor_pembelian_"+rowCount+"' value='"+nomor_pembelian+"' />" +
+                        "<b>Harga</b> : <br>" +
+                        "<input type='number' class='form-control' name='harga_beli[]' id='harga_beli_"+rowCount+"' value='"+harga_beli+"' /> <br>" +
                         "",
                         "<input type='text' class='form-control' name='nama_barang[]' id='nama_barang_"+rowCount+"' value='"+nama_barang+"' required/>",
                         "<input type='text' class='form-control' name='serial_number[]' id='serial_number_"+rowCount+"' placeholder='Input Serial Number' />",
@@ -794,9 +794,7 @@ function generateToTable() {
                     "<input type='hidden' name='kode_kategori[]' id='kode_kategori_"+rowCount+"' value='"+kategori+"' />" +
                     "<input type='hidden' name='kode_merk[]' id='kode_merk_"+rowCount+"' value='"+merk+"' />" +
                     "<input type='hidden' name='kode_type[]' id='kode_type_"+rowCount+"' value='"+type+"' />" + 
-                    "<input type='hidden' name='harga_beli[]' id='harga_beli_"+rowCount+"' value='"+harga_beli+"' />" +
                     "<input type='hidden' name='tanggal_beli[]' id='tanggal_beli_"+rowCount+"' value='"+tanggal_pembelian+"' />" +
-                    "<input type='hidden' name='nomor_pembelian[]' id='nomor_pembelian_"+rowCount+"' value='"+nomor_pembelian+"' />" +
                     "<input type='hidden' name='barang_stock[]' id='barang_stock_"+rowCount+"' value='True' />" +
                     "<input type='hidden' name='qty_detail[]' id='qty_detail_"+rowCount+"' value='"+qty_beli+"' />" +
                     "<input type='hidden' name='kode_barang[]' id='kode_barang_"+rowCount+"' value='"+kode_barang+"' />" +
@@ -804,10 +802,12 @@ function generateToTable() {
                     "<b>Kode Barang</b> : <span class='badge bg-primary'>"+kode_barang+"</span><br>" +
                     "<b>Kategori</b> : " + kategori_text + "<br>" +
                     "<b>Merk</b> : " + merk_text + "<br>" +
-                    "<b>Type</b> : " + type_text + "<br>" +                    
-                    "<b>No. Pembelian</b> : " + nomor_pembelian + "<br>" +
-                    "<b>Harga</b> : " + harga_beli + "<br>" +
+                    "<b>Type</b> : " + type_text + "<br>" +     
                     "<b>Tanggal Beli</b> : " + tanggal_pembelian + "<br>" +
+                    "<b>No. Pembelian</b> :  <br>" +
+                    "<input class='form-control' type='text' name='nomor_pembelian[]' id='nomor_pembelian_"+rowCount+"' value='"+nomor_pembelian+"' />" +
+                    "<b>Harga</b> : <br>" +
+                    "<input type='number' class='form-control' name='harga_beli[]' id='harga_beli_"+rowCount+"' value='"+harga_beli+"' /> <br>" +
                     "",
                     "<input type='text' class='form-control' name='nama_barang[]' id='nama_barang_"+rowCount+"' value='"+nama_barang+"' required/>",
                     "<input type='text' class='form-control' name='serial_number[]' id='serial_number_"+rowCount+"' placeholder='Input Serial Number' />",

@@ -63,8 +63,6 @@ class User_akses extends Admin_Controller  {
 									Opsi
 								</button>
 								<div class="dropdown-menu">
-									<a href="'.base_url('users/'.$cn.'/detail/'.$id).'" class="dropdown-item">
-										<i data-acorn-icon="search"></i> Detail</a>
 									<a href="'.base_url('users/'.$cn.'/edit/'.$id).'" class="dropdown-item">
 										<i data-acorn-icon="edit-square"></i> Edit</a>';
 									$btn .= ' <a class="dropdown-item" onclick="';

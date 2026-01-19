@@ -128,6 +128,7 @@ class Kategori extends Admin_Controller  {
             $data_kat = [
                 'kode_kategori' => $code,
                 'nama'          => $nama,
+				'jenis'         => $_POST['jenis'],
             ];
 
             tesx($data_kat);

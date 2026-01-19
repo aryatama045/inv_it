@@ -15,6 +15,7 @@ class Admin_Controller extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		
 		$group_data = array();
 		$this->load->model('Model_menu');
 		$this->load->model('Model_global');

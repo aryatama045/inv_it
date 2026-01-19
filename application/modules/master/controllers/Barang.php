@@ -389,7 +389,7 @@ class Barang extends Admin_Controller  {
 
 		$data           	= $this->Model_barang->getBarangTransaksi('result',$search_kd_barang,$search_name,$kategori,$merk,$type,$stok,$jenis,$length,$start,$column,$order);
 		$data_jum       	= $this->Model_barang->getBarangTransaksi('numrows',$search_kd_barang,$search_name,$kategori,$merk,$type,$stok,$jenis);
-
+		
 		$output			= array();
 		$output['draw'] = $draw;
 		$output['recordsTotal'] = $output['recordsFiltered'] = $data_jum;

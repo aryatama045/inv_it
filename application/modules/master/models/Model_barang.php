@@ -362,6 +362,8 @@ class Model_barang extends CI_Model
 			array_push($log_detail, $detail);
 		}
 
+		// tesx($log_detail);
+
 		$this->db->trans_complete(); 	// Complete transaction
 		if ($this->db->trans_status() === FALSE) { 	// Check transaction status
 			return [

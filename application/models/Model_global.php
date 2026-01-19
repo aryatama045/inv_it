@@ -211,6 +211,32 @@ class Model_global extends CI_Model {
         }
     }
 
+    function getDataInstallUlang($id = NULL, $pc_os = NULL)
+    {
+        $this->db->select('*');
+		$this->db->from('mst_install_ulang');
+        $this->db->order_by('kode_program, nama_program', 'ASC');
+        if($id){
+            $this->db->where('kode_program', $id);
+            $query=$this->db->get();
+            // die(nl2br($this->db->last_query()));
+            return $query->row_array();
+        }else{
+            if($pc_os){
+                $this->db->where('is_os', 1);
+                $query=$this->db->get();
+                return $query->result_array();
+            }else{
+                $this->db->where('is_os', 0);
+                $query=$this->db->get();
+                return $query->result_array();
+            }
+            
+            
+        }
+    }
+
+
     // ------- END DATA MASTER GET
 
 

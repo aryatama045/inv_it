@@ -136,7 +136,8 @@
                 </div>
 
                 <div class="row g-3">
-                    <div class="col-md-12">
+                    
+                    <div class="col-md-6">
                         <label class="mb-3 top-label">
                             <p class="form-control">
                                 <?= capital(strtolower($header['keterangan'])) ?>
@@ -144,6 +145,22 @@
                             <span class="text-black"><b>KETERANGAN</b></span>
                         </label>
                     </div>
+
+                    <!-- Untuk Upload foto -->
+                    <div class="col-6 col-md-6 ">
+                        <label class="form-label text-black"><strong> Foto Tanda Terima </strong></label><br>
+                        
+                        <?php if ($header['foto']) { ?>
+                        <div id="photoPreviewContainer" class="text-left">
+                            <img id="photoPreview" src="<?= base_url($header['foto']); ?>" alt="Photo Preview" style="max-width: 100px; max-height: 100px; cursor: pointer; border: 2px solid #ddd; border-radius: 4px;" onclick="openPhotoPreviewModal()">
+                        </div>
+                        <?php } else {?>
+                            Tidak Ada Foto
+                        <?php } ?>
+
+
+                    </div>
+
                 </div>
 
                 <h4 class="mt-2">Detail</h4> <hr class="mb-2">
@@ -183,6 +200,27 @@
 </div>
 
 
+<!-- Modal Photo Preview -->
+<div class="modal fade" id="photoPreviewModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Preview Foto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalPhotoPreviewImg" src="" alt="Photo Preview" style="max-width: 100%; max-height: 600px; border-radius: 8px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 <div id='containerFormRedirect'>
 	<form action="<?= base_url($mod.'/'.$func.'/print_action') ?>" method="post" id='formPrintsRedirect'>
 	</form>
@@ -200,4 +238,14 @@
         form.attr('target', 'new');
         form.get(0).submit();
     }
+
+    // Open photo preview modal
+    function openPhotoPreviewModal() {
+        const photoPreview = document.getElementById('photoPreview');
+        if (photoPreview.src && photoPreview.style.display !== 'none') {
+            document.getElementById('modalPhotoPreviewImg').src = photoPreview.src;
+            $('#photoPreviewModal').modal('show');
+        }
+    }
+
 </script>

@@ -201,13 +201,13 @@ class Auth
 
         $sess = $this->CI->session->userdata();
 
-        $sess = $sess['pmb_proses'];
+        // $sess = $sess['pmb_proses'];
 
-        if(!empty($sess)){
-            return redirect('pmb/page404', 'refresh');
-        } else {
+        // if(!empty($sess)){
+        //     return redirect('pmb/page404', 'refresh');
+        // } else {
             return redirect('dashboard/page404', 'refresh');
-        }
+        // }
 
 
     }

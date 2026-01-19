@@ -76,6 +76,7 @@ class Model_user_akses extends CI_Model
 	function saveEdit()
 	{
 		$data = $_POST;
+		$data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 		$this->db->where(['username' => $data['username']]);
 		$update = $this->db->update($this->table, $data);
 

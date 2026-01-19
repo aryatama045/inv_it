@@ -52,6 +52,15 @@
                         <input type="text" class="form-control" required id="nama" name="nama" placeholder="Input Nama Kategori" />
                     </div>
 
+                    <div class="col-12 col-md-6">
+                        <label class="form-label text-black-50"><strong>Jenis Kategori<span style="color:red">*</span></strong></label>
+                        <select name="jenis" class="form-control select2" id="jenis">
+                            <option value="">-- Select Jenis --</option>
+                            <option value="S">STOCK</option>
+                            <option value="QTY">QTY</option>
+                        </select>
+                    </div>
+
                     <div class="col-12">
                         <button type="submit" class="btn btn-primary"><i data-acorn-icon="save"></i> Simpan</button>
                     </div>
